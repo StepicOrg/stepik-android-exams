@@ -10,10 +10,9 @@ import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.AppSingleton
 
-@Module(includes = [AuthModule::class, ProfileModule::class])
+@Module(includes = [AuthModule::class])
 abstract class NetworkModule {
 
-    // AuthModule link
     @Binds
     @AppSingleton
     abstract fun provideAuthPreferences(sharedPreferenceHelper: SharedPreferenceHelper): AuthPreferences
@@ -25,13 +24,6 @@ abstract class NetworkModule {
         @JvmStatic
         internal fun provideModelGson(): Gson = GsonBuilder()
                 .create()
-
-/*        @Provides
-        @AppSingleton
-        @JvmStatic
-        internal fun provideStepikService(authInterceptor: AuthInterceptor, config: Config, gson: Gson): StepikService =
-                NetworkHelper.createServiceWithAuth(authInterceptor, config.host, gson)
-    }*/
 
     }
 }

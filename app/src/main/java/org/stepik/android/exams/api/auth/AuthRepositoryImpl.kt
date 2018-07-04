@@ -21,7 +21,6 @@ class AuthRepositoryImpl
 constructor(
         @AuthLock
         private val authLock: ReentrantLock,
-
         @AuthService
         private val authService: OAuthService,
         @SocialAuthService

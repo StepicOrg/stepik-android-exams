@@ -1,5 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
+import com.arellomobile.mvp.InjectViewState
 import com.google.gson.Gson
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -12,12 +13,12 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 @AppSingleton
+@InjectViewState
 class RegisterPresenter
 @Inject
 constructor(
         //private val profileRepository: ProfileRepository,
         private val profilePreferences: ProfilePreferences,
-
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler

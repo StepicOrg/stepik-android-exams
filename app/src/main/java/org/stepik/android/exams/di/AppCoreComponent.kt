@@ -4,8 +4,12 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.exams.App
+import org.stepik.android.exams.api.Api
+import org.stepik.android.exams.core.presenter.AuthPresenter
+import org.stepik.android.exams.di.network.AuthModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
+import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton
 @Component(modules = [AppCoreModule::class, NetworkModule::class])
@@ -21,8 +25,9 @@ interface AppCoreComponent {
 
     fun loginComponentBuilder(): LoginComponent.Builder
 
-    fun inject(app: App)
-
     fun inject(activity: SplashActivity)
 
+    fun inject(fragment: OnboardingFragment)
+
+    fun inject(app: App)
 }

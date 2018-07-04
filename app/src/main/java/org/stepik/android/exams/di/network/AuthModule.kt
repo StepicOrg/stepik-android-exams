@@ -22,7 +22,6 @@ import javax.inject.Named
 
 @Module
 abstract class AuthModule {
-
     @Binds
     @AppSingleton
     abstract fun provideAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
@@ -45,10 +44,11 @@ abstract class AuthModule {
                 config: Config
         ): OAuthService = createAuthService(Credentials.basic(config.oAuthClientIdSocial, config.oAuthClientSecretSocial), userAgent, config.host)
 
-        @Provides
+
         @AppSingleton
         @JvmStatic
         @AuthService
+        @Provides
         internal fun provideAuthService(
                 @Named(AppConstants.userAgentName)
                 userAgent: String,
@@ -100,5 +100,4 @@ abstract class AuthModule {
             return retrofit.create(OAuthService::class.java)
         }
     }
-
 }

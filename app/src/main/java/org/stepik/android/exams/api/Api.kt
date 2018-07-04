@@ -2,8 +2,10 @@ package org.stepik.android.exams.api
 
 import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.data.model.AccountCredentials
+import javax.inject.Inject
 
-class Api {
+class Api @Inject
+constructor() {
     companion object {
         private const val FAKE_MAIL_PATTERN = "exams_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60L
