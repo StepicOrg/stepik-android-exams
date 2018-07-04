@@ -1,0 +1,70 @@
+ext.versions = [
+        minSdk               : 17,
+        targetSdk            : 26,
+        compileSdk           : 26,
+        buildTools           : '27.0.3',
+
+        androidGradlePlugin  : '3.1.1',
+        kotlin               : '1.2.51',
+        googleServicesVersion: '3.1.0',
+        fabric               : '1.25.1',
+
+        dagger               : '2.15',
+
+        rxJava2              : '2.1.7',
+        rxAndroid            : '2.0.1',
+        rxKotlin             : '2.2.0',
+
+        retrofit             : '2.3.0',
+        gson                 : '2.7',
+
+        moxy                 : '1.5.5',
+
+        okhttp3              : '3.8.0',
+
+        supportLibs          : '26.1.0',
+        constraintLayout     : '1.0.2',
+
+        facebook             : '4.17.0',
+        vk                   : '1.6.5',
+        glide                : '3.7.0',
+        jodaTime             : '2.8',
+]
+
+ext.gradlePlugins = [
+        kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+]
+
+ext.libraries = [
+        moxy                 : "com.arello-mobile:moxy:$versions.moxy",
+        moxycompat           : "com.arello-mobile:moxy-app-compat:$versions.moxy",
+        moxycompiler         : "com.arello-mobile:moxy-compiler:$versions.moxy",
+        kotlinStd            : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+
+        dagger               : "com.google.dagger:dagger:$versions.dagger",
+        daggerCompiler       : "com.google.dagger:dagger-compiler:$versions.dagger",
+
+        rxJava2              : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
+        rxAndroid            : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
+        rxKotlin             : "io.reactivex.rxjava2:rxkotlin:$versions.rxKotlin",
+        jodaTime             : "joda-time:joda-time:$versions.jodaTime",
+        retrofit             : "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        retrofitGsonConverter: "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+        retrofitRxJavaAdapter: "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
+        gson                 : "com.google.code.gson:gson:$versions.gson",
+
+        okhttp3              : "com.squareup.okhttp3:okhttp:$versions.okhttp3",
+        loggingInterceptor   : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp3",
+
+        constraintLayout     : "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
+
+        googleauth           : "com.google.android.gms:play-services-auth:$versions.firebase",
+
+        facebookSdk          : "com.facebook.android:facebook-android-sdk:$versions.facebook",
+        vkSdk                : "com.vk:androidsdk:$versions.vk",
+        supportAppCompat     : "com.android.support:appcompat-v7:$versions.supportLibs",
+        supportDesign        : "com.android.support:design:$versions.supportLibs",
+        supportCardView      : "com.android.support:cardview-v7:$versions.supportLibs",
+
+]

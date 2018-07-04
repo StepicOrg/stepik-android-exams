@@ -13,8 +13,88 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.NoActionBar.EmptyAuth" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg_empty_auth</item>
+    </style>
 
+    <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.PhotoView" parent="AppTheme.NoActionBar.Dark" />
+
+    <style name="AppTheme.ActionBarTheme.Colored" parent="@style/AppTheme.ActionBarTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/colorGrayText</item>
+        <item name="colorControlNormal">@color/colorGrayText</item>
+    </style>
+
+    <style name="AppTheme.RatingBar">
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+    
+    <style name="AppTheme.WhiteButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.ReactionStamp">
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="ExpLevelDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@style/ExpLevelDialogTheme.Window</item>
+    </style>
+
+    <style name="ExpLevelDialogTheme.Window" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/anim_exp_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_exp_dialog_out</item>
+    </style>
+
+    <style name="PopupAnimations">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style>
+
+    <style name="AuthFormFields">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">24dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:maxLength">100</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColorHighlight">@color/colorGrayBackground</item>
+    </style>
+
+    <style name="AuthButtons" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/auth_button_background</item>
+        <item name="android:textColor">@color/auth_button_text_color</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">@dimen/auth_elements_width</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="BorderLessTextButton">
+        <item name="android:textSize">@dimen/borderless_text_button_text_size</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
 </resources>
