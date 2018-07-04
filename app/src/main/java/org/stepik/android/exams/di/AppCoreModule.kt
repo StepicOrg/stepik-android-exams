@@ -1,6 +1,8 @@
 package org.stepik.android.exams.di
 
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.webkit.CookieManager
 import dagger.Binds
 import dagger.Module
@@ -17,6 +19,8 @@ import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.util.AppConstants
+import javax.inject.Named
 
 @Module
 abstract class AppCoreModule {
@@ -50,7 +54,21 @@ abstract class AppCoreModule {
         @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
+        @Named(AppConstants.userAgentName)
+        internal fun provideUserAgent(context: Context): String =
+                try {
+                    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                    val apiLevel = android.os.Build.VERSION.SDK_INT
+                    ("StepikDroid/" + packageInfo.versionName + " (Android " + apiLevel
+                            + ") build/" + packageInfo.versionCode + " package/" + packageInfo.packageName)
+                } catch (e: PackageManager.NameNotFoundException) {
+                    ""
+                }
 
+
+        @JvmStatic
+        @Provides
+        @AppSingleton
+        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
     }
 }
