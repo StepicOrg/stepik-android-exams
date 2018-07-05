@@ -90,7 +90,7 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
             signUpText.changeVisibillity(true)
         })
 
-        close.setOnClickListener { finish() }
+        close.setOnClickListener { startStudy() }
 
         signUpButton.setOnClickListener { register() }
         setSignUpButtonState()
@@ -152,7 +152,7 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
 
     private fun onSuccess() {
         setResult(RESULT_OK)
-        finish()
+        startStudy()
     }
 
     private fun setSignUpButtonState() {
@@ -168,4 +168,5 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
         presenter.detachView(this)
         super.onStop()
     }
+    private fun startStudy() = screenManager.startStudy()
 }

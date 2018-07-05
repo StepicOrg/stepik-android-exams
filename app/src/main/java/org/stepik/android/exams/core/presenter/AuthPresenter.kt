@@ -21,9 +21,7 @@ class AuthPresenter
 constructor(
         private val api: Api,
         private val authRepository: AuthRepository,
-        //private val profileRepository: ProfileRepository,
         private val profilePreferences: ProfilePreferences,
-        //private val expManager: ExpManager,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -42,7 +40,6 @@ constructor(
         view?.onLoading()
 
         disposable.add(createFakeUserRx()
-                //.andThen(onLoginRx())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(
@@ -55,11 +52,10 @@ constructor(
     fun authWithLoginPassword(login: String, password: String) {
         view?.onLoading()
 
-        disposable.add(loginRx(login, password)//.andThen(onLoginRx())
+        disposable.add(loginRx(login, password)
                 .doOnComplete {
                     profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
                 }
-                //.andThen(expManager.reset()) // reset rating from previous account
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSuccess, this::handleLoginError))
@@ -101,16 +97,6 @@ constructor(
                     }
                 }
             }
-
-     private fun onLoginRx() = {
-         /* Completable = api
-              .joinCourse(questionsPacksManager.currentCourseId)
-              .andThen(profileRepository.fetchProfileWithEmailAddresses())
-              .flatMapCompletable {
-                  it.subscribedForMail = false
-                  profileRepository.updateProfile(it)
-              */
-}
 
     private fun onError(authError: AuthError) {
         view?.onError(authError)

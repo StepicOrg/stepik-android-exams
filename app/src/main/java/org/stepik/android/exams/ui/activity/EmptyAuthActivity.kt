@@ -3,6 +3,7 @@ package org.stepik.android.exams.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_empty_auth.*
 import kotlinx.android.synthetic.main.header_empty_auth.*
 import org.stepik.android.exams.core.ScreenManager
@@ -11,7 +12,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.util.fromHtmlCompat
 import javax.inject.Inject
 
-class EmptyAuthActivity: BaseFragmentActivity() {
+class EmptyAuthActivity: AppCompatActivity() {
     @Inject
     lateinit var screenManager: ScreenManager
 
@@ -28,7 +29,7 @@ class EmptyAuthActivity: BaseFragmentActivity() {
     }
 
     private fun skipAuth() {
-        finish()
+        startStudy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -36,4 +37,5 @@ class EmptyAuthActivity: BaseFragmentActivity() {
             finish()
         }
     }
+    private fun startStudy() = screenManager.startStudy()
 }

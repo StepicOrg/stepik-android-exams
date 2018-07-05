@@ -98,7 +98,7 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
                 onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
 
-        close.setOnClickListener { finish() }
+        close.setOnClickListener { startStudy() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -125,7 +125,7 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
 
      override fun onSuccess() {
         setResult(RESULT_OK)
-        finish()
+         startStudy()
     }
 
      override fun onError(authError: AuthError) {
@@ -153,4 +153,5 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
         presenter.detachView(this)
         super.onDestroy()
     }
+    private fun startStudy() = screenManager.startStudy()
 }

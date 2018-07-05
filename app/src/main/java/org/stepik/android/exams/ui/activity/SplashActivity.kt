@@ -1,6 +1,7 @@
 package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
@@ -12,7 +13,7 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject
 
-class SplashActivity : BaseFragmentActivity() {
+class SplashActivity : AppCompatActivity() {
 
     private lateinit var disposable : Disposable
 
@@ -34,22 +35,17 @@ class SplashActivity : BaseFragmentActivity() {
         super.onCreate(savedInstanceState)
         App.component().inject(this)
         setContentView(R.layout.activity_splash)
-
-        val authObservable = Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
         val onboardingObservable = Observable.fromCallable(sharedPreferenceHelper::isNotFirstTime)
-        screenManager.showOnboardingScreen();
-        // check if user signed in
-/*       disposable =
-                .delay(1L, TimeUnit.SECONDS)
+        disposable = onboardingObservable
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe {
-                    if (it.first != 0L && it.second) {
+                    if (it == true) {
                         screenManager.startStudy()
                     } else {
                         screenManager.showOnboardingScreen()
                     }
-                }*/
+                }
     }
 
 }
