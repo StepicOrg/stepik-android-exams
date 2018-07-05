@@ -22,7 +22,7 @@ import org.stepik.android.exams.ui.dialog.RemindPasswordDialog
 import org.stepik.android.exams.util.fromHtmlCompat
 import javax.inject.Inject
 
-class LoginActivity : BaseFragmentActivity(), AuthView {
+class LoginActivity : BaseFragmentActivity() {
     companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
@@ -35,8 +35,8 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
     @Inject
     lateinit var screenManager: ScreenManager
 
-    @InjectPresenter
-    lateinit var presenter: AuthPresenter
+    /*@InjectPresenter
+    lateinit var presenter: AuthPresenter*/
 
     fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
@@ -121,15 +121,15 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
         val login = loginField.text.toString()
         val password = passwordField.text.toString()
 
-        presenter.authWithLoginPassword(login, password)
+        //presenter.authWithLoginPassword(login, password)
     }
 
-    override fun onSuccess() {
+     fun onSuccess() {
         setResult(RESULT_OK)
         finish()
     }
 
-    override fun onError(authError: AuthError) {
+     fun onError(authError: AuthError) {
         @StringRes val messageResId = when (authError) {
             AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
             AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
@@ -147,7 +147,7 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
         hideProgressDialogFragment(PROGRESS)
     }
 
-    override fun onLoading() =
+     fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
 
 }

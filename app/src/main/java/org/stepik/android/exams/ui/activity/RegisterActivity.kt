@@ -22,8 +22,8 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
         const val REQUEST_CODE = 520
     }
 
-    @InjectPresenter
-    lateinit var presenter: RegisterPresenter
+   /* @InjectPresenter
+    lateinit var presenter: RegisterPresenter*/
 
     @Inject
     lateinit var screenManager: ScreenManager

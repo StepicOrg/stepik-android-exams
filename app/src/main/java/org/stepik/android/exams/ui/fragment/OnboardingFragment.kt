@@ -1,7 +1,9 @@
 package org.stepik.android.exams.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import io.reactivex.Observable
@@ -18,19 +20,20 @@ import org.stepik.android.exams.core.presenter.contracts.AuthView
 import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.ui.activity.RegisterActivity
 import javax.inject.Inject
 
-class OnboardingFragment : Fragment(), AuthView {
+class OnboardingFragment : MvpAppCompatFragment(), AuthView {
     override fun onError(authError: AuthError) {
         TODO("not implemented")
     }
 
     override fun onLoading() {
-        TODO("not implemented")
+        startActivity(Intent(context, RegisterActivity::class.java))
     }
 
     override fun onSuccess() {
-        TODO("not implemented")
+        startActivity(Intent(context, RegisterActivity::class.java))
     }
 
     private var completed = 0

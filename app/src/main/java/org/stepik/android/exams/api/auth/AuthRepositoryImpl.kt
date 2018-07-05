@@ -1,5 +1,6 @@
 package org.stepik.android.exams.api.auth
 
+import android.widget.Toast
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.stepik.android.exams.configuration.Config
@@ -39,7 +40,8 @@ constructor(
 
     override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> = authService
             .authWithLoginPassword(config.grantType, login, password)
-            .doOnSuccess { saveResponse(it, isSocial = false) }
+            .doOnSuccess { saveResponse(it, isSocial = false)}
+            .doOnError {  }
 
    /* override fun authWithNativeCode(code: String, type: SocialManager.SocialType): Single<OAuthResponse> {
         var codeType: String? = null
@@ -62,5 +64,6 @@ constructor(
 
     override fun createAccount(credentials: RegistrationUser): Completable =
             cookieAuthService.createAccount(UserRegistrationRequest(credentials))
+                    .doOnError {  }
 
 }

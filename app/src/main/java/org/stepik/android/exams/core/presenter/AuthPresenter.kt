@@ -1,22 +1,23 @@
 package org.stepik.android.exams.core.presenter
 import com.arellomobile.mvp.InjectViewState
-import org.stepik.android.exams.api.Api;
+import com.arellomobile.mvp.MvpPresenter
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.App
-import org.stepik.android.exams.util.RxOptional
-import org.stepik.android.exams.util.then
+import org.stepik.android.exams.api.Api
+import org.stepik.android.exams.api.auth.AuthError
+import org.stepik.android.exams.api.auth.AuthRepository
 import org.stepik.android.exams.core.presenter.contracts.AuthView
-import javax.inject.Inject
+import org.stepik.android.exams.data.model.AccountCredentials
+import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.api.auth.AuthError
-import org.stepik.android.exams.data.model.AccountCredentials
-import org.stepik.android.exams.api.auth.AuthRepository
-import org.stepik.android.exams.data.preference.ProfilePreferences
+import org.stepik.android.exams.util.RxOptional
+import org.stepik.android.exams.util.then
 import retrofit2.HttpException
+import javax.inject.Inject
+
 @InjectViewState
 class AuthPresenter
 @Inject
@@ -30,7 +31,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): BasePresenter<AuthView>() {
+): MvpPresenter<AuthView>() {
     private val disposable = CompositeDisposable()
 
     private var isSuccess = false
@@ -115,7 +116,7 @@ constructor(
     }
 
     private fun onSuccess() {
-        isSuccess = true
+        //isSuccess = true
         viewState.onSuccess()
     }
 
