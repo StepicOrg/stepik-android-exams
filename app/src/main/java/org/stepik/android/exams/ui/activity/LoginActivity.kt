@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_login.*
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.App
@@ -22,7 +21,7 @@ import org.stepik.android.exams.ui.dialog.RemindPasswordDialog
 import org.stepik.android.exams.util.fromHtmlCompat
 import javax.inject.Inject
 
-class LoginActivity : BaseFragmentActivity() {
+class LoginActivity : BaseFragmentActivity(), AuthView {
     companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
@@ -35,10 +34,10 @@ class LoginActivity : BaseFragmentActivity() {
     @Inject
     lateinit var screenManager: ScreenManager
 
-    /*@InjectPresenter
-    lateinit var presenter: AuthPresenter*/
+    @Inject
+    lateinit var presenter: AuthPresenter
 
-    fun injectComponent() {
+    init {
         App.componentManager().loginComponent.inject(this)
     }
 
@@ -121,15 +120,15 @@ class LoginActivity : BaseFragmentActivity() {
         val login = loginField.text.toString()
         val password = passwordField.text.toString()
 
-        //presenter.authWithLoginPassword(login, password)
+        presenter.authWithLoginPassword(login, password)
     }
 
-     fun onSuccess() {
+     override fun onSuccess() {
         setResult(RESULT_OK)
         finish()
     }
 
-     fun onError(authError: AuthError) {
+     override fun onError(authError: AuthError) {
         @StringRes val messageResId = when (authError) {
             AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
             AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
@@ -147,7 +146,7 @@ class LoginActivity : BaseFragmentActivity() {
         hideProgressDialogFragment(PROGRESS)
     }
 
-     fun onLoading() =
+     override fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
 
 }

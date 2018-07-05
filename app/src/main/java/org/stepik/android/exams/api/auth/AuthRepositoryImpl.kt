@@ -28,7 +28,6 @@ constructor(
         private val socialAuthService: OAuthService,
         @CookieAuthService
         private val cookieAuthService: OAuthService,
-
         private val config: Config,
         private val authPreferences: AuthPreferences
 ): AuthRepository {
@@ -40,10 +39,10 @@ constructor(
 
     override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> = authService
             .authWithLoginPassword(config.grantType, login, password)
-            .doOnSuccess { saveResponse(it, isSocial = false)}
-            .doOnError {  }
+            .doOnSuccess { saveResponse(it, isSocial = false) }
+            .doOnError { }
 
-   /* override fun authWithNativeCode(code: String, type: SocialManager.SocialType): Single<OAuthResponse> {
+    override fun authWithNativeCode(code: String, type: SocialManager.SocialType): Single<OAuthResponse> {
         var codeType: String? = null
         if (type.needUseAccessTokenInsteadOfCode()) {
             codeType = "access_token"
@@ -56,7 +55,7 @@ constructor(
                 config.redirectUri,
                 codeType)
                 .doOnSuccess { saveResponse(it, isSocial = true) }
-    } */
+    }
 
     override fun authWithCode(code: String): Single<OAuthResponse> = socialAuthService
             .getTokenByCode(config.grantTypeSocial, code, config.redirectUri)
@@ -64,6 +63,4 @@ constructor(
 
     override fun createAccount(credentials: RegistrationUser): Completable =
             cookieAuthService.createAccount(UserRegistrationRequest(credentials))
-                    .doOnError {  }
-
 }
