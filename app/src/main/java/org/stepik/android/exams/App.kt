@@ -24,7 +24,8 @@ open class App : Application() {
                 .context(applicationContext)
                 .build()
         component.inject(this)
-
+        componentManager = ComponentManager(component)
+        component.inject(this)
     }
 
 }

@@ -31,7 +31,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): MvpPresenter<AuthView>() {
+): BasePresenter<AuthView>() {
     private val disposable = CompositeDisposable()
 
     private var isSuccess = false
@@ -116,7 +116,7 @@ constructor(
     }
 
     private fun onSuccess() {
-        //isSuccess = true
+        isSuccess = true
         viewState.onSuccess()
     }
 

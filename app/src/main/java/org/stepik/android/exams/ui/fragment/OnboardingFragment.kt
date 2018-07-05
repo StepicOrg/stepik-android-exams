@@ -25,15 +25,16 @@ import javax.inject.Inject
 
 class OnboardingFragment : MvpAppCompatFragment(), AuthView {
     override fun onError(authError: AuthError) {
-        TODO("not implemented")
     }
 
     override fun onLoading() {
-        startActivity(Intent(context, RegisterActivity::class.java))
+        completed++
+        //add loading
     }
 
     override fun onSuccess() {
-        startActivity(Intent(context, RegisterActivity::class.java))
+        completed++
+        onComplete()
     }
 
     private var completed = 0
@@ -54,36 +55,36 @@ class OnboardingFragment : MvpAppCompatFragment(), AuthView {
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
+    @Inject
+    lateinit var screenManager: ScreenManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         App.component().inject(this)
-        createMockAccount();
-        // register fake user
-/*        disposable.add(Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
+        disposable.add(Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
-                    if(it == 0L)
-                        createMockAccount()
+                    if(it == 0L) {
+                        sharedPreferenceHelper.isNotFirstTime = true
+                        createMockAccount() }
                     else
                         onSuccess()
-                })*/
+                })
     }
 
-/*    private fun onComplete() {
-        if (completed == 2) {
-            disposable addDisposable sharedPreferenceHelper.isFakeUser()
+    private fun onComplete() {
+        if (completed == 1) {
+            disposable.add(sharedPreferenceHelper.isFakeUser()
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe { isFake ->
-                        // -> go go home
                         if (isFake) {
                             screenManager.showEmptyAuthScreen(context)
                         }
-                    }
+                    })
         }
-    }*/
+    }
     private fun createMockAccount() {
         presenter.authFakeUser()
     }

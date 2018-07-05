@@ -19,7 +19,6 @@ class EmptyAuthActivity: BaseFragmentActivity() {
         super.onCreate(savedInstanceState)
         App.componentManager().loginComponent.inject(this)
         setContentView(R.layout.activity_empty_auth)
-
         description.text = fromHtmlCompat(getString(R.string.empty_auth_description))
 
         close.setOnClickListener { skipAuth() }
