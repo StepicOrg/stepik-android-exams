@@ -22,13 +22,13 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
         const val REQUEST_CODE = 520
     }
 
-   /* @InjectPresenter
-    lateinit var presenter: RegisterPresenter*/
+    @Inject
+    lateinit var presenter: RegisterPresenter
 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    fun injectComponent() {
+    init {
         App.componentManager().loginComponent.inject(this)
     }
 
@@ -106,7 +106,7 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
         val email = emailField.text.toString().trim()
         val password = passwordField.text.toString()
 
-       // presenter.register(firstName, lastName, email, password)
+        presenter.register(firstName, lastName, email, password)
     }
 
     override fun setState(state: RegisterView.State) = when (state) {
@@ -157,6 +157,6 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
     }
 
     private fun setSignUpButtonState() {
-      //  signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
+        signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
     }
 }

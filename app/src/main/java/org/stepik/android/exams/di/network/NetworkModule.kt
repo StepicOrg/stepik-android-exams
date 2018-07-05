@@ -10,7 +10,7 @@ import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.AppSingleton
 
-@Module(includes = [AuthModule::class])
+@Module(includes = [AuthModule::class, ProfileModule::class])
 abstract class NetworkModule {
 
     @Binds

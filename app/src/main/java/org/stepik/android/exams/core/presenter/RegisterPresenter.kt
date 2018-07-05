@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState
 import com.google.gson.Gson
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError
 import org.stepik.android.exams.core.presenter.contracts.RegisterView
 import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.di.AppSingleton
@@ -11,13 +12,16 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import retrofit2.HttpException
 import javax.inject.Inject
+import org.stepik.android.exams.api.profile.ProfileRepository
+import org.stepik.android.exams.util.ValidateUtil
+import org.stepik.android.exams.util.then
 
 @AppSingleton
 @InjectViewState
 class RegisterPresenter
 @Inject
 constructor(
-        //private val profileRepository: ProfileRepository,
+        private val profileRepository: ProfileRepository,
         private val profilePreferences: ProfilePreferences,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -26,7 +30,7 @@ constructor(
 ): BasePresenter<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
-/*
+
     private var state: RegisterView.State = RegisterView.State.Idle
         set(value) {
             field = value
@@ -48,7 +52,7 @@ constructor(
 
         state = RegisterView.State.Loading
 
-        compositeDisposable addDisposable profileRepository.fetchProfile().flatMap { profile ->
+        compositeDisposable.add(profileRepository.fetchProfile().flatMap { profile ->
             profile.firstName = firstName
             profile.lastName = lastName
 
@@ -74,6 +78,6 @@ constructor(
             } else {
                 RegisterView.State.NetworkError
             }
-        })
-    }*/
+        }))
+    }
 }
