@@ -2,10 +2,15 @@ package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.fragment_onboarding.*
 import org.stepik.android.exams.App
+import org.stepik.android.exams.R
 import org.stepik.android.exams.api.auth.AuthError
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.AuthPresenter
@@ -74,11 +79,12 @@ class OnboardingFragment : Fragment(), AuthView {
 
     override fun onLoading() {
         completed++
-        //add loading
+        progressBarLoading.visibility = View.VISIBLE
     }
 
     override fun onSuccess() {
         completed++
+        progressBarLoading.visibility = View.GONE
         onComplete()
     }
 
@@ -86,5 +92,9 @@ class OnboardingFragment : Fragment(), AuthView {
         disposable.dispose()
         presenter.detachView(this)
         super.onDestroy()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return View.inflate(this.context, R.layout.fragment_onboarding, null)
     }
 }
