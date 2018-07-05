@@ -1,6 +1,4 @@
 package org.stepik.android.exams.core.presenter
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -18,7 +16,6 @@ import org.stepik.android.exams.util.then
 import retrofit2.HttpException
 import javax.inject.Inject
 
-@InjectViewState
 class AuthPresenter
 @Inject
 constructor(
@@ -31,13 +28,18 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): BasePresenter<AuthView>() {
+): PresenterBase<AuthView>() {
+
+    override fun destroy() {
+        disposable.clear()
+    }
+
     private val disposable = CompositeDisposable()
 
     private var isSuccess = false
 
     fun authFakeUser() {
-        viewState.onLoading()
+        view?.onLoading()
 
         disposable.add(createFakeUserRx()
                 //.andThen(onLoginRx())
@@ -51,7 +53,7 @@ constructor(
     }
 
     fun authWithLoginPassword(login: String, password: String) {
-        viewState.onLoading()
+        view?.onLoading()
 
         disposable.add(loginRx(login, password)//.andThen(onLoginRx())
                 .doOnComplete {
@@ -99,25 +101,28 @@ constructor(
                     }
                 }
             }
-// join course
-     private fun onLoginRx() = {
 
+     private fun onLoginRx() = {
+         /* Completable = api
+              .joinCourse(questionsPacksManager.currentCourseId)
+              .andThen(profileRepository.fetchProfileWithEmailAddresses())
+              .flatMapCompletable {
+                  it.subscribedForMail = false
+                  profileRepository.updateProfile(it)
+              */
 }
-    /* Completable = api
-         .joinCourse(questionsPacksManager.currentCourseId)
-         .andThen(profileRepository.fetchProfileWithEmailAddresses())
-         .flatMapCompletable {
-             it.subscribedForMail = false
-             profileRepository.updateProfile(it)
-         */
 
     private fun onError(authError: AuthError) {
-        viewState.onError(authError)
+        view?.onError(authError)
     }
 
     private fun onSuccess() {
         isSuccess = true
-        viewState.onSuccess()
+        view?.onSuccess()
+    }
+    override fun attachView(view: AuthView) {
+        super.attachView(view)
+        if (isSuccess) view.onSuccess()
     }
 
 }

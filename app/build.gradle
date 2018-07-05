@@ -34,9 +34,6 @@ android {
 }
 
 dependencies {
-    implementation libraries.moxy
-    implementation libraries.moxycompat
-    kapt libraries.moxycompiler
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
     implementation libraries.rxKotlin

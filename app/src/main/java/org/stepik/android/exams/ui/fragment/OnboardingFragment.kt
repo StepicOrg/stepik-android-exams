@@ -1,7 +1,7 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
-import com.arellomobile.mvp.MvpAppCompatFragment
+import android.support.v4.app.Fragment
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -15,7 +15,7 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject
 
-class OnboardingFragment : MvpAppCompatFragment(), AuthView {
+class OnboardingFragment : Fragment(), AuthView {
 
     private var completed = 0
 
@@ -42,6 +42,7 @@ class OnboardingFragment : MvpAppCompatFragment(), AuthView {
         super.onCreate(savedInstanceState)
         retainInstance = true
         App.component().inject(this)
+        presenter.attachView(this)
         disposable.add(Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
@@ -54,7 +55,7 @@ class OnboardingFragment : MvpAppCompatFragment(), AuthView {
     }
 
     private fun onComplete() {
-        if (completed == 1) {
+        if (completed == 2) {
             disposable.add(sharedPreferenceHelper.isFakeUser()
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
@@ -79,5 +80,11 @@ class OnboardingFragment : MvpAppCompatFragment(), AuthView {
     override fun onSuccess() {
         completed++
         onComplete()
+    }
+
+    override fun onDestroy() {
+        disposable.dispose()
+        presenter.detachView(this)
+        super.onDestroy()
     }
 }

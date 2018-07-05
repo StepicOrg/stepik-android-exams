@@ -1,8 +1,7 @@
 package org.stepik.android.exams.core.presenter.contracts
 
-import com.arellomobile.mvp.MvpView
 
-interface RegisterView : MvpView{
+interface RegisterView{
     fun setState(state: State)
 
     sealed class State {

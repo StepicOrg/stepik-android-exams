@@ -1,10 +1,10 @@
 package org.stepik.android.exams.ui.activity
 
 import android.support.v4.app.DialogFragment
-import com.arellomobile.mvp.MvpAppCompatActivity
+import android.support.v7.app.AppCompatActivity
 import org.stepik.android.exams.ui.fragment.ProgressDialogFragment
 
-open class BaseFragmentActivity : MvpAppCompatActivity() {
+open class BaseFragmentActivity : AppCompatActivity() {
     protected fun showProgressDialogFragment(tag: String, title: String, msg: String) {
         if (supportFragmentManager.findFragmentByTag(tag) == null) {
             ProgressDialogFragment.newInstance(title, msg).show(supportFragmentManager, tag)

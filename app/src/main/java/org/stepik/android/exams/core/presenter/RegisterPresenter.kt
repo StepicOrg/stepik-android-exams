@@ -1,6 +1,5 @@
 package org.stepik.android.exams.core.presenter
 
-import com.arellomobile.mvp.InjectViewState
 import com.google.gson.Gson
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +16,6 @@ import org.stepik.android.exams.util.ValidateUtil
 import org.stepik.android.exams.util.then
 
 @AppSingleton
-@InjectViewState
 class RegisterPresenter
 @Inject
 constructor(
@@ -27,14 +25,14 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): BasePresenter<RegisterView>() {
+): PresenterBase<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 
     private var state: RegisterView.State = RegisterView.State.Idle
         set(value) {
             field = value
-            viewState.setState(value)
+            view?.setState(value)
         }
 
     private fun validate(firstName: String, lastName: String, email: String, password: String): Boolean {
@@ -80,4 +78,12 @@ constructor(
             }
         }))
     }
+
+    override fun attachView(view: RegisterView) {
+        super.attachView(view)
+        view.setState(state)
+    }
+
+    override fun destroy() =
+            compositeDisposable.dispose()
 }

@@ -44,7 +44,7 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        presenter.attachView(this)
         signInText.text = fromHtmlCompat(getString(R.string.sign_in_title))
 
         val errorTextWatcher = object : TextWatcher {
@@ -149,4 +149,8 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
      override fun onLoading() =
         showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
 
+    override fun onDestroy() {
+        presenter.detachView(this)
+        super.onDestroy()
+    }
 }

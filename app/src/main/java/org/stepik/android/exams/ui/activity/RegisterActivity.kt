@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.inputmethod.EditorInfo
-import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.App
@@ -28,7 +27,7 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
     @Inject
     lateinit var screenManager: ScreenManager
 
-    init {
+    init{
         App.componentManager().loginComponent.inject(this)
     }
 
@@ -158,5 +157,15 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
 
     private fun setSignUpButtonState() {
         signUpButton.isEnabled = emailField.text.isNotBlank() && firstNameField.text.isNotBlank() && passwordField.text.isNotBlank()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.attachView(this)
+    }
+
+    override fun onStop() {
+        presenter.detachView(this)
+        super.onStop()
     }
 }
