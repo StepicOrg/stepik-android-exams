@@ -4,16 +4,16 @@ import com.google.gson.Gson
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.adaptive.api.profile.model.ProfileCompositeError
+import org.stepik.android.exams.api.profile.ProfileRepository
 import org.stepik.android.exams.core.presenter.contracts.RegisterView
 import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import retrofit2.HttpException
-import javax.inject.Inject
-import org.stepik.android.exams.api.profile.ProfileRepository
 import org.stepik.android.exams.util.ValidateUtil
 import org.stepik.android.exams.util.then
+import retrofit2.HttpException
+import javax.inject.Inject
 
 @AppSingleton
 class RegisterPresenter

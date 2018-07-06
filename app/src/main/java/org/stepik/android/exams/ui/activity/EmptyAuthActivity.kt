@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_empty_auth.*
 import kotlinx.android.synthetic.main.header_empty_auth.*
-import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
+import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.util.fromHtmlCompat
 import javax.inject.Inject
 

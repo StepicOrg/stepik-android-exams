@@ -6,6 +6,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.auth.AuthError
 import org.stepik.android.exams.api.auth.AuthRepository
+import org.stepik.android.exams.api.profile.ProfileRepository
 import org.stepik.android.exams.core.presenter.contracts.AuthView
 import org.stepik.android.exams.data.model.AccountCredentials
 import org.stepik.android.exams.data.preference.ProfilePreferences
@@ -21,6 +22,7 @@ class AuthPresenter
 constructor(
         private val api: Api,
         private val authRepository: AuthRepository,
+        private val profileRepository: ProfileRepository,
         private val profilePreferences: ProfilePreferences,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
@@ -40,6 +42,7 @@ constructor(
         view?.onLoading()
 
         disposable.add(createFakeUserRx()
+                .andThen(onLoginRx())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(
@@ -53,6 +56,7 @@ constructor(
         view?.onLoading()
 
         disposable.add(loginRx(login, password)
+                .andThen(onLoginRx())
                 .doOnComplete {
                     profilePreferences.removeFakeUser() // we auth as normal user and can remove fake credentials
                 }
@@ -96,6 +100,15 @@ constructor(
                         }
                     }
                 }
+            }
+    private fun onLoginRx():
+            Completable = profileRepository.fetchProfileWithEmailAddresses()
+            .doOnSuccess {
+                profilePreferences.profile = it
+            }
+            .flatMapCompletable {
+                it.subscribedForMail = false
+                profileRepository.updateProfile(it)
             }
 
     private fun onError(authError: AuthError) {

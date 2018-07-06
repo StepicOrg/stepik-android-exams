@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.Toast;
+
 import org.stepik.android.exams.App;
 import org.stepik.android.exams.R;
 import org.stepik.android.exams.api.Api;
@@ -22,7 +23,6 @@ import org.stepik.android.exams.util.ValidateUtil;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 

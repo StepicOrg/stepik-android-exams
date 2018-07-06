@@ -1,17 +1,16 @@
 package org.stepik.android.exams.api.auth
 
-import android.widget.Toast
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.stepik.android.exams.api.UserRegistrationRequest
 import org.stepik.android.exams.configuration.Config
+import org.stepik.android.exams.data.model.RegistrationUser
+import org.stepik.android.exams.data.preference.AuthPreferences
+import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.AuthLock
 import org.stepik.android.exams.di.qualifiers.AuthService
 import org.stepik.android.exams.di.qualifiers.CookieAuthService
 import org.stepik.android.exams.di.qualifiers.SocialAuthService
-import org.stepik.android.exams.data.model.RegistrationUser
-import org.stepik.android.exams.data.preference.AuthPreferences
-import org.stepik.android.exams.api.UserRegistrationRequest
-import org.stepik.android.exams.di.AppSingleton
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock

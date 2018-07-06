@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import org.stepik.android.exams.data.model.DatasetWrapper
 import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.AppSingleton
@@ -24,6 +23,6 @@ abstract class NetworkModule {
         @JvmStatic
         internal fun provideModelGson(): Gson = GsonBuilder()
                 .create()
-
     }
+
 }

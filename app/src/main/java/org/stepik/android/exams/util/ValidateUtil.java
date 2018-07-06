@@ -4,6 +4,7 @@ package org.stepik.android.exams.util;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+
 import org.stepik.android.exams.R;
 
 public class ValidateUtil {

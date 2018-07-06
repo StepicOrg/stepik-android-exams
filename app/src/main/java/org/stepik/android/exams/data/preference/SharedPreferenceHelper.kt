@@ -69,14 +69,10 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
     val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
     val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
     val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
-
-    var isGamificationDescriptionWasShown: Boolean by preference(IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN)
     var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
 
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
-
-    var questionsPackIndex: Int by preference(QUESTIONS_PACK_INDEX)
 
     fun removeProfile() {
         remove(PROFILE)

@@ -2,18 +2,18 @@ package org.stepik.android.exams.api
 import io.reactivex.Completable
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.stepik.android.exams.util.Util
-import org.stepik.android.exams.data.model.AccountCredentials
-import javax.inject.Inject
-import javax.inject.Named
-import org.stepik.android.exams.configuration.Config
-import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.api.auth.CookieHelper
 import org.stepik.android.exams.api.auth.EmptyAuthService
+import org.stepik.android.exams.configuration.Config
+import org.stepik.android.exams.data.model.AccountCredentials
 import org.stepik.android.exams.di.network.NetworkHelper
+import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.util.addUserAgent
 import org.stepik.android.exams.util.setTimeoutsInSeconds
 import java.net.URLEncoder
+import javax.inject.Inject
+import javax.inject.Named
 
 class Api @Inject
 constructor(

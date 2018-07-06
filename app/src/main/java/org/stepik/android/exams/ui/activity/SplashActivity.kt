@@ -7,10 +7,10 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
-import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
+import org.stepik.android.exams.core.ScreenManager
+import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject

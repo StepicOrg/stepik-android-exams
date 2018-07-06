@@ -5,8 +5,6 @@ import okhttp3.Request
 import okhttp3.Response
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.stepik.android.exams.util.AppConstants
-import org.stepik.android.exams.util.addUserAgent
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.preference.AuthPreferences
@@ -14,6 +12,8 @@ import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.AuthLock
 import org.stepik.android.exams.di.qualifiers.AuthService
 import org.stepik.android.exams.di.qualifiers.SocialAuthService
+import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.addUserAgent
 import retrofit2.Call
 import java.io.IOException
 import java.util.concurrent.locks.ReentrantLock

@@ -10,7 +10,6 @@ import dagger.Provides
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.configuration.ConfigImpl
 import org.stepik.android.exams.core.ScreenManager

@@ -6,9 +6,9 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_register.*
-import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
+import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.RegisterPresenter
 import org.stepik.android.exams.core.presenter.contracts.RegisterView
 import org.stepik.android.exams.util.*

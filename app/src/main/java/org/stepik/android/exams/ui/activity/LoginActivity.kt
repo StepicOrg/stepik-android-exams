@@ -8,17 +8,17 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.activity_login.*
-import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.auth.AuthError
-import org.stepik.android.exams.util.changeVisibillity
-import org.stepik.android.exams.util.hideSoftKeyboard
-import org.stepik.android.exams.util.setOnKeyboardOpenListener
+import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.AuthPresenter
 import org.stepik.android.exams.core.presenter.contracts.AuthView
 import org.stepik.android.exams.ui.dialog.RemindPasswordDialog
+import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.fromHtmlCompat
+import org.stepik.android.exams.util.hideSoftKeyboard
+import org.stepik.android.exams.util.setOnKeyboardOpenListener
 import javax.inject.Inject
 
 class LoginActivity : BaseFragmentActivity(), AuthView {

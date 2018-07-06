@@ -4,9 +4,6 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.exams.App
-import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.core.presenter.AuthPresenter
-import org.stepik.android.exams.di.network.AuthModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment

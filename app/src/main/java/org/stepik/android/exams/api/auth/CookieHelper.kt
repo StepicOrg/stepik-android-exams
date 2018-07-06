@@ -5,11 +5,11 @@ import android.webkit.CookieManager
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import okhttp3.Request
-import org.stepik.android.exams.util.AppConstants
-import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
+import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.Util
 import java.net.HttpCookie
 import java.net.URI
 import java.net.URISyntaxException

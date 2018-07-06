@@ -7,9 +7,6 @@ import dagger.Provides
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
-import org.stepik.android.exams.util.AppConstants
-import org.stepik.android.exams.util.addUserAgent
-import org.stepik.android.exams.util.setTimeoutsInSeconds
 import org.stepik.android.exams.api.auth.*
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.di.AppSingleton
@@ -17,6 +14,9 @@ import org.stepik.android.exams.di.qualifiers.AuthLock
 import org.stepik.android.exams.di.qualifiers.AuthService
 import org.stepik.android.exams.di.qualifiers.CookieAuthService
 import org.stepik.android.exams.di.qualifiers.SocialAuthService
+import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.addUserAgent
+import org.stepik.android.exams.util.setTimeoutsInSeconds
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Named
 
