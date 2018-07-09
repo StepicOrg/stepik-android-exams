@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ЕГЭ по русскому языку</string>
+    <string name="request_error">Что-то пошло не так</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_in_title"><![CDATA[<b>Войти</b> с e-mail]]></string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
+    <string name="sign_later">Не сейчас</string>
+    <string name="remind_password">Вспомнить пароль</string>
+
+    <string name="first_name">Имя</string>
+    <string name="second_name">Фамилия</string>
+
+    <string name="processing_your_request">Обработка запроса</string>
+    <string name="remind_password_success">Мы отправили вам письмо</string>
+    <string name="required_field">Обязательное поле</string>
+    <string name="terms_message_register"><![CDATA[Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a>]]></string>
+
+    <string name="connectivity_error">Нет соединения</string>
+
+    <string name="auth_error_empty_email">Введите корректный E-mail</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
+    <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
+
+    <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
+    <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
+
+</resources>
