@@ -1,4 +1,4 @@
-package org.stepik.android.adaptive.api.profile.model
+package org.stepik.android.exams.api.profile.model
 
 import com.google.gson.annotations.SerializedName
 

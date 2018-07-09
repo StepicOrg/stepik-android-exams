@@ -11,7 +11,6 @@ import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.AuthLock
 import org.stepik.android.exams.di.qualifiers.AuthService
-import org.stepik.android.exams.di.qualifiers.SocialAuthService
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.addUserAgent
 import retrofit2.Call
@@ -32,9 +31,6 @@ constructor(
 
         @AuthService
         private val authService: OAuthService,
-        @SocialAuthService
-        private val socialAuthService: OAuthService,
-
         private val config: Config,
         private val authPreferences: AuthPreferences,
         private val screenManager: ScreenManager
@@ -92,7 +88,6 @@ constructor(
             DateTime.now(DateTimeZone.UTC).millis > authPreferences.authResponseDeadline
 
     private fun authWithRefreshToken(refreshToken: String): Call<OAuthResponse> =
-            (if (authPreferences.isAuthTokenSocial) socialAuthService else authService)
-                    .refreshAccessToken(config.refreshGrantType, refreshToken)
+            authService.refreshAccessToken(config.refreshGrantType, refreshToken)
 
 }

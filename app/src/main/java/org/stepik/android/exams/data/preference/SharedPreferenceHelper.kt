@@ -66,14 +66,12 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
             saveString(FAKE_USER, json)
         }
 
-    override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
 
     fun removeProfile() {
         remove(PROFILE)
         remove(PROFILE_ID)
         remove(OAUTH_RESPONSE)
-        remove(IS_OAUTH_TOKEN_SOCIAL)
         remove(OAUTH_RESPONSE_DEADLINE)
     }
 
@@ -118,7 +116,6 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
 
     companion object {
         private const val OAUTH_RESPONSE = "oauth_response"
-        private const val IS_OAUTH_TOKEN_SOCIAL = "is_oauth_token_social"
         private const val OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline"
         private const val PROFILE = "profile"
         private const val PROFILE_ID = "profile_id"

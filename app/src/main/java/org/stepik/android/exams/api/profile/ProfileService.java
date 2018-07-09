@@ -1,7 +1,7 @@
 package org.stepik.android.exams.api.profile;
 
 
-import org.stepik.android.adaptive.api.profile.model.ChangePasswordRequest;
+import org.stepik.android.exams.api.profile.model.ChangePasswordRequest;
 import org.stepik.android.exams.api.profile.model.EmailAddressRequest;
 import org.stepik.android.exams.api.profile.model.EmailAddressesResponse;
 import org.stepik.android.exams.api.profile.model.ProfileRequest;

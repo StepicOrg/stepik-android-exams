@@ -2,7 +2,7 @@ package org.stepik.android.exams.api.profile
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import org.stepik.android.adaptive.api.profile.model.ChangePasswordRequest
+import org.stepik.android.exams.api.profile.model.ChangePasswordRequest
 import org.stepik.android.exams.api.profile.model.EmailAddress
 import org.stepik.android.exams.api.profile.model.EmailAddressRequest
 import org.stepik.android.exams.api.profile.model.ProfileRequest

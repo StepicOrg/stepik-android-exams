@@ -13,7 +13,6 @@ import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.di.qualifiers.AuthLock
 import org.stepik.android.exams.di.qualifiers.AuthService
 import org.stepik.android.exams.di.qualifiers.CookieAuthService
-import org.stepik.android.exams.di.qualifiers.SocialAuthService
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.addUserAgent
 import org.stepik.android.exams.util.setTimeoutsInSeconds
@@ -33,17 +32,6 @@ abstract class AuthModule {
         @JvmStatic
         @AuthLock
         internal fun provideAuthLock(): ReentrantLock = ReentrantLock()
-
-        @Provides
-        @AppSingleton
-        @JvmStatic
-        @SocialAuthService
-        internal fun provideSocialAuthService(
-                @Named(AppConstants.userAgentName)
-                userAgent: String,
-                config: Config
-        ): OAuthService = createAuthService(Credentials.basic(config.oAuthClientIdSocial, config.oAuthClientSecretSocial), userAgent, config.host)
-
 
         @AppSingleton
         @JvmStatic

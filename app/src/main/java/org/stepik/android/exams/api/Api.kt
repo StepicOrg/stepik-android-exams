@@ -25,12 +25,12 @@ constructor(
 ) {
 
     companion object {
-        private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
+        private const val FAKE_MAIL_PATTERN = "exams_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60L
     }
 
     fun createFakeAccount(): AccountCredentials {
-        val email = String.format(FAKE_MAIL_PATTERN, config.courseId, System.currentTimeMillis(), Util.randomString(5))
+        val email = String.format(FAKE_MAIL_PATTERN, 0, System.currentTimeMillis(), Util.randomString(5))
         val password = Util.randomString(16)
         val firstName = Util.randomString(10)
         val lastName = Util.randomString(10)

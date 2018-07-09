@@ -8,10 +8,6 @@ interface AuthRepository {
 
     fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse>
 
-    fun authWithNativeCode(code: String, type: SocialManager.SocialType): Single<OAuthResponse>
-
-    fun authWithCode(code: String): Single<OAuthResponse>
-
     fun createAccount(credentials: RegistrationUser): Completable
 
 }
