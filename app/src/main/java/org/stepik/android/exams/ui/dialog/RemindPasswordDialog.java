@@ -41,6 +41,7 @@ public final class RemindPasswordDialog extends DialogFragment {
     @BackgroundScheduler
     public Scheduler backgroundScheduler;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,11 +84,11 @@ public final class RemindPasswordDialog extends DialogFragment {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(__ -> {
                 if (validateEmail()) {
                     showProgressDialog();
-                     api
+                    api
                             .remindPassword(editText.getText().toString().trim())
                             .subscribeOn(backgroundScheduler)
                             .observeOn(mainScheduler)
-                            .subscribe(this::onSuccess, this::onError).dispose();
+                            .subscribe(this::onSuccess, this::onError);
                 }
             });
         }
