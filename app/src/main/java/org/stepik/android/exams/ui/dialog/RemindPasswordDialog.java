@@ -18,13 +18,11 @@ import org.stepik.android.exams.R;
 import org.stepik.android.exams.api.Api;
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler;
 import org.stepik.android.exams.di.qualifiers.MainScheduler;
-import org.stepik.android.exams.ui.fragment.ProgressDialogFragment;
 import org.stepik.android.exams.util.ValidateUtil;
 
 import javax.inject.Inject;
 
 import io.reactivex.Scheduler;
-import io.reactivex.disposables.Disposable;
 
 public final class RemindPasswordDialog extends DialogFragment {
     private TextInputEditText editText;
@@ -42,8 +40,6 @@ public final class RemindPasswordDialog extends DialogFragment {
     @Inject
     @BackgroundScheduler
     public Scheduler backgroundScheduler;
-
-    private Disposable disposable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,11 +83,11 @@ public final class RemindPasswordDialog extends DialogFragment {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(__ -> {
                 if (validateEmail()) {
                     showProgressDialog();
-                    disposable = api
+                     api
                             .remindPassword(editText.getText().toString().trim())
                             .subscribeOn(backgroundScheduler)
                             .observeOn(mainScheduler)
-                            .subscribe(this::onSuccess, this::onError);
+                            .subscribe(this::onSuccess, this::onError).dispose();
                 }
             });
         }
@@ -131,7 +127,6 @@ public final class RemindPasswordDialog extends DialogFragment {
         if (dialog != null && getRetainInstance()) {
             dialog.setDismissMessage(null);
         }
-        disposable.dispose();
         super.onDestroyView();
     }
 }

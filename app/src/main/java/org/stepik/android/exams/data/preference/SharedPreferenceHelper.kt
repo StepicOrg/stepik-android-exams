@@ -66,11 +66,6 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
             saveString(FAKE_USER, json)
         }
 
-    val isStreakRestoreTooltipWasShown:  Boolean by preference(IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN)
-    val isPaidContentTooltipWasShown:    Boolean by preference(IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN)
-    val isQuestionsPacksTooltipWasShown: Boolean by preference(IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN)
-    var isEmptyAuthScreenWasShown        : Boolean by preference(IS_EMPTY_AUTH_SCREEN_WAS_SHOWN)
-
     override var isAuthTokenSocial:      Boolean by preference(IS_OAUTH_TOKEN_SOCIAL)
     var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
 
@@ -125,25 +120,10 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
         private const val OAUTH_RESPONSE = "oauth_response"
         private const val IS_OAUTH_TOKEN_SOCIAL = "is_oauth_token_social"
         private const val OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline"
-
         private const val PROFILE = "profile"
         private const val PROFILE_ID = "profile_id"
-
         private const val NOT_FIRST_TIME = "not_first_time"
-
-        private const val IS_STREAK_RESTORE_TOOLTIP_WAS_SHOWN = "is_streak_restore_tooltip_was_shown"
-        private const val IS_PAID_CONTENT_TOOLTIP_WAS_SHOWN = "is_paid_content_tooltip_was_shown"
-
-        private const val IS_QUESTIONS_PACKS_TOOLTIP_WAS_SHOWN = "is_questions_packs_tooltip_was_shown"
-
-        private const val IS_PACKS_FOR_LEVELS_WINDOW_WAS_SHOWN = "is_packs_for_levels_window_was_shown"
-        private const val IS_EMPTY_AUTH_SCREEN_WAS_SHOWN = "is_empty_auth_screen_was_shown"
-
-        private const val QUESTIONS_PACK_INDEX = "questions_pack_index"
-
         private const val FAKE_USER = "fake_user"
-
-        private const val QUESTIONS_PACK_VIEWED_PREFIX = "viewed_"
     }
 
 }

@@ -65,6 +65,7 @@ class OnboardingFragment : Fragment(), AuthView {
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe { isFake ->
+                        screenManager.startStudy()
                         if (isFake) {
                             screenManager.showEmptyAuthScreen(context)
                         }

@@ -13,6 +13,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.api.auth.AuthError
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.AuthPresenter
+import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.contracts.AuthView
 import org.stepik.android.exams.ui.dialog.RemindPasswordDialog
 import org.stepik.android.exams.util.changeVisibillity
@@ -20,8 +21,10 @@ import org.stepik.android.exams.util.fromHtmlCompat
 import org.stepik.android.exams.util.hideSoftKeyboard
 import org.stepik.android.exams.util.setOnKeyboardOpenListener
 import javax.inject.Inject
+import javax.inject.Provider
 
-class LoginActivity : BaseFragmentActivity(), AuthView {
+
+class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView {
     companion object {
         private const val PROGRESS = "login_progress"
         private const val REMIND_PASSWORD_DIALOG = "remind_password_dialog"
@@ -35,16 +38,16 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
     lateinit var screenManager: ScreenManager
 
     @Inject
-    lateinit var presenter: AuthPresenter
+    lateinit var authPresenterProvider: Provider<AuthPresenter>
 
-    init {
+    override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        presenter.attachView(this)
+
         signInText.text = fromHtmlCompat(getString(R.string.sign_in_title))
 
         val errorTextWatcher = object : TextWatcher {
@@ -98,7 +101,7 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
                 onKeyboardHidden = { signInText.changeVisibillity(true) }
         )
 
-        close.setOnClickListener { startStudy() }
+        close.setOnClickListener { finish() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -108,6 +111,16 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter?.attachView(this)
+    }
+
+    override fun onStop() {
+        presenter?.detachView(this)
+        super.onStop()
     }
 
     private fun onClearLoginError() {
@@ -120,15 +133,15 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
         val login = loginField.text.toString()
         val password = passwordField.text.toString()
 
-        presenter.authWithLoginPassword(login, password)
+        presenter?.authWithLoginPassword(login, password)
     }
 
-     override fun onSuccess() {
+    override fun onSuccess() {
         setResult(RESULT_OK)
-         startStudy()
+        finish()
     }
 
-     override fun onError(authError: AuthError) {
+    override fun onError(authError: AuthError) {
         @StringRes val messageResId = when (authError) {
             AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
             AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
@@ -146,12 +159,8 @@ class LoginActivity : BaseFragmentActivity(), AuthView {
         hideProgressDialogFragment(PROGRESS)
     }
 
-     override fun onLoading() =
-        showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
+    override fun onLoading() =
+            showProgressDialogFragment(PROGRESS, getString(R.string.sign_in), getString(R.string.processing_your_request))
 
-    override fun onDestroy() {
-        presenter.detachView(this)
-        super.onDestroy()
-    }
-    private fun startStudy() = screenManager.startStudy()
+    override fun getPresenterProvider() = authPresenterProvider
 }

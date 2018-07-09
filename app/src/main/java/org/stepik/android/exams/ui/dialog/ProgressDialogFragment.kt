@@ -1,4 +1,4 @@
-package org.stepik.android.exams.ui.fragment
+package org.stepik.android.exams.ui.dialog
 
 import android.app.Dialog
 import android.app.ProgressDialog

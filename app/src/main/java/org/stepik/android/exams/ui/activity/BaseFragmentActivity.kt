@@ -2,7 +2,7 @@ package org.stepik.android.exams.ui.activity
 
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
-import org.stepik.android.exams.ui.fragment.ProgressDialogFragment
+import org.stepik.android.exams.ui.dialog.ProgressDialogFragment
 
 open class BaseFragmentActivity : AppCompatActivity() {
     protected fun showProgressDialogFragment(tag: String, title: String, msg: String) {

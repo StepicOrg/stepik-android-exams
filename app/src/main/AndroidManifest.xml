@@ -27,8 +27,6 @@
         </activity>
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.IntroActivity" />
-        <activity android:theme="@style/AppTheme.NoActionBar"
-                  android:name=".ui.activity.BaseFragmentActivity" />
     </application>
 
 </manifest>

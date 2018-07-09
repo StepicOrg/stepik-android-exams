@@ -30,10 +30,6 @@ constructor(
         private val mainScheduler: Scheduler
 ): PresenterBase<AuthView>() {
 
-    override fun destroy() {
-        disposable.clear()
-    }
-
     private val disposable = CompositeDisposable()
 
     private var isSuccess = false
@@ -119,9 +115,14 @@ constructor(
         isSuccess = true
         view?.onSuccess()
     }
+
     override fun attachView(view: AuthView) {
         super.attachView(view)
         if (isSuccess) view.onSuccess()
+    }
+
+    override fun destroy() {
+        disposable.dispose()
     }
 
 }

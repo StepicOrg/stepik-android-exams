@@ -9,12 +9,15 @@ import kotlinx.android.synthetic.main.activity_register.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
+import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.RegisterPresenter
 import org.stepik.android.exams.core.presenter.contracts.RegisterView
 import org.stepik.android.exams.util.*
 import javax.inject.Inject
+import javax.inject.Provider
 
-class RegisterActivity: BaseFragmentActivity() , RegisterView {
+class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView{
+
     companion object {
         private const val PROGRESS = "register_progress"
 
@@ -22,12 +25,12 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
     }
 
     @Inject
-    lateinit var presenter: RegisterPresenter
+    lateinit var registerPresenterProvider: Provider<RegisterPresenter>
 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    init{
+    override fun injectComponent() {
         App.componentManager().loginComponent.inject(this)
     }
 
@@ -105,7 +108,7 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
         val email = emailField.text.toString().trim()
         val password = passwordField.text.toString()
 
-        presenter.register(firstName, lastName, email, password)
+        presenter?.register(firstName, lastName, email, password)
     }
 
     override fun setState(state: RegisterView.State) = when (state) {
@@ -161,12 +164,14 @@ class RegisterActivity: BaseFragmentActivity() , RegisterView {
 
     override fun onStart() {
         super.onStart()
-        presenter.attachView(this)
+        presenter?.attachView(this)
     }
 
     override fun onStop() {
-        presenter.detachView(this)
+        presenter?.detachView(this)
         super.onStop()
     }
     private fun startStudy() = screenManager.startStudy()
+
+    override fun getPresenterProvider(): Provider<RegisterPresenter> = registerPresenterProvider
 }

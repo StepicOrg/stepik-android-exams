@@ -15,16 +15,20 @@ import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
 
-class Api @Inject
+class Api
+@Inject
 constructor(
         private val config: Config,
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
-        private val cookieHelper: CookieHelper) {
+        private val cookieHelper: CookieHelper
+) {
+
     companion object {
         private const val FAKE_MAIL_PATTERN = "adaptive_%s_android_%d%s@stepik.org"
         private const val TIMEOUT_IN_SECONDS = 60L
     }
+
     fun createFakeAccount(): AccountCredentials {
         val email = String.format(FAKE_MAIL_PATTERN, config.courseId, System.currentTimeMillis(), Util.randomString(5))
         val password = Util.randomString(16)
@@ -32,6 +36,7 @@ constructor(
         val lastName = Util.randomString(10)
         return AccountCredentials(email, password, firstName, lastName)
     }
+
     fun remindPassword(email: String): Completable {
         val encodedEmail = URLEncoder.encode(email, Charsets.UTF_8.name())
         val interceptor = Interceptor { chain ->
