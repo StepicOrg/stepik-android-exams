@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -14,55 +12,6 @@
     </style>
 
     <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar" />
-
-    <style name="AppTheme.NoActionBar.EmptyAuth" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@drawable/bg_empty_auth</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.Dark" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@android:color/black</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.PhotoView" parent="AppTheme.NoActionBar.Dark" />
-
-    <style name="AppTheme.ActionBarTheme.Colored" parent="@style/AppTheme.ActionBarTheme">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="colorControlNormal">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:textColorPrimary">@color/colorGrayText</item>
-        <item name="colorControlNormal">@color/colorGrayText</item>
-    </style>
-
-    <style name="AppTheme.RatingBar">
-        <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-    </style>
-    
-    <style name="AppTheme.WhiteButton" parent="Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.ReactionStamp">
-        <item name="android:textSize">24sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:fontFamily">sans-serif-black</item>
-    </style>
-
-    <style name="ExpLevelDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:windowAnimationStyle">@style/ExpLevelDialogTheme.Window</item>
-    </style>
-
-    <style name="ExpLevelDialogTheme.Window" parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@anim/anim_exp_dialog_in</item>
-        <item name="android:windowExitAnimation">@anim/anim_exp_dialog_out</item>
-    </style>
-
-    <style name="PopupAnimations">
-        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/popup_exit</item>
-    </style>
 
     <style name="AuthFormFields">
         <item name="android:layout_width">match_parent</item>

@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="vertical_card_margin">128dp</dimen>
-    <dimen name="horizontal_card_margin">16dp</dimen>
-    <dimen name="button_position">-178dp</dimen>
-    <dimen name="intro_asset_size">256dp</dimen>
-    <dimen name="card_width">@dimen/match_parent</dimen>
-    <dimen name="card_height">@dimen/match_parent</dimen>
-    <dimen name="exp_bubble_corner_radius">24dp</dimen>
-    <dimen name="exp_bubble_margin">16dp</dimen>
-
-    <dimen name="spinner_arrow_margin">0dp</dimen>
-
-    <dimen name="default_widget_border_radius">8dp</dimen>
 
     <!-- popup windows -->
-    <dimen name="popup_border_radius">7dp</dimen>
-    <dimen name="popup_window_padding">8dp</dimen>
-    <dimen name="popup_text_padding">12dp</dimen>
-    <dimen name="popup_arrow_size">16dp</dimen>
-
-    <dimen name="streak_restore_widget_border_radius">@dimen/default_widget_border_radius</dimen>
-
-    <dimen name="questions_pack_margin">16dp</dimen>
-
-    <dimen name="action_bar_icon_padding">16dp</dimen>
-    <dimen name="action_bar_icon_padding_small">10dp</dimen>
-
-    <dimen name="quiz_card_header_size">48dp</dimen>
-
-    <dimen name="description_section_width">@dimen/match_parent</dimen>
-    <dimen name="description_section_margin">24dp</dimen>
-    <dimen name="description_title_text_size">18sp</dimen>
-    <dimen name="description_description_text_size">14sp</dimen>
-    <dimen name="description_description_text_multiplier">1.1</dimen>
-
-    <dimen name="light_blue_view_border_radius">@dimen/default_widget_border_radius</dimen>
 
     <dimen name="auth_elements_width">-1px</dimen>
     <dimen name="auth_form_margin">36dp</dimen>
@@ -43,5 +10,4 @@
     <dimen name="borderless_text_button_text_size">16sp</dimen>
     
     <dimen name="placeholder_button_radius">4dp</dimen>
-    <dimen name="match_parent">@dimen/match_parent</dimen>
 </resources>

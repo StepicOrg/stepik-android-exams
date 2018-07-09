@@ -4,31 +4,11 @@
     <color name="colorPrimaryDark">#535366</color>
     <!--<color name="colorPrimaryDark">#3EA3AD</color>-->
     <color name="colorAccent">#82CC82</color>
-    <color name="colorAccentDarker">#75B875</color>
     <color name="colorAccentDisabledBlue">#aee5eb</color>
-    <color name="colorAccentDisabled">#B9B9B9</color>
-    <color name="colorWrong">#EE3853</color>
-    <color name="colorEasy">#227300</color>
-    <color name="colorCorrect">#50D2BE</color>
-    <color name="primaryBackground">#F1F1F1</color>
-    <color name="colorRadioButtonDefault">#CCCED1</color>
-    <color name="colorAnswerText">#37474E</color>
     <color name="colorGrayBackground">#D9D9D9</color>
     <color name="colorGrayText">#FF555555</color>
-    <color name="colorLightGrayText">#FF777777</color>
-    <color name="colorButtonPressed">#E0E0E0</color>
-    <color name="colorSocialButton">#9E9E9E</color>
     <color name="colorDarkGrayText">#333</color>
-    <color name="colorSeparator">#DCDCDC</color>
-    <color name="intro_asset_color">@android:color/white</color>
-    <color name="colorStroke">#E4E4E4</color>
     <color name="colorSemiTransparentWhite">#CCFFFFFF</color>
-
-    <color name="photo_view_home_indicator_color">@android:color/white</color>
-
-    <color name="colorYellow">#ffca1d</color>
-
-    <color name="light_blue_color">#1445b0ff</color>
 
     <color name="auth_form_stroke_color">#979797</color>
     <color name="auth_form_background_color">@android:color/transparent</color>

@@ -35,7 +35,6 @@ constructor(
     override fun authWithLoginPassword(login: String, password: String): Single<OAuthResponse> = authService
             .authWithLoginPassword(config.grantType, login, password)
             .doOnSuccess { saveResponse(it) }
-            .doOnError {}
 
 
     override fun createAccount(credentials: RegistrationUser): Completable =
