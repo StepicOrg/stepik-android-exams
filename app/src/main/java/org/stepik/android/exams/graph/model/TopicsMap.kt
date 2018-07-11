@@ -1,8 +1,8 @@
 package org.stepik.android.exams.graph.model
 import com.google.gson.annotations.SerializedName
-class TopicsMap (
+data class TopicsMap (
         @SerializedName("id")
-        private val id : String,
+        val id : String,
         @SerializedName("lessons")
-        private val lessons : List<Lesson>
+        val lessons : List<Lesson>
 )

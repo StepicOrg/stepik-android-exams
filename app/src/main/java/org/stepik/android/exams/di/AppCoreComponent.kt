@@ -6,6 +6,7 @@ import dagger.Component
 import org.stepik.android.exams.App
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
+import org.stepik.android.exams.ui.activity.StudyActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton
@@ -27,4 +28,6 @@ interface AppCoreComponent {
     fun inject(fragment: OnboardingFragment)
 
     fun inject(app: App)
+
+    fun inject(activity: StudyActivity)
 }

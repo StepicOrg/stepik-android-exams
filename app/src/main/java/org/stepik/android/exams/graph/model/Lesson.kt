@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class Lesson (
         @SerializedName("id")
-        private val id: Int,
+        val id: Int,
         @SerializedName("type")
-        private val type: String
+        val type: String
 )
