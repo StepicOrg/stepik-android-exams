@@ -1,19 +1,23 @@
 package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_study.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.StudyPresenter
 import org.stepik.android.exams.core.presenter.contracts.StudyView
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import javax.inject.Inject
 import javax.inject.Provider
 
 class StudyActivity : BasePresenterActivity<StudyPresenter, StudyView>(), StudyView {
     @Inject
     lateinit var studyPresenterProvider: Provider<StudyPresenter>
-    private lateinit var graph : GraphData
+    private lateinit var topicsAdapter: TopicsAdapter
+
     override fun injectComponent() {
         App.component().inject(this)
     }
@@ -21,6 +25,9 @@ class StudyActivity : BasePresenterActivity<StudyPresenter, StudyView>(), StudyV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
+        topicsAdapter = TopicsAdapter()
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = topicsAdapter
     }
 
     override fun onResume() {
@@ -28,7 +35,7 @@ class StudyActivity : BasePresenterActivity<StudyPresenter, StudyView>(), StudyV
         presenter?.getGraphData()
     }
     override fun loadData(graphData: GraphData) {
-        graph = graphData
+        topicsAdapter.updateTopics(graphData.topics)
     }
     override fun getPresenterProvider(): Provider<StudyPresenter>  = studyPresenterProvider
 

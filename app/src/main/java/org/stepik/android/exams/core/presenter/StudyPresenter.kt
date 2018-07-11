@@ -4,6 +4,7 @@ import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import org.stepik.android.exams.App
 import org.stepik.android.exams.api.auth.AuthError
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.StudyView
