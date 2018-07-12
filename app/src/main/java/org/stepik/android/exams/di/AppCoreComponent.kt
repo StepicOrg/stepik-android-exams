@@ -4,13 +4,14 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.exams.App
+import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
-import org.stepik.android.exams.ui.activity.StudyActivity
+import org.stepik.android.exams.ui.activity.ListActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton
-@Component(modules = [AppCoreModule::class, NetworkModule::class])
+@Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class])
 interface AppCoreComponent {
 
     @Component.Builder
@@ -29,5 +30,5 @@ interface AppCoreComponent {
 
     fun inject(app: App)
 
-    fun inject(activity: StudyActivity)
+    fun inject(activity: ListActivity)
 }

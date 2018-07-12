@@ -15,8 +15,15 @@ class ScreenManagerImpl
 constructor(
         private val context: Context
 ): ScreenManager {
-    override fun startStudy() {
+    override fun showCourse(id : String) {
         val intent = Intent(context, StudyActivity::class.java)
+        intent.putExtra("id", id)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        context.startActivity(intent)
+    }
+
+    override fun startStudy() {
+        val intent = Intent(context, ListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         context.startActivity(intent)
     }

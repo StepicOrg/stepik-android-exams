@@ -6,8 +6,8 @@ import kotlin.collections.ArrayList
 class Graph<T> {
     private var vertices = mutableMapOf<T, Vertex<T>?>()
     var vertexToVisit : ArrayList<T?> = ArrayList()
-    fun createVertex(id: T) {
-        vertices[id] = Vertex(id)
+    fun createVertex(id: T, title : T) {
+        vertices[id] = Vertex(id, title)
     }
 
     fun addEdge(src: T, dest: T) {
