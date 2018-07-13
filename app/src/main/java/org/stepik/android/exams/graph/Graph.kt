@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 class Graph<T> {
     private val vertices = mutableMapOf<T, Vertex<T>?>()
     private val vertexToVisit : ArrayList<T?> = ArrayList()
-    fun createVertex(id: T, title : T) {
+    fun createVertex(id: T, title : String) {
         vertices[id] = Vertex(id, title)
     }
 
