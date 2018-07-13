@@ -44,10 +44,7 @@ class ListActivity : BasePresenterActivity<ListPresenter, ListView>(), ListView 
         topicsAdapter.updateTopics(graphData.topics)
     }
     override fun getPresenterProvider(): Provider<ListPresenter>  = listPresenterProvider
-
-
-    override fun onSuccess() {
-    }
+    
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
