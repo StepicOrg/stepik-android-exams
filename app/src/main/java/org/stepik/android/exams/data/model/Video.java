@@ -3,8 +3,6 @@ package org.stepik.android.exams.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.stepik.android.exams.App;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

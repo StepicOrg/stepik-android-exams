@@ -6,8 +6,8 @@ import dagger.Component
 import org.stepik.android.exams.App
 import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
-import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.ListActivity
+import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton

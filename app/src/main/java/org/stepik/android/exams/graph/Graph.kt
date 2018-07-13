@@ -4,8 +4,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Graph<T> {
-    private var vertices = mutableMapOf<T, Vertex<T>?>()
-    var vertexToVisit : ArrayList<T?> = ArrayList()
+    private val vertices = mutableMapOf<T, Vertex<T>?>()
+    private val vertexToVisit : ArrayList<T?> = ArrayList()
     fun createVertex(id: T, title : T) {
         vertices[id] = Vertex(id, title)
     }
@@ -16,8 +16,6 @@ class Graph<T> {
         start?.neighbours?.add(end)
         end?.previous?.add(start)
     }
-
-    fun getEdges(id: T) = vertices[id]?.neighbours
 
     fun getVertex(vert: T): Vertex<T>? = vertices[vert]
 

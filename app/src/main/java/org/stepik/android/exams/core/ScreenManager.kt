@@ -9,5 +9,5 @@ interface ScreenManager {
     fun showEmptyAuthScreen(context: Context)
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
-    fun showCourse(id : String)
+    fun showCourse(id : String, activity: Activity)
 }

@@ -1,6 +1,5 @@
 package org.stepik.android.exams.di.network
 
-import org.stepik.android.exams.api.graph.BASE_URL
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Binds
@@ -8,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.stepik.android.exams.api.StepikRestService
-import org.stepik.android.exams.api.auth.EmptyAuthService
+import org.stepik.android.exams.api.graph.BASE_URL
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
