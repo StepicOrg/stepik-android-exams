@@ -2,15 +2,16 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.api.graph.GraphService
-import org.stepik.android.exams.core.presenter.contracts.ListView
+import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import javax.inject.Inject
 
-class ListPresenter
+class TopicsListPresenter
 @Inject
 constructor(
         private val graph: Graph<String>,
@@ -19,7 +20,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-) : PresenterBase<ListView>() {
+) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
     fun getGraphData() {
@@ -27,10 +28,16 @@ constructor(
                  .getPosts()
                  .subscribeOn(backgroundScheduler)
                  .observeOn(mainScheduler)
-                 .subscribe { data ->
+                 .subscribe ({ data ->
                      addDataToGraph(data)
-                     view?.loadData(data)
-                 })
+                     view?.showGraphData(data)
+                 }, {
+                     onError(Errors.ConnectionProblem)
+                 }))
+    }
+
+    private fun onError(error : Errors){
+        view?.onError(error)
     }
     private fun addDataToGraph(graphData: GraphData){
         for (topic in graphData.topics) {
@@ -39,9 +46,10 @@ constructor(
                 graph.addEdge(topic.id, topic.requiredFor)
         }
         for (maps in graphData.topicsMap){
-            graph.getVertex(maps.id)?.lessons?.addAll(maps.lessons)
+            graph[maps.id]?.lessons?.addAll(maps.lessons)
         }
     }
+
     override fun destroy() {
         compositeDisposable.clear()
     }

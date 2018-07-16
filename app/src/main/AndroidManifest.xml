@@ -10,8 +10,8 @@
         android:supportsRtl="true"
         android:allowBackup="false"
         android:theme="@style/AppTheme">
-        <activity android:theme="@style/AppTheme.NoActionBar.Splash"
-                  android:name=".ui.activity.ListActivity" />
+        <activity android:theme="@style/AppTheme.NoActionBar"
+                  android:name=".ui.activity.TopicsListActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.LoginActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"

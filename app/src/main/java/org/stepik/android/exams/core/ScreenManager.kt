@@ -5,9 +5,9 @@ import android.content.Context
 
 interface ScreenManager {
     fun showOnboardingScreen()
-    fun startStudy()
+    fun showTopicsList()
     fun showEmptyAuthScreen(context: Context)
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
-    fun showCourse(id : String, activity: Activity)
+    fun showCourse(id : String, context: Context)
 }

@@ -16,11 +16,6 @@ class StudyActivity : AppCompatActivity(){
     }
 
     private fun getCourseInfo(){
-        var topic = graph.getVertex(intent.getStringExtra("id"))
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if ((requestCode == ListActivity.REQUEST_CODE) && resultCode == Activity.RESULT_OK) {
-            finish()
-        }
+        var topic = graph[(intent.getStringExtra("id"))]
     }
 }

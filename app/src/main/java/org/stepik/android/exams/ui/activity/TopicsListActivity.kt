@@ -1,27 +1,28 @@
 package org.stepik.android.exams.ui.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_topics_list.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
+import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
-import org.stepik.android.exams.core.presenter.ListPresenter
-import org.stepik.android.exams.core.presenter.contracts.ListView
+import org.stepik.android.exams.core.presenter.TopicsListPresenter
+import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
+import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ListActivity : BasePresenterActivity<ListPresenter, ListView>(), ListView {
-    companion object{
-    const val REQUEST_CODE = 344
-}
+class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsListView>(), TopicsListView {
+    companion object {
+        const val REQUEST_CODE = 344
+    }
     @Inject
-    lateinit var listPresenterProvider: Provider<ListPresenter>
+    lateinit var topicsListPresenterProvider: Provider<TopicsListPresenter>
 
     @Inject
     lateinit var screenManager: ScreenManager
@@ -34,16 +35,16 @@ class ListActivity : BasePresenterActivity<ListPresenter, ListView>(), ListView 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_topics_list)
         topicsAdapter = TopicsAdapter(this, screenManager)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = topicsAdapter
     }
 
-    override fun loadData(graphData: GraphData) {
+    override fun showGraphData(graphData: GraphData) {
         topicsAdapter.updateTopics(graphData.topics)
     }
-    override fun getPresenterProvider(): Provider<ListPresenter>  = listPresenterProvider
+    override fun getPresenterProvider(): Provider<TopicsListPresenter>  = topicsListPresenterProvider
     
     override fun onStart() {
         super.onStart()
@@ -54,5 +55,13 @@ class ListActivity : BasePresenterActivity<ListPresenter, ListView>(), ListView 
     override fun onStop() {
         presenter?.detachView(this)
         super.onStop()
+    }
+
+    override fun onError(error: Errors) {
+        @StringRes val messageResId = when (error) {
+            Errors.ConnectionProblem     -> R.string.auth_error_connectivity
+        }
+        errorText.setText(messageResId)
+        errorText.changeVisibillity(true)
     }
 }

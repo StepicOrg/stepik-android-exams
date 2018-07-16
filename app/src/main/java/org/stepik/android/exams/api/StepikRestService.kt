@@ -8,12 +8,12 @@ import retrofit2.http.Query
 
 interface StepikRestService {
     @GET("api/steps")
-    fun getStepsReactive(
-            @Query("ids[]") steps: LongArray)
-            : Single<StepResponse>
+    fun getSteps(
+            @Query("ids[]") steps: LongArray
+    ): Single<StepResponse>
 
     @GET("api/lessons")
-    fun getLessonsRx(
-            @Query("ids[]") lessons: LongArray)
-            : Single<LessonStepicResponse>
+    fun getLessons(
+            @Query("ids[]") lessons: LongArray
+    ): Single<LessonStepicResponse>
 }

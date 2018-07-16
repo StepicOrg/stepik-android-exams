@@ -7,8 +7,8 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.stepik.android.exams.api.StepikRestService
-import org.stepik.android.exams.api.graph.BASE_URL
 import org.stepik.android.exams.api.graph.GraphService
+import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.preference.AuthPreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.AppSingleton
@@ -31,19 +31,19 @@ abstract class NetworkModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideGraphService() : GraphService{
+        internal fun provideGraphService(config: Config) : GraphService{
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), BASE_URL)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.hostJsonData)
             return retrofit.create(GraphService::class.java)
         }
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideStepikService() : StepikRestService{
+        internal fun provideStepikService(config: Config) : StepikRestService{
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), BASE_URL)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.hostJsonData)
             return retrofit.create(StepikRestService::class.java)
         }
     }
