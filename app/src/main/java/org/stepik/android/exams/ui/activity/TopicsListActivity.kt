@@ -18,9 +18,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsListView>(), TopicsListView {
-    companion object {
-        const val REQUEST_CODE = 344
-    }
+
     @Inject
     lateinit var topicsListPresenterProvider: Provider<TopicsListPresenter>
 
