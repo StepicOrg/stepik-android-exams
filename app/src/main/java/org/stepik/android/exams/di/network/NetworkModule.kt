@@ -43,7 +43,7 @@ abstract class NetworkModule {
         internal fun provideStepikService(config: Config) : StepikRestService{
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.hostJsonData)
+            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
             return retrofit.create(StepikRestService::class.java)
         }
     }

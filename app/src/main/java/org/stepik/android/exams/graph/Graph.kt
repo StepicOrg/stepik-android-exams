@@ -22,7 +22,7 @@ class Graph<T> {
         val queue: Queue<T> = ArrayDeque()
         visited.add(vertex)
         queue.add(vertex)
-        while (queue.size > 0) {
+        while (queue.isNotEmpty()) {
             vertices[queue.poll()]?.previous?.forEach {
                 val vertNext: T = it.id
                 if (!visited.contains(vertNext)) {

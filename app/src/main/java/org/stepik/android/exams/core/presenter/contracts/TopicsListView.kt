@@ -6,4 +6,5 @@ import org.stepik.android.exams.graph.model.GraphData
 interface TopicsListView {
     fun showGraphData(graphData: GraphData)
     fun onError(error : Errors)
+    fun hideRefreshView()
 }

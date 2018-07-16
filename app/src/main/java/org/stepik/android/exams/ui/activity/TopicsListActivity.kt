@@ -18,7 +18,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsListView>(), TopicsListView {
-
     @Inject
     lateinit var topicsListPresenterProvider: Provider<TopicsListPresenter>
 
@@ -35,8 +34,11 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_topics_list)
         topicsAdapter = TopicsAdapter(this, screenManager)
-        recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = topicsAdapter
+        recycler.layoutManager = LinearLayoutManager(this)
+        swipeRefresh.setOnRefreshListener {
+            presenter?.getGraphData()
+        }
     }
 
     override fun showGraphData(graphData: GraphData) {
@@ -47,11 +49,10 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
-        presenter?.getGraphData()
     }
 
     override fun onStop() {
-        presenter?.detachView(this)
+          presenter?.detachView(this)
         super.onStop()
     }
 
@@ -61,5 +62,9 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         }
         errorText.setText(messageResId)
         errorText.changeVisibillity(true)
+    }
+
+    override fun hideRefreshView() {
+        swipeRefresh.isRefreshing = false
     }
 }
