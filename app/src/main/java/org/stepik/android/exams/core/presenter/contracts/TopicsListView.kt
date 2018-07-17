@@ -7,4 +7,13 @@ interface TopicsListView {
     fun showGraphData(graphData: GraphData)
     fun onError(error: Errors)
     fun hideRefreshView()
+    fun showRefreshView()
+    fun setState(state: State)
+
+    sealed class State {
+        object Idle : State()
+        object Loading : State()
+        object Success : State()
+        object NetworkError : State()
+    }
 }
