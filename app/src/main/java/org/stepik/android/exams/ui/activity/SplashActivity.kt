@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var disposable : Disposable
+    private lateinit var disposable: Disposable
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
@@ -45,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
                 .observeOn(mainScheduler)
                 .subscribe {
                     if (it.first != 0L && it.second) {
-                        screenManager.startStudy()
+                        screenManager.showTopicsList()
                     } else {
                         screenManager.showOnboardingScreen()
                     }

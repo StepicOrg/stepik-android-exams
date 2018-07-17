@@ -26,7 +26,7 @@ constructor(
         private val cookieAuthService: OAuthService,
         private val config: Config,
         private val authPreferences: AuthPreferences
-): AuthRepository {
+) : AuthRepository {
 
     private fun saveResponse(response: OAuthResponse) = authLock.withLock {
         authPreferences.oAuthResponse = response

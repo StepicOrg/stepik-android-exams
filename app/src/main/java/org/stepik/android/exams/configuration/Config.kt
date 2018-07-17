@@ -1,6 +1,7 @@
 package org.stepik.android.exams.configuration
 
 interface Config {
+    val hostJsonData: String
     val host: String
     val ratingHost: String
     val oAuthClientId: String

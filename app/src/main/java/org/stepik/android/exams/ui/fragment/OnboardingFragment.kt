@@ -51,10 +51,10 @@ class OnboardingFragment : Fragment(), AuthView {
         disposable.add(Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
                 .observeOn(mainScheduler)
                 .subscribe {
-                    if(it == 0L) {
+                    if (it == 0L) {
                         sharedPreferenceHelper.isNotFirstTime = true
-                        createMockAccount() }
-                    else
+                        createMockAccount()
+                    } else
                         onSuccess()
                 })
     }
@@ -65,16 +65,18 @@ class OnboardingFragment : Fragment(), AuthView {
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe { isFake ->
-                        screenManager.startStudy()
+                        screenManager.showTopicsList()
                         if (isFake) {
                             screenManager.showEmptyAuthScreen(context)
                         }
                     })
         }
     }
+
     private fun createMockAccount() {
         presenter.authFakeUser()
     }
+
     override fun onError(authError: AuthError) {
     }
 

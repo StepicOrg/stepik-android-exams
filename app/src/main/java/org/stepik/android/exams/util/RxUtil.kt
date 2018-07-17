@@ -17,8 +17,8 @@ inline fun skipUIFrame(crossinline action: () -> Unit, delay: Long = 0) {
     Completable
             .timer(delay, TimeUnit.MICROSECONDS)
             .observeOn(AndroidSchedulers.mainThread()).subscribe {
-        action()
-    }
+                action()
+            }
 }
 
 inline fun <T, R> Observable<T>.mapNotNull(crossinline f: (T) -> R?): Observable<R> = flatMap {

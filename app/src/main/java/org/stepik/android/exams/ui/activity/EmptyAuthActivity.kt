@@ -12,7 +12,7 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.util.fromHtmlCompat
 import javax.inject.Inject
 
-class EmptyAuthActivity: AppCompatActivity() {
+class EmptyAuthActivity : AppCompatActivity() {
     @Inject
     lateinit var screenManager: ScreenManager
 
@@ -37,5 +37,6 @@ class EmptyAuthActivity: AppCompatActivity() {
             finish()
         }
     }
-    private fun startStudy() = screenManager.startStudy()
+
+    private fun startStudy() = screenManager.showTopicsList()
 }
