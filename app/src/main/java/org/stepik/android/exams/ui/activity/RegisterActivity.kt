@@ -16,7 +16,7 @@ import org.stepik.android.exams.util.*
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView{
+class RegisterActivity : BasePresenterActivity<RegisterPresenter, RegisterView>(), RegisterView {
 
     companion object {
         private const val PROGRESS = "register_progress"
@@ -44,7 +44,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         termsPrivacyRegisterTextView.text = fromHtmlCompat(getString(R.string.terms_message_register)).stripUnderlinesFromLinks()
 
         val formWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
@@ -171,6 +171,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         presenter?.detachView(this)
         super.onStop()
     }
+
     private fun startStudy() = screenManager.showTopicsList()
 
     override fun getPresenterProvider(): Provider<RegisterPresenter> = registerPresenterProvider

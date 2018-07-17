@@ -2,7 +2,6 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -23,15 +22,21 @@ constructor(
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
-    override fun onFirstViewAttach() = getGraphData()
+    private var graphData: GraphData
 
-    private var graphData : GraphData
+    private var viewState: TopicsListView.State = TopicsListView.State.Idle
+        set(value) {
+            field = value
+            view?.setState(value)
+        }
 
     init {
         graphData = GraphData()
+        getGraphData()
     }
 
     fun getGraphData() {
+        viewState = TopicsListView.State.Loading
         compositeDisposable.add(graphService
                 .getPosts()
                 .subscribeOn(backgroundScheduler)
@@ -40,30 +45,28 @@ constructor(
                     graphData = data
                     addDataToGraph(graphData)
                     view?.showGraphData(graphData)
-                    view?.hideRefreshView()
+                    viewState = TopicsListView.State.Success
                 }, {
-                    onError(Errors.ConnectionProblem)
+                    viewState = TopicsListView.State.NetworkError
                 }))
     }
-    private fun onError(error : Errors){
-        view?.onError(error)
-    }
 
-    private fun addDataToGraph(graphData: GraphData){
+    private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics) {
             graph.createVertex(topic.id, topic.title)
             if (topic.requiredFor != null)
                 graph.addEdge(topic.id, topic.requiredFor)
         }
-        for (maps in graphData.topicsMap){
+        for (maps in graphData.topicsMap) {
             graph[maps.id]?.lessons?.addAll(maps.lessons)
         }
     }
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
+        view.setState(viewState)
         if (graphData.topics.isNotEmpty())
-        view.showGraphData(graphData)
+            view.showGraphData(graphData)
     }
 
     override fun destroy() {

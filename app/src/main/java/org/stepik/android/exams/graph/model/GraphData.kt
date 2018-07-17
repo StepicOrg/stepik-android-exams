@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class GraphData(
         @SerializedName("goals")
-        val goals : List<Goal> = listOf(),
+        val goals: List<Goal> = listOf(),
         @SerializedName("topics")
-        val topics : List<Topic> = listOf(),
+        val topics: List<Topic> = listOf(),
         @SerializedName("topics-map")
-        val topicsMap : List<TopicsMap> = listOf()
+        val topicsMap: List<TopicsMap> = listOf()
 )

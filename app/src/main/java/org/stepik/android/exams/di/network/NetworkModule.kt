@@ -28,19 +28,21 @@ abstract class NetworkModule {
         @JvmStatic
         internal fun provideModelGson(): Gson = GsonBuilder()
                 .create()
+
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideGraphService(config: Config) : GraphService{
+        internal fun provideGraphService(config: Config): GraphService {
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.hostJsonData)
             return retrofit.create(GraphService::class.java)
         }
+
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideStepikService(config: Config) : StepikRestService{
+        internal fun provideStepikService(config: Config): StepikRestService {
             val okHttpBuilder = OkHttpClient.Builder()
             okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
             val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)

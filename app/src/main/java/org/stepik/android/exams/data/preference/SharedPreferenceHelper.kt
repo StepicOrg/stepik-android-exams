@@ -17,7 +17,7 @@ import javax.inject.Inject
 @AppSingleton
 class SharedPreferenceHelper
 @Inject
-constructor(context: Context): SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
+constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, ProfilePreferences {
     override val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val gson = Gson()
 
@@ -66,7 +66,7 @@ constructor(context: Context): SharedPreferenceProvider, AuthPreferences, Profil
             saveString(FAKE_USER, json)
         }
 
-    var isNotFirstTime:                  Boolean by preference(NOT_FIRST_TIME)
+    var isNotFirstTime: Boolean by preference(NOT_FIRST_TIME)
 
     fun removeProfile() {
         remove(PROFILE)

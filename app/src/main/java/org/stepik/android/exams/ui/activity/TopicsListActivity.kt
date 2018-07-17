@@ -44,27 +44,58 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
     override fun showGraphData(graphData: GraphData) {
         topicsAdapter.updateTopics(graphData.topics)
     }
-    override fun getPresenterProvider(): Provider<TopicsListPresenter>  = topicsListPresenterProvider
-    
+
+    override fun getPresenterProvider(): Provider<TopicsListPresenter> = topicsListPresenterProvider
+
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
     }
 
     override fun onStop() {
-          presenter?.detachView(this)
+        presenter?.detachView(this)
         super.onStop()
+    }
+
+    override fun setState(state: TopicsListView.State) = when (state) {
+        is TopicsListView.State.Idle -> {
+        }
+
+        is TopicsListView.State.Loading ->
+            showRefreshView()
+
+        is TopicsListView.State.NetworkError -> {
+            hideRefreshView()
+            onError(Errors.ConnectionProblem)
+        }
+
+        is TopicsListView.State.Success -> {
+            hideRefreshView()
+            hideErrorMessage()
+        }
     }
 
     override fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
-            Errors.ConnectionProblem     -> R.string.auth_error_connectivity
+            Errors.ConnectionProblem -> R.string.auth_error_connectivity
         }
-        errorText.setText(messageResId)
-        errorText.changeVisibillity(true)
+        showErrorMessage(messageResId)
+    }
+
+    override fun showRefreshView() {
+        swipeRefresh.isRefreshing = true
     }
 
     override fun hideRefreshView() {
         swipeRefresh.isRefreshing = false
+    }
+
+    override fun showErrorMessage(messageResId: Int) {
+        errorText.setText(messageResId)
+        errorText.changeVisibillity(true)
+    }
+
+    override fun hideErrorMessage() {
+        errorText.changeVisibillity(false)
     }
 }

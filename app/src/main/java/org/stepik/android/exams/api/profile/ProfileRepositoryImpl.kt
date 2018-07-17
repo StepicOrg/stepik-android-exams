@@ -16,16 +16,18 @@ class ProfileRepositoryImpl
 @Inject
 constructor(
         private val profileService: ProfileService
-): ProfileRepository {
+) : ProfileRepository {
 
     override fun fetchProfile(): Single<Profile> =
             profileService.profile.map { it.profile!! }
 
     override fun fetchProfileWithEmailAddresses(): Single<Profile> =
-            fetchProfile().flatMap { profile -> profileService.getEmailAddresses(profile.emailAddresses).map {
-                profile.emailAddressesResolved = it.emailAddresses!!
-                profile
-            }}
+            fetchProfile().flatMap { profile ->
+                profileService.getEmailAddresses(profile.emailAddresses).map {
+                    profile.emailAddressesResolved = it.emailAddresses!!
+                    profile
+                }
+            }
 
     override fun updateProfile(profile: Profile): Completable =
             profileService.setProfile(profile.id, ProfileRequest(profile))

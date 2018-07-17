@@ -11,11 +11,11 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
 
-class TopicsAdapter(var context : Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
+class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     private var topics: List<Topic> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.topics_item, parent, false), topics, screenManager, context)
+            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.topics_item, parent, false))
 
 
     override fun getItemCount() = topics.size
@@ -30,14 +30,16 @@ class TopicsAdapter(var context : Activity, var screenManager: ScreenManager) : 
         notifyDataSetChanged()
     }
 
-    class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+    inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         val topicsText: TextView = root.topicsText
-        constructor(root: View, topic: List<Topic>, screenManager: ScreenManager, context: Activity) : this(root) {
-            topicsText.setOnClickListener{
-                screenManager.showCourse(topic[adapterPosition].id, context)
+
+        init {
+            topicsText.setOnClickListener {
+                screenManager.showCourse(topics[adapterPosition].id, context)
             }
         }
-        fun bind(topic: Topic){
+
+        fun bind(topic: Topic) {
             topicsText.text = topic.title
         }
     }

@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var disposable : Disposable
+    private lateinit var disposable: Disposable
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper

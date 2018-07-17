@@ -1,4 +1,5 @@
 package org.stepik.android.exams.api.auth;
+
 import org.stepik.android.exams.api.UserRegistrationRequest;
 
 import io.reactivex.Completable;

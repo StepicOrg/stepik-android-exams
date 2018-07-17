@@ -143,9 +143,9 @@ class LoginActivity : BasePresenterActivity<AuthPresenter, AuthView>(), AuthView
 
     override fun onError(authError: AuthError) {
         @StringRes val messageResId = when (authError) {
-            AuthError.ConnectionProblem     -> R.string.auth_error_connectivity
-            AuthError.EmailPasswordInvalid  -> R.string.auth_error_email_password_invalid
-            AuthError.TooManyAttempts       -> R.string.auth_error_too_many_attempts
+            AuthError.ConnectionProblem -> R.string.auth_error_connectivity
+            AuthError.EmailPasswordInvalid -> R.string.auth_error_email_password_invalid
+            AuthError.TooManyAttempts -> R.string.auth_error_too_many_attempts
         }
 
         if (authError == AuthError.EmailPasswordInvalid) {

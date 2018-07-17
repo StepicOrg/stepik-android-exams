@@ -2,7 +2,7 @@ package org.stepik.android.exams.graph.model
 
 import com.google.gson.annotations.SerializedName
 
-class Lesson (
+class Lesson(
         @SerializedName("id")
         val id: Int,
         @SerializedName("type")

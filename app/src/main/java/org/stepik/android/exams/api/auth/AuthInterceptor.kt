@@ -34,7 +34,7 @@ constructor(
         private val config: Config,
         private val authPreferences: AuthPreferences,
         private val screenManager: ScreenManager
-): Interceptor {
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.addUserAgent(userAgent)
@@ -66,7 +66,7 @@ constructor(
 
                     if (response == null || !oAuthResponse.isSuccessful) {
                         if (oAuthResponse.code() == 401) {
-                                screenManager.showOnboardingScreen()
+                            screenManager.showOnboardingScreen()
                         }
                         return chain.proceed(request)
                     }

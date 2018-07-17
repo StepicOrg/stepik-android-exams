@@ -1,7 +1,6 @@
 package org.stepik.android.exams.graph
 
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Graph<T> {
     private val vertices = mutableMapOf<T, Vertex<T>>()
@@ -15,7 +14,8 @@ class Graph<T> {
         start.neighbours.add(end)
         end.previous.add(start)
     }
-    operator fun get(vert : T) = vertices[vert]
+
+    operator fun get(vert: T) = vertices[vert]
 
     fun bfs(vertex: T): List<T> {
         val visited = mutableSetOf<T>()

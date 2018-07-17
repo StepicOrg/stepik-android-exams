@@ -7,21 +7,12 @@ abstract class PresenterBase<V> : Presenter<V> {
     var view: V? = null
         private set
 
-    private var mFirstLaunch = true
-
-    protected open fun onFirstViewAttach() {}
-
     @CallSuper
     override fun attachView(view: V) {
         val previousView = this.view
 
         if (previousView != null) {
             throw IllegalStateException("Previous view is not detached! previousView = " + previousView)
-        }
-        if (mFirstLaunch) {
-            mFirstLaunch = false
-
-            onFirstViewAttach()
         }
 
         this.view = view

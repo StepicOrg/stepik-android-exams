@@ -14,6 +14,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
     companion object {
         private const val LOADER_ID = 127
     }
+
     protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,7 @@ abstract class BasePresenterActivity<P : Presenter<V>, in V> : AppCompatActivity
             ProgressDialogFragment.newInstance(title, msg).show(supportFragmentManager, tag)
         }
     }
+
     protected fun hideProgressDialogFragment(tag: String) {
         val dialog = supportFragmentManager.findFragmentByTag(tag)
         (dialog as? DialogFragment)?.dismiss()

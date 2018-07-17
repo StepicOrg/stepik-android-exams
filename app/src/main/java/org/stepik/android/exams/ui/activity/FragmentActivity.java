@@ -31,7 +31,8 @@ public abstract class FragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();
 
-    protected void injectComponent() {}
+    protected void injectComponent() {
+    }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {

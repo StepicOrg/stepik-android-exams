@@ -1,4 +1,5 @@
 package org.stepik.android.exams.core.presenter
+
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -28,7 +29,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): PresenterBase<AuthView>() {
+) : PresenterBase<AuthView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -97,6 +98,7 @@ constructor(
                     }
                 }
             }
+
     private fun onLoginRx():
             Completable = profileRepository.fetchProfileWithEmailAddresses()
             .doOnSuccess {

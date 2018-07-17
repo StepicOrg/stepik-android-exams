@@ -5,7 +5,7 @@ import android.support.v4.content.Loader
 import org.stepik.android.exams.core.presenter.Presenter
 import javax.inject.Provider
 
-class PresenterLoader<P: Presenter<*>>(
+class PresenterLoader<P : Presenter<*>>(
         appContext: Context,
         private val presenterProvider: Provider<P>
 ) : Loader<P>(appContext) {
