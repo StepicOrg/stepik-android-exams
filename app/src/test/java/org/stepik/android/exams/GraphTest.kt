@@ -5,7 +5,8 @@ import org.junit.Test
 import org.stepik.android.exams.graph.Graph
 
 class GraphTest {
-    val graph = Graph<Int>()
+    private val graph = Graph<Int>()
+
     @Before
     fun setUp() {
         graph.createVertex(1, "")
@@ -28,11 +29,9 @@ class GraphTest {
         graph.addEdge(6, 7)
         graph.addEdge(6, 8)
     }
+
     @Test
     fun BFSTest(){
-        val vertexToVisit = graph.BFS(8)
-        var output = String()
-        vertexToVisit.forEach {output = output.plus(it.toString()).plus("\n")}
-        Assert.assertEquals(output, "8\n6\n5\n4\n1\n3\n2\n")
+        Assert.assertEquals(listOf(8, 6, 5, 4, 1, 3, 2), graph.bfs(8))
     }
 }

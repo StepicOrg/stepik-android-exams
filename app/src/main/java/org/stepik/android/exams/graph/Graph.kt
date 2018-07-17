@@ -4,38 +4,33 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Graph<T> {
-    private val vertices = mutableMapOf<T, Vertex<T>?>()
-    private val vertexToVisit : ArrayList<T?> = ArrayList()
-    fun createVertex(id: T, title : String) {
+    private val vertices = mutableMapOf<T, Vertex<T>>()
+    fun createVertex(id: T, title: String) {
         vertices[id] = Vertex(id, title)
     }
 
     fun addEdge(src: T, dest: T) {
-        val start = vertices[src]
-        val end = vertices[dest]
-        start?.neighbours?.add(end)
-        end?.previous?.add(start)
+        val start = vertices[src] ?: throw IllegalArgumentException("No such vertex with id $src")
+        val end = vertices[dest] ?: throw IllegalArgumentException("No such vertex with id $src")
+        start.neighbours.add(end)
+        end.previous.add(start)
     }
+    operator fun get(vert : T) = vertices[vert]
 
-    fun getVertex(vert: T): Vertex<T>? = vertices[vert]
-
-    fun BFS(vert: T?) : ArrayList<T?>{
-        val visited = mutableMapOf<T?, Boolean>()
-        val queue: LinkedList<T?> = LinkedList()
-        visited[vert] = true
-        queue.add(vert)
-        while (queue.size > 0) {
-            val vertKey = queue.poll()
-            vertexToVisit.add(vertKey)
-            vertices[vertKey]?.previous?.listIterator()?.forEach {
-                val vertNext = it?.id
-                if (visited[vertNext] == null)
-                {
-                    visited[vertNext] = true
+    fun bfs(vertex: T): List<T> {
+        val visited = mutableSetOf<T>()
+        val queue: Queue<T> = ArrayDeque()
+        visited.add(vertex)
+        queue.add(vertex)
+        while (queue.isNotEmpty()) {
+            vertices[queue.poll()]?.previous?.forEach {
+                val vertNext: T = it.id
+                if (!visited.contains(vertNext)) {
+                    visited.add(vertNext)
                     queue.add(vertNext)
                 }
             }
         }
-        return vertexToVisit
+        return visited.toList()
     }
 }

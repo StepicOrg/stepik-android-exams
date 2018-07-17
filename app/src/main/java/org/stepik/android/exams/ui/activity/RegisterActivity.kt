@@ -171,7 +171,7 @@ class RegisterActivity: BasePresenterActivity<RegisterPresenter, RegisterView>()
         presenter?.detachView(this)
         super.onStop()
     }
-    private fun startStudy() = screenManager.startStudy()
+    private fun startStudy() = screenManager.showTopicsList()
 
     override fun getPresenterProvider(): Provider<RegisterPresenter> = registerPresenterProvider
 }

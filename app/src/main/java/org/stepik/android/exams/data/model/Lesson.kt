@@ -32,6 +32,7 @@ data class Lesson (
     @SerializedName("time_to_complete")
     var timeToComplete: Long = 0
 ) {
+    var stepsList : List<Step> = listOf()
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

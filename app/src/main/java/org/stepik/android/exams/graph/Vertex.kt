@@ -5,7 +5,7 @@ import java.util.*
 
 
 data class Vertex<T>(val id: T, val title : String){
-    var neighbours: LinkedList<Vertex<T>?> = LinkedList()
-    var previous: LinkedList<Vertex<T>?> = LinkedList()
-    var lessons : LinkedList<Lesson> = LinkedList()
+    val neighbours: MutableList<Vertex<T>> = mutableListOf()
+    val previous: MutableList<Vertex<T>> = mutableListOf()
+    val lessons : MutableList<Lesson> = mutableListOf()
 }
