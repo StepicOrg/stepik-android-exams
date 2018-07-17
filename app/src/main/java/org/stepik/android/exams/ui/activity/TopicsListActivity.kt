@@ -64,19 +64,22 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         is TopicsListView.State.Loading ->
             showRefreshView()
 
-        is TopicsListView.State.NetworkError ->
-            onError(Errors.ConnectionProblem)
-
-        is TopicsListView.State.Success ->
+        is TopicsListView.State.NetworkError -> {
             hideRefreshView()
+            onError(Errors.ConnectionProblem)
+        }
+
+        is TopicsListView.State.Success -> {
+            hideRefreshView()
+            hideErrorMessage()
+        }
     }
 
     override fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
             Errors.ConnectionProblem -> R.string.auth_error_connectivity
         }
-        errorText.setText(messageResId)
-        errorText.changeVisibillity(true)
+        showErrorMessage(messageResId)
     }
 
     override fun showRefreshView() {
@@ -85,5 +88,14 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
 
     override fun hideRefreshView() {
         swipeRefresh.isRefreshing = false
+    }
+
+    override fun showErrorMessage(messageResId: Int) {
+        errorText.setText(messageResId)
+        errorText.changeVisibillity(true)
+    }
+
+    override fun hideErrorMessage() {
+        errorText.changeVisibillity(false)
     }
 }

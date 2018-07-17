@@ -8,6 +8,8 @@ interface TopicsListView {
     fun onError(error: Errors)
     fun hideRefreshView()
     fun showRefreshView()
+    fun showErrorMessage(messageResId: Int)
+    fun hideErrorMessage()
     fun setState(state: State)
 
     sealed class State {
