@@ -75,27 +75,27 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         }
     }
 
-    override fun onError(error: Errors) {
+    private fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
             Errors.ConnectionProblem -> R.string.auth_error_connectivity
         }
         showErrorMessage(messageResId)
     }
 
-    override fun showRefreshView() {
+    private fun showRefreshView() {
         swipeRefresh.isRefreshing = true
     }
 
-    override fun hideRefreshView() {
+    private fun hideRefreshView() {
         swipeRefresh.isRefreshing = false
     }
 
-    override fun showErrorMessage(messageResId: Int) {
+    private fun showErrorMessage(messageResId: Int) {
         errorText.setText(messageResId)
         errorText.changeVisibillity(true)
     }
 
-    override fun hideErrorMessage() {
+    private fun hideErrorMessage() {
         errorText.changeVisibillity(false)
     }
 }
