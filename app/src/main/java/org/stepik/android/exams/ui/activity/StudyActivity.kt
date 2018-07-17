@@ -1,7 +1,6 @@
 package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
