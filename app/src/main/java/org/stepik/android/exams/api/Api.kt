@@ -1,4 +1,5 @@
 package org.stepik.android.exams.api
+
 import io.reactivex.Completable
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -42,7 +43,8 @@ constructor(
         val interceptor = Interceptor { chain ->
             var newRequest = chain.addUserAgent(userAgent)
 
-            val cookies = cookieHelper.getCookiesForBaseUrl() ?: return@Interceptor chain.proceed(newRequest)
+            val cookies = cookieHelper.getCookiesForBaseUrl()
+                    ?: return@Interceptor chain.proceed(newRequest)
             var csrftoken: String? = null
             var sessionId: String? = null
             for (item in cookies) {

@@ -5,7 +5,7 @@ import org.stepik.android.exams.data.model.Dataset
 import org.stepik.android.exams.data.model.DatasetWrapper
 import java.lang.reflect.Type
 
-class DatasetWrapperDeserializer: JsonDeserializer<DatasetWrapper> {
+class DatasetWrapperDeserializer : JsonDeserializer<DatasetWrapper> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): DatasetWrapper {
         return if (json !is JsonObject) {

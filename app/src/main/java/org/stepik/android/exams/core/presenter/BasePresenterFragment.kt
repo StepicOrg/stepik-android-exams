@@ -12,6 +12,7 @@ abstract class BasePresenterFragment<P : Presenter<V>, in V> : Fragment() {
     companion object {
         private const val LOADER_ID = 127
     }
+
     protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -12,6 +12,7 @@ abstract class BasePresenterDialogFragment<P : Presenter<V>, in V> : DialogFragm
     companion object {
         private const val LOADER_ID = 127
     }
+
     protected var presenter: P? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

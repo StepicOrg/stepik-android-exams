@@ -8,7 +8,7 @@ import org.stepik.android.exams.graph.Graph
 
 
 @Module
-abstract class GraphModule{
+abstract class GraphModule {
     @Module
     companion object {
         @Provides

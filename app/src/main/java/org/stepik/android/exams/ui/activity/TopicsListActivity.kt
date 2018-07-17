@@ -44,21 +44,22 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
     override fun showGraphData(graphData: GraphData) {
         topicsAdapter.updateTopics(graphData.topics)
     }
-    override fun getPresenterProvider(): Provider<TopicsListPresenter>  = topicsListPresenterProvider
-    
+
+    override fun getPresenterProvider(): Provider<TopicsListPresenter> = topicsListPresenterProvider
+
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
     }
 
     override fun onStop() {
-          presenter?.detachView(this)
+        presenter?.detachView(this)
         super.onStop()
     }
 
     override fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
-            Errors.ConnectionProblem     -> R.string.auth_error_connectivity
+            Errors.ConnectionProblem -> R.string.auth_error_connectivity
         }
         errorText.setText(messageResId)
         errorText.changeVisibillity(true)

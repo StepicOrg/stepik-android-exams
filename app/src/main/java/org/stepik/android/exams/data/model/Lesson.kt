@@ -4,33 +4,33 @@ package org.stepik.android.exams.data.model
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class Lesson (
-    var id: Long = 0,
-    var steps: LongArray = longArrayOf(),
-    var tags: IntArray? = null,
-    var playlists: Array<String>? = null,
-    var is_featured: Boolean = false,
-    var is_prime: Boolean = false,
-    var progress: String? = null,
-    var owner: Int = 0,
-    var subscriptions: Array<String>? = null,
-    var viewed_by: Int = 0,
-    var passed_by: Int = 0,
-    var dependencies: Array<String>? = null,
-    var followers: Array<String>? = null,
-    var language: String? = null,
-    var is_public: Boolean = false,
-    var title: String? = null,
-    var slug: String? = null,
-    var create_date: String? = null,
-    var update_date: String? = null,
-    var learners_group: String? = null,
-    var teacher_group: String? = null,
-    var is_cached: Boolean = false,
-    var is_loading: Boolean = false,
-    var cover_url: String? = null,
-    @SerializedName("time_to_complete")
-    var timeToComplete: Long = 0
+data class Lesson(
+        var id: Long = 0,
+        var steps: LongArray = longArrayOf(),
+        var tags: IntArray? = null,
+        var playlists: Array<String>? = null,
+        var is_featured: Boolean = false,
+        var is_prime: Boolean = false,
+        var progress: String? = null,
+        var owner: Int = 0,
+        var subscriptions: Array<String>? = null,
+        var viewed_by: Int = 0,
+        var passed_by: Int = 0,
+        var dependencies: Array<String>? = null,
+        var followers: Array<String>? = null,
+        var language: String? = null,
+        var is_public: Boolean = false,
+        var title: String? = null,
+        var slug: String? = null,
+        var create_date: String? = null,
+        var update_date: String? = null,
+        var learners_group: String? = null,
+        var teacher_group: String? = null,
+        var is_cached: Boolean = false,
+        var is_loading: Boolean = false,
+        var cover_url: String? = null,
+        @SerializedName("time_to_complete")
+        var timeToComplete: Long = 0
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

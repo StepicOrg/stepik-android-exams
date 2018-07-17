@@ -12,6 +12,7 @@ open class App : Application() {
         fun component() = app.component
         fun componentManager() = app.componentManager
     }
+
     private lateinit var component: AppCoreComponent
     private lateinit var componentManager: ComponentManager
 

@@ -1,4 +1,5 @@
 package org.stepik.android.exams.data.model
+
 import com.google.gson.annotations.SerializedName
 import org.stepic.droid.model.Actions
 import java.util.*

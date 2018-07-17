@@ -9,17 +9,17 @@ import javax.inject.Inject
 
 @AppSingleton
 class ConfigImpl private constructor(
-            override val hostJsonData : String,
-            override val host: String,
-            override val ratingHost: String,
-            override val oAuthClientId: String,
-            override val oAuthClientSecret: String,
-            override val grantType: String,
-            override val redirectUri: String,
-            override val refreshGrantType: String,
-            override val codeQueryParameter: String,
-            override val appPublicLicenseKey: String
-): Config {
+        override val hostJsonData: String,
+        override val host: String,
+        override val ratingHost: String,
+        override val oAuthClientId: String,
+        override val oAuthClientSecret: String,
+        override val grantType: String,
+        override val redirectUri: String,
+        override val refreshGrantType: String,
+        override val codeQueryParameter: String,
+        override val appPublicLicenseKey: String
+) : Config {
     @AppSingleton
     class ConfigFactory
     @Inject

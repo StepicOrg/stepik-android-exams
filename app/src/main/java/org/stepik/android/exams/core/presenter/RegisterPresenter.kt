@@ -25,7 +25,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-): PresenterBase<RegisterView>() {
+) : PresenterBase<RegisterView>() {
     private val compositeDisposable = CompositeDisposable()
     private val gson = Gson()
 

@@ -23,12 +23,11 @@ constructor(
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
-    override fun onFirstViewAttach() = getGraphData()
-
-    private var graphData : GraphData
+    private var graphData: GraphData
 
     init {
         graphData = GraphData()
+        getGraphData()
     }
 
     fun getGraphData() {
@@ -45,17 +44,18 @@ constructor(
                     onError(Errors.ConnectionProblem)
                 }))
     }
-    private fun onError(error : Errors){
+
+    private fun onError(error: Errors) {
         view?.onError(error)
     }
 
-    private fun addDataToGraph(graphData: GraphData){
+    private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics) {
             graph.createVertex(topic.id, topic.title)
             if (topic.requiredFor != null)
                 graph.addEdge(topic.id, topic.requiredFor)
         }
-        for (maps in graphData.topicsMap){
+        for (maps in graphData.topicsMap) {
             graph[maps.id]?.lessons?.addAll(maps.lessons)
         }
     }
@@ -63,7 +63,7 @@ constructor(
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
         if (graphData.topics.isNotEmpty())
-        view.showGraphData(graphData)
+            view.showGraphData(graphData)
     }
 
     override fun destroy() {
