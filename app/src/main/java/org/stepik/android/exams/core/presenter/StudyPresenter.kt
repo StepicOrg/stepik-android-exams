@@ -3,6 +3,7 @@ import io.reactivex.Observable
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import org.stepik.android.exams.api.StepikRestService
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.core.presenter.contracts.StudyView
@@ -31,9 +32,11 @@ constructor(
 
     private var id : String = ""
 
-    private lateinit var stepsArray : LongArray
-
     private fun getLessonsById() = graph[id]?.lessons
+
+    private var stepsArray = LongArray(0)
+
+    lateinit var lessonsList : LessonStepicResponse
 
     private fun parseLessons(){
         val lessons = getLessonsById()
@@ -52,45 +55,41 @@ constructor(
             array[theoryLessons.indexOf(lesson)] = lesson.id.toLong()
         return array
     }
+    fun loadLessons() =
+        stepikService
+                .getLessons(getIdFromTheory())
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { response ->
+                    lessonsList = response
+                    val listId: LinkedList<LongArray> = LinkedList()
+                    lessonsList.lessons?.forEach {
+                        listId.add(it.steps)
+                    }
+                    listId.forEach {
+                        stepsArray += it
+                    }
+                }
+    fun loadSteps() =
+            stepikService
+                    .getSteps(stepsArray)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe { response ->
+                        lessonsList.lessons?.forEach { l->
+                            response.steps?.forEach { s ->
+                                if (s.lesson == l.id)
+                                    l.stepsList.add(s)
+                            }
+                        }
+                    }
 
     fun loadTheoryLessons(id : String) {
         this.id = id
         parseLessons()
-        loadLessons(getIdFromTheory())
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { response ->
-                    var number = 0
-                    val listId: LinkedList<LongArray> = LinkedList()
-                    response.lessons?.forEach {
-                        number += it.steps.size
-                        listId.add(it.steps)
-                    }
-                    stepsArray = LongArray(number)
-                    listId.forEach {
-                        listId.forEach {
-                            stepsArray += it
-                        }
-                    }
-                }
-                loadSteps(stepsArray)
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe {
-                            steps ->
-                        }
+        var disposable : Disposable = loadLessons().also {loadSteps()}
     }
 
-    private fun loadStepsList(){
-
-        //loadSteps()
-    }
-
-    private fun loadSteps(steps : LongArray) =
-            stepikService.getSteps(steps)
-
-    private fun loadLessons(lessons : LongArray) =
-            stepikService.getLessons(lessons)
 
     override fun destroy() {
     }
