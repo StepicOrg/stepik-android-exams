@@ -27,18 +27,15 @@ constructor(
 
     private var practiceLessons: LinkedList<Lesson> = LinkedList()
 
-    private var uniqueCourses: MutableSet<Long> = mutableSetOf()
-
-    private var id: String = ""
-
-    private fun getLessonsById() = graph[id]?.lessons
-
     lateinit var lessonsList: LessonStepicResponse
 
     var listId: MutableList<LongArray> = mutableListOf()
 
-    private fun parseLessons() {
-        val lessons = getLessonsById()
+    private fun getLessonsById(id: String) = graph[id]?.lessons
+
+    private fun parseLessons(id: String): MutableSet<Long> {
+        val lessons = getLessonsById(id)
+        val uniqueCourses: MutableSet<Long> = mutableSetOf()
         if (lessons != null) {
             for (lesson in lessons) {
                 when (lesson.type) {
@@ -49,6 +46,7 @@ constructor(
                     uniqueCourses.add(lesson.course)
             }
         }
+        return uniqueCourses
     }
 
     private fun getIdFromTheory(): LongArray {
@@ -84,10 +82,8 @@ constructor(
                     .subscribe()
 
 
-    fun loadTheoryLessons(id: String) {
-        this.id = id
-        parseLessons()
-        for (u in uniqueCourses)
+    fun loadTheoryLessons(id: String): List<org.stepik.android.exams.data.model.Lesson>? {
+        for (u in parseLessons(id))
             joinCourse(u)
         var disposable = loadLessons()
                 .andThen {
@@ -98,6 +94,7 @@ constructor(
                                 .forEach { loadSteps(it, listId.indexOf(it)) }
                     }.subscribe()
                 }.subscribe()
+        return lessonsList.lessons
     }
 
 
