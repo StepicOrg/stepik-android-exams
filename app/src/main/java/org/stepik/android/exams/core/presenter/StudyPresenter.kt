@@ -82,7 +82,7 @@ constructor(
                     .subscribe()
 
 
-    fun loadTheoryLessons(id: String): List<org.stepik.android.exams.data.model.Lesson>? {
+    fun loadTheoryLessons(id: String){
         for (u in parseLessons(id))
             joinCourse(u)
         var disposable = loadLessons()
@@ -91,10 +91,10 @@ constructor(
                     {
                         Observable
                                 .fromIterable(listId)
-                                .forEach { loadSteps(it, listId.indexOf(it)) }
-                    }.subscribe()
+                                .forEach { loadSteps(it, listId.indexOf(it))}
+                    }
+                            .doOnComplete { view?.showLessons(lessonsList.lessons) }.subscribe({}, {}, {})
                 }.subscribe()
-        return lessonsList.lessons
     }
 
 

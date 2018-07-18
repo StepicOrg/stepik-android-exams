@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.topics_item.view.*
+import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
@@ -15,7 +15,7 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
     private var topics: List<Topic> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.topics_item, parent, false))
+            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
 
 
     override fun getItemCount() = topics.size
@@ -31,7 +31,7 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
     }
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        val topicsText: TextView = root.topicsText
+        val topicsText: TextView = root.text
 
         init {
             topicsText.setOnClickListener {
