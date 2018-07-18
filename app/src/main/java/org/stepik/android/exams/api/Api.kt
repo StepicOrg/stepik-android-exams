@@ -1,12 +1,16 @@
 package org.stepik.android.exams.api
 
 import io.reactivex.Completable
+import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.stepik.android.exams.api.auth.CookieHelper
 import org.stepik.android.exams.api.auth.EmptyAuthService
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.model.AccountCredentials
+import org.stepik.android.exams.data.model.EnrollmentWrapper
+import org.stepik.android.exams.data.model.LessonStepicResponse
+import org.stepik.android.exams.data.model.StepResponse
 import org.stepik.android.exams.di.network.NetworkHelper
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
@@ -22,7 +26,8 @@ constructor(
         private val config: Config,
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
-        private val cookieHelper: CookieHelper
+        private val cookieHelper: CookieHelper,
+        private val stepikService: StepikRestService
 ) {
 
     companion object {
@@ -82,5 +87,14 @@ constructor(
         val tempService = notLogged.create(EmptyAuthService::class.java)
         return tempService.remindPassword(encodedEmail)
     }
+
+    fun joinCourse(course: Long): Completable =
+            stepikService.joinCourse(EnrollmentWrapper(course))
+
+    fun getSteps(lesson: LongArray): Single<StepResponse> =
+            stepikService.getSteps(lesson)
+
+    fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =
+            stepikService.getLessons(lesson)
 
 }

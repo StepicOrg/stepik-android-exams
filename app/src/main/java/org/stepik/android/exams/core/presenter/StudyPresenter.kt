@@ -1,8 +1,8 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.disposables.Disposable
-import org.stepik.android.exams.api.StepikRestService
+import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.presenter.contracts.StudyView
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -16,7 +16,7 @@ class StudyPresenter
 @Inject
 constructor(
         private val graph: Graph<String>,
-        private val stepikService: StepikRestService,
+        private val api: Api,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -27,22 +27,27 @@ constructor(
 
     private var practiceLessons: LinkedList<Lesson> = LinkedList()
 
+    private var uniqueCourses: MutableSet<Long> = mutableSetOf()
+
     private var id: String = ""
 
     private fun getLessonsById() = graph[id]?.lessons
 
-    private var stepsArray = LongArray(0)
-
     lateinit var lessonsList: LessonStepicResponse
+
+    var listId: MutableList<LongArray> = mutableListOf()
 
     private fun parseLessons() {
         val lessons = getLessonsById()
         if (lessons != null) {
-            for (lesson in lessons)
+            for (lesson in lessons) {
                 when (lesson.type) {
                     "theory" -> theoryLessons.add(lesson)
                     else -> practiceLessons.add(lesson)
                 }
+                if (lesson.course != 0L)
+                    uniqueCourses.add(lesson.course)
+            }
         }
     }
 
@@ -53,40 +58,46 @@ constructor(
         return array
     }
 
-    fun loadLessons() =
-            stepikService
-                    .getLessons(getIdFromTheory())
+    private fun loadLessons() =
+            api.getLessons(getIdFromTheory())
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribe { response ->
+                    .doOnSuccess { response ->
                         lessonsList = response
-                        val listId: LinkedList<LongArray> = LinkedList()
                         lessonsList.lessons?.forEach {
                             listId.add(it.steps)
                         }
-                        listId.forEach {
-                            stepsArray += it
-                        }
-                    }
+                    }.toCompletable()
 
-    fun loadSteps() =
-            stepikService
-                    .getSteps(stepsArray)
+    private fun loadSteps(step: LongArray, id: Int) =
+            api.getSteps(step)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe { response ->
-                        lessonsList.lessons?.forEach { l ->
-                            response.steps?.forEach { s ->
-                                if (s.lesson == l.id)
-                                    l.stepsList.add(s)
-                            }
-                        }
+                        lessonsList.lessons?.get(id)?.stepsList = response.steps?.toMutableList()
                     }
+
+    private fun joinCourse(id: Long) =
+            api.joinCourse(id)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe()
+
 
     fun loadTheoryLessons(id: String) {
         this.id = id
         parseLessons()
-        var disposable: Disposable = loadLessons().also { loadSteps() }
+        for (u in uniqueCourses)
+            joinCourse(u)
+        var disposable = loadLessons()
+                .andThen {
+                    Observable.concat<LongArray>
+                    {
+                        Observable
+                                .fromIterable(listId)
+                                .forEach { loadSteps(it, listId.indexOf(it)) }
+                    }.subscribe()
+                }.subscribe()
     }
 
 

@@ -6,5 +6,7 @@ class Lesson(
         @SerializedName("id")
         val id: Int,
         @SerializedName("type")
-        val type: String
+        val type: String,
+        @SerializedName("course")
+        val course: Long
 )

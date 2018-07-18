@@ -99,15 +99,15 @@ constructor(
                 }
             }
 
-    private fun onLoginRx():
-            Completable = profileRepository.fetchProfileWithEmailAddresses()
-            .doOnSuccess {
-                profilePreferences.profile = it
-            }
-            .flatMapCompletable {
-                it.subscribedForMail = false
-                profileRepository.updateProfile(it)
-            }
+    private fun onLoginRx() =
+            profileRepository.fetchProfileWithEmailAddresses()
+                    .doOnSuccess {
+                        profilePreferences.profile = it
+                    }
+                    .flatMapCompletable {
+                        it.subscribedForMail = false
+                        profileRepository.updateProfile(it)
+                    }
 
     private fun onError(authError: AuthError) {
         view?.onError(authError)
