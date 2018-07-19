@@ -1,6 +1,6 @@
 package org.stepik.android.exams.ui.adapter
 
-import android.app.Activity
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.Lesson
 
-class StudyAdapter(var context: Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<StudyAdapter.StudyViewHolder>() {
+class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
     private var lessons: List<Lesson>? = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
@@ -31,16 +31,16 @@ class StudyAdapter(var context: Activity, var screenManager: ScreenManager) : Re
     }
 
     inner class StudyViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        val studyText: TextView = root.text
+        val titleText: TextView = root.text
 
         init {
-            studyText.setOnClickListener {
-
+            titleText.setOnClickListener {
+                screenManager.showStepsList(lessons?.get(adapterPosition)!!, context)
             }
         }
 
         fun bind(lesson: Lesson?) {
-            studyText.text = lesson?.title
+            titleText.text = lesson?.title
         }
     }
 }

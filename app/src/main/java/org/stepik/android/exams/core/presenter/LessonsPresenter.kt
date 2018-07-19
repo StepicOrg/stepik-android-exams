@@ -2,8 +2,9 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.core.presenter.contracts.StudyView
+import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -12,7 +13,7 @@ import org.stepik.android.exams.graph.model.Lesson
 import java.util.*
 import javax.inject.Inject
 
-class StudyPresenter
+class LessonsPresenter
 @Inject
 constructor(
         private val graph: Graph<String>,
@@ -21,7 +22,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler
-) : PresenterBase<StudyView>() {
+) : PresenterBase<LessonsView>() {
 
     private var theoryLessons: LinkedList<Lesson> = LinkedList()
 
@@ -30,6 +31,10 @@ constructor(
     lateinit var lessonsList: LessonStepicResponse
 
     var listId: MutableList<LongArray> = mutableListOf()
+
+    private var disposable = CompositeDisposable()
+
+    var id : String = ""
 
     private fun getLessonsById(id: String) = graph[id]?.lessons
 
@@ -76,26 +81,31 @@ constructor(
                     }
 
     private fun joinCourse(id: Long) =
-            api.joinCourse(id)
+            disposable.add(api.joinCourse(id)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribe()
-
+                    .subscribe())
 
     fun loadTheoryLessons(id: String) {
         for (u in parseLessons(id))
             joinCourse(u)
-        var disposable = loadLessons()
+        disposable.add(loadLessons()
                 .andThen { subscriber ->
                     subscriber.onSubscribe(Observable
                             .fromIterable(listId)
                             .forEach { loadSteps(it, listId.indexOf(it)) })
                     subscriber.onComplete()
                 }.doOnComplete { view?.showLessons(lessonsList.lessons) }
-                .subscribe()
+                .subscribe())
     }
 
+    override fun attachView(view: LessonsView) {
+        super.attachView(view)
+        if (theoryLessons.isNotEmpty())
+        view.showLessons(lessonsList.lessons)
+    }
 
     override fun destroy() {
+        disposable.clear()
     }
 }

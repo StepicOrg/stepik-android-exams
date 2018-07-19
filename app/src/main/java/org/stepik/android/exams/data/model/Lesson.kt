@@ -1,6 +1,8 @@
 package org.stepik.android.exams.data.model
 
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -31,8 +33,38 @@ data class Lesson(
         var cover_url: String? = null,
         @SerializedName("time_to_complete")
         var timeToComplete: Long = 0
-) {
+) : Parcelable {
     var stepsList: MutableList<Step>? = LinkedList()
+
+    constructor(parcel: Parcel) : this(
+            parcel.readLong(),
+            parcel.createLongArray(),
+            parcel.createIntArray(),
+            parcel.createStringArray(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.createStringArray(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.createStringArray(),
+            parcel.createStringArray(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readLong()) {
+
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -95,5 +127,47 @@ data class Lesson(
         result = 31 * result + (cover_url?.hashCode() ?: 0)
         result = 31 * result + timeToComplete.hashCode()
         return result
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeLongArray(steps)
+        parcel.writeIntArray(tags)
+        parcel.writeStringArray(playlists)
+        parcel.writeByte(if (is_featured) 1 else 0)
+        parcel.writeByte(if (is_prime) 1 else 0)
+        parcel.writeString(progress)
+        parcel.writeInt(owner)
+        parcel.writeStringArray(subscriptions)
+        parcel.writeInt(viewed_by)
+        parcel.writeInt(passed_by)
+        parcel.writeStringArray(dependencies)
+        parcel.writeStringArray(followers)
+        parcel.writeString(language)
+        parcel.writeByte(if (is_public) 1 else 0)
+        parcel.writeString(title)
+        parcel.writeString(slug)
+        parcel.writeString(create_date)
+        parcel.writeString(update_date)
+        parcel.writeString(learners_group)
+        parcel.writeString(teacher_group)
+        parcel.writeByte(if (is_cached) 1 else 0)
+        parcel.writeByte(if (is_loading) 1 else 0)
+        parcel.writeString(cover_url)
+        parcel.writeLong(timeToComplete)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Lesson> {
+        override fun createFromParcel(parcel: Parcel): Lesson {
+            return Lesson(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Lesson?> {
+            return arrayOfNulls(size)
+        }
     }
 }

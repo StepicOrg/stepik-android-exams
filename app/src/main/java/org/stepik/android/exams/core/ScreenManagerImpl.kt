@@ -4,6 +4,8 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
 
@@ -15,8 +17,14 @@ class ScreenManagerImpl
 constructor(
         private val context: Context
 ) : ScreenManager {
+    override fun showStepsList(lesson: Lesson, context: Context) {
+        val intent = Intent(context, StepsActivity::class.java)
+        intent.putExtra("lesson", lesson)
+        context.startActivity(intent)
+    }
+
     override fun showCourse(id: String, context: Context) {
-        val intent = Intent(context, StudyActivity::class.java)
+        val intent = Intent(context, LessonsActivity::class.java)
         intent.putExtra("id", id)
         context.startActivity(intent)
     }

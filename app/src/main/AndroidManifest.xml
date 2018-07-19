@@ -28,7 +28,9 @@
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.IntroActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.StudyActivity" />
+            android:name=".ui.activity.LessonsActivity" />
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.StepsActivity" />
     </application>
 
 </manifest>
