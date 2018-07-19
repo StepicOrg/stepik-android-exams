@@ -82,19 +82,17 @@ constructor(
                     .subscribe()
 
 
-    fun loadTheoryLessons(id: String){
+    fun loadTheoryLessons(id: String) {
         for (u in parseLessons(id))
             joinCourse(u)
         var disposable = loadLessons()
-                .andThen {
-                    Observable.concat<LongArray>
-                    {
-                        Observable
-                                .fromIterable(listId)
-                                .forEach { loadSteps(it, listId.indexOf(it))}
-                    }
-                            .doOnComplete { view?.showLessons(lessonsList.lessons) }.subscribe({}, {}, {})
-                }.subscribe()
+                .andThen { subscriber ->
+                    subscriber.onSubscribe(Observable
+                            .fromIterable(listId)
+                            .forEach { loadSteps(it, listId.indexOf(it)) })
+                    subscriber.onComplete()
+                }.doOnComplete { view?.showLessons(lessonsList.lessons) }
+                .subscribe()
     }
 
 
