@@ -24,6 +24,12 @@ constructor(
         private val mainScheduler: Scheduler
 ) : PresenterBase<LessonsView>() {
 
+    private var viewState: LessonsView.State = LessonsView.State.Idle
+        set(value) {
+            field = value
+            view?.setState(value)
+        }
+
     private var theoryLessons: LinkedList<Lesson> = LinkedList()
 
     private var practiceLessons: LinkedList<Lesson> = LinkedList()
@@ -32,9 +38,13 @@ constructor(
 
     var listId: MutableList<LongArray> = mutableListOf()
 
+    var id: String = ""
+
     private var disposable = CompositeDisposable()
 
-    var id : String = ""
+    init {
+        viewState = LessonsView.State.FirstLoading
+    }
 
     private fun getLessonsById(id: String) = graph[id]?.lessons
 
@@ -65,6 +75,7 @@ constructor(
             api.getLessons(getIdFromTheory())
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
+                    .doOnError { viewState = LessonsView.State.NetworkError }
                     .doOnSuccess { response ->
                         lessonsList = response
                         lessonsList.lessons?.forEach {
@@ -76,17 +87,23 @@ constructor(
             api.getSteps(step)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
+                    .doOnError { viewState = LessonsView.State.NetworkError }
                     .subscribe { response ->
                         lessonsList.lessons?.get(id)?.stepsList = response.steps?.toMutableList()
                     }
+
+    private fun onError() {
+        viewState = LessonsView.State.NetworkError
+    }
 
     private fun joinCourse(id: Long) =
             disposable.add(api.joinCourse(id)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribe())
+                    .subscribe({}, { onError() }))
 
     fun loadTheoryLessons(id: String) {
+        viewState = LessonsView.State.Loading
         for (u in parseLessons(id))
             joinCourse(u)
         disposable.add(loadLessons()
@@ -95,14 +112,24 @@ constructor(
                             .fromIterable(listId)
                             .forEach { loadSteps(it, listId.indexOf(it)) })
                     subscriber.onComplete()
-                }.doOnComplete { view?.showLessons(lessonsList.lessons) }
-                .subscribe())
+                }
+                .subscribe
+                ({view?.showLessons(lessonsList.lessons)
+                    viewState = LessonsView.State.Success},
+                        { onError() }))
+    }
+
+     fun clearData() {
+        listId.clear()
+        theoryLessons.clear()
+        practiceLessons.clear()
     }
 
     override fun attachView(view: LessonsView) {
         super.attachView(view)
-        if (theoryLessons.isNotEmpty())
-        view.showLessons(lessonsList.lessons)
+        view.setState(viewState)
+        if (listId.isNotEmpty())
+            view.showLessons(lessonsList.lessons)
     }
 
     override fun destroy() {

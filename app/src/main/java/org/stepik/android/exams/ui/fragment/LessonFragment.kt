@@ -1,10 +1,13 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.activity_topics_list.*
+import org.stepik.android.exams.api.Errors
 import kotlinx.android.synthetic.main.fragment_study.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
@@ -14,6 +17,7 @@ import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
+import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -31,6 +35,52 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         super.onCreate(savedInstanceState)
         retainInstance = true
     }
+    override fun setState(state: LessonsView.State): Unit = when (state) {
+        is LessonsView.State.FirstLoading -> {
+            presenter?.loadTheoryLessons(id) ?: Unit
+        }
+
+
+        is LessonsView.State.Idle -> {
+        }
+
+        is LessonsView.State.Loading -> {
+             showRefreshView()
+        }
+
+        is LessonsView.State.NetworkError -> {
+            hideRefreshView()
+            onError(Errors.ConnectionProblem)
+        }
+
+        is LessonsView.State.Success -> {
+            hideRefreshView()
+            hideErrorMessage()
+        }
+    }
+    private fun onError(error: Errors) {
+        @StringRes val messageResId = when (error) {
+            Errors.ConnectionProblem -> R.string.auth_error_connectivity
+        }
+        showErrorMessage(messageResId)
+    }
+
+    private fun showRefreshView() {
+        swipeRefreshLessons.isRefreshing = true
+    }
+
+    private fun hideRefreshView() {
+        swipeRefreshLessons.isRefreshing = false
+    }
+
+    private fun showErrorMessage(messageResId: Int) {
+        errorTextLesson.setText(messageResId)
+        errorTextLesson.changeVisibillity(true)
+    }
+
+    private fun hideErrorMessage() {
+        errorTextLesson.changeVisibillity(false)
+    }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,6 +88,10 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         recyclerLesson.adapter = lessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(context)
         id = arguments.getString("id", "")
+        swipeRefreshLessons.setOnRefreshListener {
+            presenter?.clearData()
+            presenter?.loadTheoryLessons(id)
+        }
     }
 
     override fun injectComponent() {
@@ -51,8 +105,6 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
-        presenter?.id = id
-        presenter?.loadTheoryLessons(id)
     }
     override fun onStop() {
         presenter?.detachView(this)
