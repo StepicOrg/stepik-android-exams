@@ -6,11 +6,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.activity_topics_list.*
-import org.stepik.android.exams.api.Errors
 import kotlinx.android.synthetic.main.fragment_study.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
+import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.LessonsPresenter
@@ -30,11 +29,12 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var id : String
+    private lateinit var id: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
     }
+
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
             presenter?.loadTheoryLessons(id) ?: Unit
@@ -45,7 +45,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         }
 
         is LessonsView.State.Loading -> {
-             showRefreshView()
+            showRefreshView()
         }
 
         is LessonsView.State.NetworkError -> {
@@ -58,6 +58,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
             hideErrorMessage()
         }
     }
+
     private fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
             Errors.ConnectionProblem -> R.string.auth_error_connectivity
@@ -106,6 +107,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         super.onStart()
         presenter?.attachView(this)
     }
+
     override fun onStop() {
         presenter?.detachView(this)
         super.onStop()

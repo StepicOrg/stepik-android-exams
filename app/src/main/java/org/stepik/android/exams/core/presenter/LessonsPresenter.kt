@@ -114,12 +114,14 @@ constructor(
                     subscriber.onComplete()
                 }
                 .subscribe
-                ({view?.showLessons(lessonsList.lessons)
-                    viewState = LessonsView.State.Success},
+                ({
+                    view?.showLessons(lessonsList.lessons)
+                    viewState = LessonsView.State.Success
+                },
                         { onError() }))
     }
 
-     fun clearData() {
+    fun clearData() {
         listId.clear()
         theoryLessons.clear()
         practiceLessons.clear()
