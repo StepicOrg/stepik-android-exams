@@ -12,7 +12,11 @@
 
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
-
+    <string name="auth_inline_message">To save your progress please sign in first</string>
+    <string name="go_to_the_next_lesson">Next lesson</string>
+    <string name="cant_show_next_step">Sorry, the next lesson is not available</string>
+    <string name="cant_show_previous_step">Sorry, the previous lesson is not available</string>
+    <string name="previous_lesson">Previous lesson</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="required_field">Required field</string>

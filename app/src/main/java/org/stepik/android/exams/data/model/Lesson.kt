@@ -32,9 +32,9 @@ data class Lesson(
         var is_loading: Boolean = false,
         var cover_url: String? = null,
         @SerializedName("time_to_complete")
-        var timeToComplete: Long = 0
+        var timeToComplete: Long = 0,
+        var stepsList: MutableList<Step>? = LinkedList()
 ) : Parcelable {
-    var stepsList: MutableList<Step>? = LinkedList()
 
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -61,9 +61,9 @@ data class Lesson(
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
-            parcel.readLong()) {
-
-    }
+            parcel.readLong(),
+            mutableListOf<Step>().apply {
+                parcel.readList(this, Step::class.java.classLoader)} )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -96,7 +96,7 @@ data class Lesson(
         if (is_loading != other.is_loading) return false
         if (cover_url != other.cover_url) return false
         if (timeToComplete != other.timeToComplete) return false
-
+        if (stepsList != other.stepsList) return false
         return true
     }
 
@@ -126,6 +126,7 @@ data class Lesson(
         result = 31 * result + is_loading.hashCode()
         result = 31 * result + (cover_url?.hashCode() ?: 0)
         result = 31 * result + timeToComplete.hashCode()
+        result = 31 * result  + stepsList!!.hashCode()
         return result
     }
 
@@ -155,6 +156,7 @@ data class Lesson(
         parcel.writeByte(if (is_loading) 1 else 0)
         parcel.writeString(cover_url)
         parcel.writeLong(timeToComplete)
+        parcel.writeList(stepsList)
     }
 
     override fun describeContents(): Int {
@@ -170,4 +172,5 @@ data class Lesson(
             return arrayOfNulls(size)
         }
     }
+
 }

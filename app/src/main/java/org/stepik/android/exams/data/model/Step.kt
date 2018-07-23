@@ -1,7 +1,8 @@
 package org.stepik.android.exams.data.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import org.stepic.droid.model.Actions
 import java.util.*
 
 data class Step(
@@ -26,7 +27,29 @@ data class Step(
         var hasSubmissionRestriction: Boolean = false,
         @SerializedName("max_submissions_count")
         var maxSubmissionCount: Int = 0
-) {
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readLong(),
+            parcel.readLong(),
+            parcel.readLong(),
+            parcel.readParcelable(StepStatus::class.java.classLoader),
+            parcel.readParcelable(Block::class.java.classLoader),
+            parcel.readString(),
+            parcel.createStringArray(),
+            parcel.readLong(),
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readParcelable(Actions::class.java.classLoader),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readInt()) {
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -77,6 +100,42 @@ data class Step(
         result = 31 * result + hasSubmissionRestriction.hashCode()
         result = 31 * result + maxSubmissionCount
         return result
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeLong(lesson)
+        parcel.writeLong(position)
+        parcel.writeParcelable(status, flags)
+        parcel.writeParcelable(block, flags)
+        parcel.writeString(progress)
+        parcel.writeStringArray(subscriptions)
+        parcel.writeLong(viewed_by)
+        parcel.writeLong(passed_by)
+        parcel.writeString(create_date)
+        parcel.writeString(update_date)
+        parcel.writeByte(if (is_cached) 1 else 0)
+        parcel.writeByte(if (is_loading) 1 else 0)
+        parcel.writeByte(if (is_custom_passed) 1 else 0)
+        parcel.writeParcelable(actions, flags)
+        parcel.writeInt(discussions_count)
+        parcel.writeString(discussion_proxy)
+        parcel.writeByte(if (hasSubmissionRestriction) 1 else 0)
+        parcel.writeInt(maxSubmissionCount)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Step> {
+        override fun createFromParcel(parcel: Parcel): Step {
+            return Step(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Step?> {
+            return arrayOfNulls(size)
+        }
     }
 }
 

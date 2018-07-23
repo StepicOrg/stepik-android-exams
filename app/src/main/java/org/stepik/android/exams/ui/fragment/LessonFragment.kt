@@ -93,6 +93,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
             presenter?.clearData()
             presenter?.loadTheoryLessons(id)
         }
+
     }
 
     override fun injectComponent() {

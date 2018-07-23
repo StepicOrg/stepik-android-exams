@@ -113,12 +113,12 @@ constructor(
                             .forEach { loadSteps(it, listId.indexOf(it)) })
                     subscriber.onComplete()
                 }
-                .subscribe
-                ({
+                .doOnComplete {
                     view?.showLessons(lessonsList.lessons)
                     viewState = LessonsView.State.Success
-                },
-                        { onError() }))
+                }
+                .subscribe
+                ({}, { onError() }))
     }
 
     fun clearData() {

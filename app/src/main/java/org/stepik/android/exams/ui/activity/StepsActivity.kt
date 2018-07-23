@@ -8,7 +8,7 @@ class StepsActivity : SingleFragmentActivity() {
 
     override fun createFragment(): Fragment {
         val lesson = intent.getParcelableExtra<Lesson>("lesson")
-        return StepsFragment.newInstance()
+        return StepsFragment.newInstance(lesson)
     }
 
 }

@@ -1,4 +1,4 @@
-package org.stepic.droid.model
+package org.stepik.android.exams.data.model
 
 import android.os.Parcel
 import android.os.Parcelable

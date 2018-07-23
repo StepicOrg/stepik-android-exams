@@ -1,0 +1,5 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="auth_elements_width">-1px</dimen>
+    <dimen name="guideline_standard_padding">16dp</dimen>
+    <dimen name="borderless_text_button_text_size">16sp</dimen>
+</resources>
