@@ -11,14 +11,14 @@ import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 
-class StepFragmentAdapter(var context: Context, val stepList: List<Step?>, val stepTypeResolver: StepTypeResolver) : PagerAdapter() {
+class StepAdapter(var context: Context, val stepList: List<Step?>, val stepTypeResolver: StepTypeResolver) : PagerAdapter() {
 
     override fun isViewFromObject(view: View?, `object`: Any?) = view == `object`
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        val inflater = LayoutInflater.from(context)
-        val layout = inflater.inflate(R.layout.delegate_text_step, container, false) as ViewGroup
-        container?.addView(layout)
+        val inflater = container?.context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = inflater.inflate(R.layout.delegate_text_step, container, false)
+        container.addView(layout)
         return layout
     }
 
@@ -27,7 +27,7 @@ class StepFragmentAdapter(var context: Context, val stepList: List<Step?>, val s
     }
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-        super.destroyItem(container, position, `object`)
+        container?.removeView(`object` as View)
     }
 
     fun getTabDrawable(position: Int): Drawable? {

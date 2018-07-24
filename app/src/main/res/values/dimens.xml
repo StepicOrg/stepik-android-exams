@@ -6,8 +6,7 @@
     <dimen name="auth_elements_width">-1px</dimen>
     <dimen name="auth_form_margin">36dp</dimen>
     <dimen name="auth_button_radius">32dp</dimen>
-
     <dimen name="borderless_text_button_text_size">16sp</dimen>
-    
     <dimen name="placeholder_button_radius">4dp</dimen>
+    <dimen name="course_widget_radius">7dp</dimen>
 </resources>

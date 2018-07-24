@@ -10,10 +10,9 @@ import kotlinx.android.synthetic.main.fragment_steps.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
-import org.stepik.android.exams.ui.adapter.StepFragmentAdapter
+import org.stepik.android.exams.ui.adapter.StepAdapter
 import org.stepik.android.exams.util.resolvers.StepTypeImpl
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
-import javax.inject.Inject
 
 
 class StepsFragment : Fragment() {
@@ -24,7 +23,7 @@ class StepsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         stepTypeResolver = StepTypeImpl(context)
         val lesson: Lesson = arguments.getParcelable("lesson")
-        val mPagerAdapter: PagerAdapter = StepFragmentAdapter(context, lesson.stepsList as List<Step?>, stepTypeResolver)
+        val mPagerAdapter: PagerAdapter = StepAdapter(context, lesson.stepsList as List<Step?>, stepTypeResolver)
         pager.adapter = mPagerAdapter
     }
 

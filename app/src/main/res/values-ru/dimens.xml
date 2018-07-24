@@ -1,5 +1,5 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <dimen name="auth_elements_width">-1px</dimen>
-    <dimen name="guideline_standard_padding">16dp</dimen>
     <dimen name="borderless_text_button_text_size">16sp</dimen>
+    <dimen name="course_widget_radius">7dp</dimen>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/open_comments_text"
     android:layout_width="match_parent"
@@ -10,8 +9,9 @@
     android:focusableInTouchMode="false"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     android:gravity="center"
-    android:padding="@dimen/guideline_standard_padding"
+    android:padding="16dp"
     android:textColor="?colorAccent"
     android:textSize="16sp"
+    android:visibility="visible"
     tools:text="Открыть комментарии (1)"
-    tools:visibility="visible"/>
+    tools:visibility="visible" />

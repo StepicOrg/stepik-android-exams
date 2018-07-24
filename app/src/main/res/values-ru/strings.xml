@@ -14,7 +14,6 @@
     <string name="second_name">Фамилия</string>
     <string name="auth_inline_message">Войдите, чтобы мы запомнили Ваши успехи</string>
     <string name="go_to_the_next_lesson">Следующий урок</string>
-    <string name="cant_show_next_step">Извините, следующий урок недоступен</string>
     <string name="previous_lesson">Предыдущий урок</string>
     <string name="processing_your_request">Обработка запроса</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>

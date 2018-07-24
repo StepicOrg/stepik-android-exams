@@ -63,7 +63,8 @@ data class Lesson(
             parcel.readString(),
             parcel.readLong(),
             mutableListOf<Step>().apply {
-                parcel.readList(this, Step::class.java.classLoader)} )
+                parcel.readList(this, Step::class.java.classLoader)
+            })
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -126,7 +127,7 @@ data class Lesson(
         result = 31 * result + is_loading.hashCode()
         result = 31 * result + (cover_url?.hashCode() ?: 0)
         result = 31 * result + timeToComplete.hashCode()
-        result = 31 * result  + stepsList!!.hashCode()
+        result = 31 * result + stepsList!!.hashCode()
         return result
     }
 
