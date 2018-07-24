@@ -8,5 +8,5 @@ interface StepTypeResolver {
 
     fun getDrawableForType(type: String?, viewed: Boolean): Drawable
 
-    fun getStep(step: Step?): StepDelegate
+    fun getStepDelegate(step: Step?): StepDelegate
 }

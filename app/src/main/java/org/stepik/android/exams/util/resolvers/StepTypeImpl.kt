@@ -26,7 +26,7 @@ constructor(
         }
     }
 
-    override fun getStep(step: Step?): StepDelegate {
+    override fun getStepDelegate(step: Step?): StepDelegate {
         val errorDelegate = NotSupportedDelegate()
         if (step?.block.toString().isEmpty())
             return errorDelegate
