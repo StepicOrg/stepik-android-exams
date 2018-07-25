@@ -52,4 +52,7 @@ constructor(
     override fun showRegisterScreen(activity: Activity) {
         activity.startActivityForResult(Intent(activity, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE)
     }
+
+    override fun openImage(context: Context, path: String) {
+    }
 }

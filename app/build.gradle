@@ -53,4 +53,6 @@ dependencies {
     implementation libraries.supportCardView
     implementation libraries.constraintLayout
     implementation libraries.junit
+    implementation libraries.jsoup
+    implementation libraries.calligraphy
 }

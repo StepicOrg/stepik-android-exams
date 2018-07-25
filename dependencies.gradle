@@ -17,6 +17,8 @@ ext.versions = [
         constraintLayout     : '1.0.2',
         jodaTime             : '2.8',
         junit                : '4.12',
+        jsoup                : '1.8.3',
+        calligraphy          : '2.1.0',
 ]
 
 ext.gradlePlugins = [
@@ -44,4 +46,6 @@ ext.libraries = [
         supportDesign        : "com.android.support:design:$versions.supportLibs",
         supportCardView      : "com.android.support:cardview-v7:$versions.supportLibs",
         junit                : "junit:junit:$versions.junit",
+        jsoup                : "org.jsoup:jsoup:$versions.jsoup",
+        calligraphy          : "uk.co.chrisjenx:calligraphy:$versions.calligraphy",
 ]

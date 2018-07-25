@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.android.synthetic.main.recycler_item.view.*
 import kotlinx.android.synthetic.main.step_item_view.view.*
 import kotlinx.android.synthetic.main.step_text_header.view.*
 import org.stepik.android.exams.R
+import org.stepik.android.exams.core.presenter.StepsPresenter
+import org.stepik.android.exams.core.presenter.contracts.StepsView
 import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.ui.steps.TextDelegate
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
@@ -23,27 +27,33 @@ class StepAdapter(var context: Context, val steps: List<Step>?) : RecyclerView.A
 
 
     override fun onBindViewHolder(holder: StepViewHolder?, position: Int) {
-        holder?.setHeader(steps?.get(position))
+        holder?.bind(StepsPresenter(steps?.get(position)))
     }
 
 
     class StepViewHolder (
             root: View
-    ): RecyclerView.ViewHolder(root) {
+    ): RecyclerView.ViewHolder(root), StepsView {
         private var stepDelegate = TextDelegate()
         private val stepViewContainer: ViewGroup = root.container
         private lateinit var stepTypeResolver : StepTypeResolver
-        init {
-            //stepDelegate = stepTypeResolver.getStepDelegate(step)
-            stepViewContainer.addView(stepDelegate.createView(stepViewContainer))
-        }
-        fun setHeader(step: Step?){
-            val header : TextView = stepViewContainer.container.text_header
-            header.text = step?.block?.text
-            header.visibility = View.VISIBLE
+        private var presenter :StepsPresenter? = null
+
+        override fun initialize(){
+            stepViewContainer.removeAllViews()
+            val view = stepDelegate.createView(stepViewContainer)
+            stepViewContainer.addView(view)
         }
 
-        /*fun setStep(step: Step?){
-        }*/
+        fun bind(presenter: StepsPresenter) {
+            this.presenter = presenter
+            presenter.attachView(this)
+        }
+            //stepDelegate = stepTypeResolver.getStepDelegate(step)
+        override fun setHeader(step: Step?){
+            val header : LatexSupportableEnhancedFrameLayout = stepViewContainer.container.text_header
+                header.setText(step?.block?.text)
+            header.visibility = View.VISIBLE
+        }
     }
 }

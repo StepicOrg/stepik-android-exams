@@ -3,12 +3,12 @@ package org.stepik.android.exams.ui.fragment
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_steps.*
 import org.stepik.android.exams.R
-import org.stepik.android.exams.R.id.pager
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.ui.adapter.StepAdapter
 import org.stepik.android.exams.util.resolvers.StepTypeImpl
@@ -27,7 +27,8 @@ class StepsFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         pager.layoutManager = layoutManager
         pager.adapter = stepAdapter
-        //pager.addOnScrollListener
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(pager)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =

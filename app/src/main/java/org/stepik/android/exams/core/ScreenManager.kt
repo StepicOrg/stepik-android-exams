@@ -12,4 +12,5 @@ interface ScreenManager {
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
     fun showCourse(id: String, context: Context)
+    fun openImage(context: Context, path: String)
 }
