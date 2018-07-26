@@ -35,7 +35,7 @@ class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : R
 
         init {
             titleText.setOnClickListener {
-                screenManager.showStepsList(lessons?.get(adapterPosition)!!, context)
+                screenManager.showStepsList(lessons?.get(adapterPosition) ?: Lesson(), context)
             }
         }
 

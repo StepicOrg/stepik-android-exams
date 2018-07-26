@@ -13,6 +13,7 @@ class StepsPresenter(private val step: Step?)
 
     override fun detachView(view: StepsView) {
         super.detachView(view)
+        view.destroy()
     }
     override fun destroy() {
 
