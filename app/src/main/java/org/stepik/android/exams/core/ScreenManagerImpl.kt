@@ -4,6 +4,9 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import org.stepik.android.exams.R
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
@@ -54,5 +57,19 @@ constructor(
     }
 
     override fun openImage(context: Context, path: String) {
+    }
+
+    override fun openComments(context: Activity, discussionProxyId: String, stepId: Long, needOpenForm: Boolean) {
+        if (discussionProxyId.isEmpty()) {
+            Toast.makeText(context, R.string.comment_denied, Toast.LENGTH_SHORT).show()
+        } else {
+            val intent = Intent(context, CommentsActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString(CommentsActivity.Companion.keyDiscussionProxyId, discussionProxyId)
+            bundle.putLong(CommentsActivity.Companion.keyStepId, stepId)
+            bundle.putBoolean(CommentsActivity.Companion.keyNeedInstaOpenForm, needOpenForm)
+            intent.putExtras(bundle)
+            context.startActivity(intent)
+        }
     }
 }

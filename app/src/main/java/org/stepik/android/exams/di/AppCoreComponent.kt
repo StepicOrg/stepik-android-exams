@@ -8,6 +8,7 @@ import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
+import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.ui.custom.LatexSupportableWebView
 import org.stepik.android.exams.ui.fragment.LessonFragment
@@ -40,4 +41,6 @@ interface AppCoreComponent {
     fun inject(latexSupportableWebView: LatexSupportableWebView)
 
     fun inject(latexSupportableEnhancedFrameLayout: LatexSupportableEnhancedFrameLayout)
+
+    fun inject(stepPagerAdapter: StepPagerAdapter)
 }

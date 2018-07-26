@@ -13,4 +13,5 @@ interface ScreenManager {
     fun showRegisterScreen(activity: Activity)
     fun showCourse(id: String, context: Context)
     fun openImage(context: Context, path: String)
+    fun openComments(context: Activity, discussionProxyId: String, stepId: Long, needOpenForm: Boolean)
 }

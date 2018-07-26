@@ -29,5 +29,12 @@
 
     <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
     <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
-
+    <plurals name="open_comments">
+        <item quantity="one">Открыть %d комментарий</item>
+        <item quantity="few">Открыть %d комментария</item>
+        <item quantity="many">Открыть %d комментариев</item>
+        <item quantity="other">Открыть %d комментариев</item>
+    </plurals>
+    <string name="open_comments_zero">Нет комментариев. Оставьте первый.</string>
+    <string name="comment_denied">Извините, возможность оставлять комментарии отключена</string>
 </resources>

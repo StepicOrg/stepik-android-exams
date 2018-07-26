@@ -30,4 +30,10 @@
     <string name="empty_auth_title" translatable="false">It\'s You!</string>
     <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
     <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
+    <plurals name="open_comments">
+        <item quantity="one">Open %d comment</item>
+        <item quantity="other">Open %d comments</item>
+    </plurals>
+    <string name="open_comments_zero">No comments. Add your comment</string>
+    <string name="comment_denied">Comments are not available for this lesson</string>
 </resources>

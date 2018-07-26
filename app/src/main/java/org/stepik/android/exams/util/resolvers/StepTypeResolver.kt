@@ -6,7 +6,7 @@ import org.stepik.android.exams.ui.steps.StepDelegate
 
 interface StepTypeResolver {
 
-    fun getDrawableForType(type: String?, viewed: Boolean): Drawable
+    fun getDrawableForType(type: String?, viewed: Boolean, isPeerReview: Boolean): Drawable?
 
     fun getStepDelegate(step: Step?): StepDelegate
 }

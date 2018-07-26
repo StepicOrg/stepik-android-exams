@@ -2,45 +2,40 @@ package org.stepik.android.exams.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import org.stepik.android.exams.util.readBoolean
+import org.stepik.android.exams.util.writeBoolean
 
-class Actions() : Parcelable {
+class Actions(
+        val vote: Boolean = false,
+        val delete: Boolean = false,
 
-    var vote: Boolean? = null
-    var delete: Boolean? = null
-    var test_section: String? = null
-
-    constructor(vote: Boolean?, delete: Boolean?, test_section: String?) : this() {
-        this.vote = vote
-        this.delete = delete
-        this.test_section = test_section
+        @SerializedName("test_section")
+        val testSection: String? = null,
+        @SerializedName("do_review")
+        val doReview: String? = null,
+        @SerializedName("edit_instructions")
+        val editInstructions: String? = null
+) : Parcelable {
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeBoolean(vote)
+        parcel.writeBoolean(delete)
+        parcel.writeString(testSection)
+        parcel.writeString(doReview)
+        parcel.writeString(editInstructions)
     }
 
+    override fun describeContents(): Int = 0
 
-    override fun describeContents() = 0
+    companion object CREATOR : Parcelable.Creator<Actions> {
+        override fun createFromParcel(parcel: Parcel): Actions = Actions(
+                parcel.readBoolean(),
+                parcel.readBoolean(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString()
+        )
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeByte(if (vote ?: false) 1.toByte() else 0.toByte())
-        dest.writeByte(if (delete ?: false) 1.toByte() else 0.toByte())
-        dest.writeString(test_section)
+        override fun newArray(size: Int): Array<Actions?> = arrayOfNulls(size)
     }
-
-    protected constructor(input: Parcel) : this(
-            input.readByte().toInt() != 0,
-            input.readByte().toInt() != 0,
-            input.readString()
-    )
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<Actions> = object : Parcelable.Creator<Actions> {
-            override fun createFromParcel(source: Parcel): Actions {
-                return Actions(source)
-            }
-
-            override fun newArray(size: Int): Array<Actions?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
 }
