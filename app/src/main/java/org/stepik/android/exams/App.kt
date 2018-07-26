@@ -12,8 +12,9 @@ open class App : Application() {
 
         fun component() = app.component
         fun componentManager() = app.componentManager
-        fun getAppContext() : Context = app.applicationContext
+        fun getAppContext(): Context = app.applicationContext
     }
+
     private lateinit var component: AppCoreComponent
     private lateinit var componentManager: ComponentManager
     override fun onCreate() {

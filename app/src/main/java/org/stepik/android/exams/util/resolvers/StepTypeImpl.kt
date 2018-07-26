@@ -12,7 +12,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.steps.*
 import org.stepik.android.exams.util.AppConstants
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 class StepTypeImpl
@@ -25,7 +25,7 @@ constructor(
     private val peerReviewDrawable: Drawable?
     private val peerReviewDrawableNotViewed: Drawable?
 
-    init{
+    init {
         mapFromTypeToDrawable = HashMap()
         mapFromTypeToDrawableNotViewed = HashMap()
 
@@ -90,6 +90,7 @@ constructor(
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_SQL] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_LINUX_CODE] = simpleQuestionDrawableNotViewed
     }
+
     override fun getDrawableForType(type: String?, viewed: Boolean, isPeerReview: Boolean): Drawable? {
         if (isPeerReview) {
             return if (viewed) {

@@ -31,7 +31,7 @@ class StepsFragment : Fragment() {
         }
     }
 
-    private fun setTabs(steps : List<Step>?, stepPagerAdapter: StepPagerAdapter){
+    private fun setTabs(steps: List<Step>?, stepPagerAdapter: StepPagerAdapter) {
         steps?.forEachIndexed { index, _ ->
             val tab = tabs.getTabAt(index)
             tab?.icon = stepPagerAdapter.getTabDrawable(index)

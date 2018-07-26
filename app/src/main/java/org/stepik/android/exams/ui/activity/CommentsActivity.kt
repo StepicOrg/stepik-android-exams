@@ -2,7 +2,6 @@ package org.stepik.android.exams.ui.activity
 
 import android.support.v4.app.Fragment
 import android.view.MenuItem
-import org.stepik.android.exams.ui.fragment.CommentsFragment
 
 class CommentsActivity : SingleFragmentActivity() {
 
@@ -32,7 +31,7 @@ class CommentsActivity : SingleFragmentActivity() {
 
     override fun finish() {
         super.finish()
-       // overridePendingTransition(org.stepic.droid.R.anim.no_transition, org.stepic.droid.R.anim.push_down)
+        // overridePendingTransition(org.stepic.droid.R.anim.no_transition, org.stepic.droid.R.anim.push_down)
     }
 
 }

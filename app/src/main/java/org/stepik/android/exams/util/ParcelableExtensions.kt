@@ -11,7 +11,7 @@ fun Parcel.readBoolean(): Boolean =
 
 
 private fun getParcelableWriter(flags: Int): Parcel.(Parcelable) -> Unit = { writeParcelable(it, flags) }
-private fun <T: Parcelable> getParcelableReader(classLoader: ClassLoader): Parcel.() -> T = { readParcelable(classLoader) }
+private fun <T : Parcelable> getParcelableReader(classLoader: ClassLoader): Parcel.() -> T = { readParcelable(classLoader) }
 
 fun <K : Parcelable, V : Parcelable> Parcel.writeMapCustom(map: Map<K, V>, flags: Int) =
         writeMap(map, getParcelableWriter(flags), getParcelableWriter(flags))

@@ -1,30 +1,14 @@
 package org.stepik.android.exams.ui.fragment
 
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.view.*
-import android.widget.Toast
-import org.stepik.android.exams.App
-import org.stepik.android.exams.R
-import java.util.*
-import javax.inject.Inject
 
 class CommentsFragment : Fragment(),
         SwipeRefreshLayout.OnRefreshListener
-        //DiscussionView,
-        //CommentsListener,
-        //DeleteCommentDialogFragment.DialogCallback,
-       // VoteView {
+//DiscussionView,
+//CommentsListener,
+//DeleteCommentDialogFragment.DialogCallback,
+// VoteView {
 {
     override fun onRefresh() {
 

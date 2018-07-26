@@ -9,7 +9,6 @@ import org.stepik.android.exams.util.writeBoolean
 class Actions(
         val vote: Boolean = false,
         val delete: Boolean = false,
-
         @SerializedName("test_section")
         val testSection: String? = null,
         @SerializedName("do_review")

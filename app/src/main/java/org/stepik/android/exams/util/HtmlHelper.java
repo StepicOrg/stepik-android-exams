@@ -9,7 +9,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.stepik.android.exams.configuration.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +156,7 @@ public class HtmlHelper {
 
     private static String getStyle(@Nullable String fontPath, @ColorInt int textColorHighlight) {
         final String fontStyle;
-        if (fontPath  == null) {
+        if (fontPath == null) {
             fontStyle = DefaultFontStyle;
         } else {
             fontStyle = String.format(Locale.getDefault(), CustomFontStyle, fontPath);
@@ -200,12 +199,12 @@ public class HtmlHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             HORIZONTAL_SCROLL_STYLE =
                     "<style>\n" +
-                    "body > * {\n" +
-                    "    max-width: 100%%;\n" +
-                    "    overflow-x: scroll;\n" +
-                    "    vertical-align: middle;\n" +
-                    "}\n" +
-                    "</style>\n";
+                            "body > * {\n" +
+                            "    max-width: 100%%;\n" +
+                            "    overflow-x: scroll;\n" +
+                            "    vertical-align: middle;\n" +
+                            "}\n" +
+                            "</style>\n";
         } else {
             HORIZONTAL_SCROLL_STYLE = "";
         }
@@ -213,12 +212,12 @@ public class HtmlHelper {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             POST_BODY =
                     MIN_RENDERED_BLOCK +
-                    "</body>\n" +
-                    "</html>";
+                            "</body>\n" +
+                            "</html>";
         } else {
             POST_BODY =
                     "</body>\n" +
-                    "</html>";
+                            "</html>";
         }
     }
 
@@ -259,33 +258,33 @@ public class HtmlHelper {
 
     private static final String SelectionColorStyle =
             "<style>\n"
-            + "::selection { background: #%06X; }\n"
-            + "</style>";
+                    + "::selection { background: #%06X; }\n"
+                    + "</style>";
 
     private static final String DefaultFontStyle =
             "<style>\n"
-            + "\nhtml{-webkit-text-size-adjust: 100%%;}"
-            + "\nbody{font-size: 12pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;}"
-            + "\nh1{font-size: 20pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nh2{font-size: 17pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nh3{font-size: 14pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nimg { max-width: 100%%; }"
+                    + "\nhtml{-webkit-text-size-adjust: 100%%;}"
+                    + "\nbody{font-size: 12pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;}"
+                    + "\nh1{font-size: 20pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nh2{font-size: 17pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nh3{font-size: 14pt; font-family:Arial, Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nimg { max-width: 100%%; }"
 
-            + "</style>\n";
+                    + "</style>\n";
 
     private static final String CustomFontStyle =
             "<style>\n" +
-            "@font-face {" +
-            "    font-family: 'Roboto';\n" +
-            "    src: url(\"%s\")\n" +
-            "}"
-            + "\nhtml{-webkit-text-size-adjust: 100%%;}"
-            + "\nbody{font-size: 14px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;}"
-            + "\nh1{font-size: 22px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nh2{font-size: 19px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nh3{font-size: 16px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
-            + "\nimg { max-width: 100%%; }"
-            + "</style>\n";
+                    "@font-face {" +
+                    "    font-family: 'Roboto';\n" +
+                    "    src: url(\"%s\")\n" +
+                    "}"
+                    + "\nhtml{-webkit-text-size-adjust: 100%%;}"
+                    + "\nbody{font-size: 14px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;}"
+                    + "\nh1{font-size: 22px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nh2{font-size: 19px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nh3{font-size: 16px; font-family:'Roboto', Helvetica, sans-serif; line-height:1.6em;text-align: center;}"
+                    + "\nimg { max-width: 100%%; }"
+                    + "</style>\n";
 
     private static final String POST_BODY;
 

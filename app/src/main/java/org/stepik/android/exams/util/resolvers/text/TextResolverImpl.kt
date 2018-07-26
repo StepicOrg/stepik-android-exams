@@ -1,6 +1,5 @@
 package org.stepik.android.exams.util.resolvers.text
 
-import android.content.Context
 import android.os.Build
 import android.text.Html
 import android.text.Spanned

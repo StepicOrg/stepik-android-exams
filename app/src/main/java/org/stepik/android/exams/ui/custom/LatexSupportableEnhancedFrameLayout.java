@@ -23,6 +23,7 @@ import org.stepik.android.exams.util.resolvers.text.TextResolver;
 import org.stepik.android.exams.util.resolvers.text.TextResult;
 
 import javax.inject.Inject;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyUtils;
 
 @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")

@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat
 
 import org.stepik.android.exams.App
 
-object   ColorUtil {
+object ColorUtil {
     @ColorInt
     fun getColorArgb(@ColorRes resourceColor: Int, context: Context = App.getAppContext()): Int {
         return ContextCompat.getColor(context, resourceColor)

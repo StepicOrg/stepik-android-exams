@@ -1,7 +1,5 @@
 package org.stepik.android.exams.util.resolvers.text;
 
-import android.content.Context;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
