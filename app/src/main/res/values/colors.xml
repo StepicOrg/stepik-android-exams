@@ -29,4 +29,7 @@
     <color name="new_accent_color">#535366</color>
     <color name="unviewed_step">@color/new_accent_color</color>
     <color name="viewed_step">@color/new_accent_color_alpha_40</color>
+    <color name="launchTextColor">#757575</color>
+    <color name="correct_answer_background">#E9F9E9</color>
+    <color name="wrong_answer_background">#F5EBF2</color>
 </resources>

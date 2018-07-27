@@ -1,0 +1,27 @@
+<LinearLayout android:id="@+id/buttonsContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Button
+        android:id="@+id/stepAttemptSubmitButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/min_ux_touchable_size"
+        android:layout_margin="5dp"
+        tools:text="@string/submit"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/tryAgainOnCorrectButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/min_ux_touchable_size"
+        android:layout_margin="5dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/try_again"
+        android:textColor="@color/launchTextColor"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>

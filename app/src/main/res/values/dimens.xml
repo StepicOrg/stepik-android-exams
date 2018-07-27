@@ -9,4 +9,7 @@
     <dimen name="borderless_text_button_text_size">16sp</dimen>
     <dimen name="placeholder_button_radius">4dp</dimen>
     <dimen name="course_widget_radius">7dp</dimen>
+    <dimen name="min_ux_touchable_size">48dp</dimen>
+    <dimen name="half_padding">8dp</dimen>
+    <dimen name="attempt_padding">8dp</dimen>
 </resources>

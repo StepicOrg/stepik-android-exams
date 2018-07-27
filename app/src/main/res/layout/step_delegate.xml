@@ -11,13 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <include
-            layout="@layout/step_text_header"/>
-
+        <include layout="@layout/step_text_header"/>
+        <include layout="@layout/attempt_container_layout"/>
+        <include layout="@layout/answer_layout"/>
+        <include layout="@layout/button_container"/>
         <include layout="@layout/open_comment_view"/>
-
         <include layout="@layout/auth_line_view"/>
-
         <include layout="@layout/next_lesson_view"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
