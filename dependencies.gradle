@@ -19,6 +19,7 @@ ext.versions = [
         junit                : '4.12',
         jsoup                : '1.8.3',
         calligraphy          : '2.1.0',
+        butterKnife          : '8.8.1',
 ]
 
 ext.gradlePlugins = [
@@ -48,4 +49,6 @@ ext.libraries = [
         junit                : "junit:junit:$versions.junit",
         jsoup                : "org.jsoup:jsoup:$versions.jsoup",
         calligraphy          : "uk.co.chrisjenx:calligraphy:$versions.calligraphy",
+        butterKnife          : "com.jakewharton:butterknife:$versions.butterKnife",
+        butterKnifeCompiler  : "com.jakewharton:butterknife-compiler:$versions.butterKnife",
 ]

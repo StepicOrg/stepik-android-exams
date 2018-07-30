@@ -1,10 +1,18 @@
 package org.stepik.android.exams.ui.steps
 
+import android.text.InputType
 import android.view.View
-import android.view.ViewGroup
+import org.stepik.android.exams.data.model.Reply
+import org.stepik.android.exams.data.model.Step
 
-class NumberDelegate : StepDelegate() {
-    override fun onCreateView(parent: ViewGroup): View {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class NumberDelegate(
+        step: Step?
+)  : SingleLineSendStep(step) {
+    override fun onViewCreated(view: View) {
+        super.onViewCreated(view)
+        answerField.setRawInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL)
     }
+
+    override fun generateReply(): Reply =
+            Reply(number = answerField.text.toString())
 }

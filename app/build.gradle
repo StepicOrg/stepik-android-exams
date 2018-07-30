@@ -55,4 +55,6 @@ dependencies {
     implementation libraries.junit
     implementation libraries.jsoup
     implementation libraries.calligraphy
+    implementation libraries.butterKnife
+    kapt libraries.butterKnifeCompiler
 }

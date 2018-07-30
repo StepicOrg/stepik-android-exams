@@ -5,5 +5,4 @@ import org.stepik.android.exams.data.model.Step
 
 interface StepsView {
     fun setHeader(stepViewContainer: ViewGroup, step: Step?)
-    fun updateCommentState(stepViewContainer: ViewGroup, step: Step?)
 }

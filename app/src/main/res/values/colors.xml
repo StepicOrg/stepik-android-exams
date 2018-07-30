@@ -32,4 +32,9 @@
     <color name="launchTextColor">#757575</color>
     <color name="correct_answer_background">#E9F9E9</color>
     <color name="wrong_answer_background">#F5EBF2</color>
+    <color name="colorRadioButtonDefault">#CCCED1</color>
+    <color name="silver">#e6e6e6</color>
+    <color name="table_even_row">#F6F9FC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="table_header">#F0F0F0</color>
 </resources>

@@ -12,4 +12,7 @@
     <dimen name="min_ux_touchable_size">48dp</dimen>
     <dimen name="half_padding">8dp</dimen>
     <dimen name="attempt_padding">8dp</dimen>
+    <dimen name="padding_left_right_list_item">16dp</dimen>
+    <dimen name="table_cell_fixed_height">96dp</dimen>
+    <dimen name="margin_option_top_bot">4dp</dimen>
 </resources>

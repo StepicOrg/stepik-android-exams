@@ -47,4 +47,5 @@
     </string>
     <string name="correct_free_response">Ваше решение сохранено.</string>
     <string name="hint_for_type_answer">Введите ответ здесь…</string>
+    <string name="table_quiz_beta">Табличная задача β</string>
 </resources>

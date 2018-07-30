@@ -1,10 +1,9 @@
 package org.stepik.android.exams.ui.steps
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import org.stepik.android.exams.R
+import org.stepik.android.exams.data.model.Step
 
-class TextDelegate : StepDelegate() {
-    override fun onCreateView(parent: ViewGroup): View = LayoutInflater.from(parent.context).inflate(R.layout.step_delegate, parent, false)
+class TextDelegate(
+         step: Step?
+) : StepDelegate(step) {
 }

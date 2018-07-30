@@ -9,10 +9,12 @@ import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
+import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.ui.custom.LatexSupportableWebView
 import org.stepik.android.exams.ui.fragment.LessonFragment
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
+import org.stepik.android.exams.ui.steps.StepAttemptDelegate
 
 @AppSingleton
 @Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class])
@@ -43,4 +45,8 @@ interface AppCoreComponent {
     fun inject(latexSupportableEnhancedFrameLayout: LatexSupportableEnhancedFrameLayout)
 
     fun inject(stepPagerAdapter: StepPagerAdapter)
+
+    fun inject(stepikRadioGroupAdapter: StepikRadioGroupAdapter)
+
+    fun inject(stepAttemptDelegate: StepAttemptDelegate)
 }

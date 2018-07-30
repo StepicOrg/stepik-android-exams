@@ -1,10 +1,6 @@
 package org.stepik.android.exams.ui.steps
 
-import android.view.View
-import android.view.ViewGroup
+import org.stepik.android.exams.data.model.Step
 
-class VideoDelegate : StepDelegate() {
-    override fun onCreateView(parent: ViewGroup): View {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class VideoDelegate(step : Step) : StepDelegate(step) {
 }
