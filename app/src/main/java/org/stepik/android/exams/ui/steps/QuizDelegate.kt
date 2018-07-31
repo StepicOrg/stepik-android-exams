@@ -7,6 +7,6 @@ import org.stepik.android.exams.data.model.Submission
 interface QuizDelegate {
     var isEnabled: Boolean
     var actionButton: Button?
-    fun setSubmission(submission: Submission?)
+    fun setSubmissions(submission: Submission?)
     fun createReply(): Reply
 }

@@ -20,17 +20,14 @@ class StepsFragment : Fragment() {
     lateinit var stepTypeResolver: StepTypeResolver
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        retainInstance = true
-        if (savedInstanceState == null) {
-            super.onViewCreated(view, savedInstanceState)
-            stepTypeResolver = StepTypeImpl(context)
-            val lesson: Lesson = arguments.getParcelable("lesson")
-            val stepAdapter = StepPagerAdapter(activity, lesson.stepsList, stepTypeResolver)
-            pagers.adapter = stepAdapter
-            tabs.setupWithViewPager(pagers)
-            tabs.tabMode = TabLayout.MODE_SCROLLABLE
-            setTabs(lesson.stepsList, stepAdapter)
-        }
+        super.onViewCreated(view, savedInstanceState)
+        stepTypeResolver = StepTypeImpl(context)
+        val lesson: Lesson = arguments.getParcelable("lesson")
+        val stepAdapter = StepPagerAdapter(activity, lesson.stepsList, stepTypeResolver)
+        pagers.adapter = stepAdapter
+        tabs.setupWithViewPager(pagers)
+        tabs.tabMode = TabLayout.MODE_SCROLLABLE
+        setTabs(lesson.stepsList, stepAdapter)
     }
 
     private fun setTabs(steps: List<Step>?, stepPagerAdapter: StepPagerAdapter) {

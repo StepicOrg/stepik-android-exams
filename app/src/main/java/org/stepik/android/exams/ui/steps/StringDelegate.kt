@@ -22,7 +22,7 @@ class StringDelegate(
         return parentContainer
     }
 
-    override fun showAttempt(attempt: Attempt) {
+    override fun showAttempt(attempt: Attempt?) {
         answerField.text.clear()
     }
 
@@ -34,6 +34,8 @@ class StringDelegate(
             Reply(text = answerField.text.toString())
 
     override fun onRestoreSubmission() {
+        val text = submission?.reply?.text ?: return
+        answerField.setText(text)
     }
 
     override fun onPause() {

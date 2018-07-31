@@ -162,6 +162,7 @@ constructor(
             AppConstants.TYPE_TEXT -> TextDelegate(step)
             AppConstants.TYPE_CHOICE -> ChoiceDelegate(step)
             AppConstants.TYPE_FREE_ANSWER -> FreeAnswerDelegate(step)
+            AppConstants.TYPE_TABLE -> TableChoiceDelegate(step)
             else -> TextDelegate(step)
         }
     }

@@ -30,13 +30,10 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     lateinit var screenManager: ScreenManager
 
     private lateinit var id: String
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
-    }
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
+            presenter?.joinCourses(id) ?: Unit
             presenter?.loadTheoryLessons(id) ?: Unit
         }
 

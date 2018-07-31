@@ -8,7 +8,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 
-abstract class StepDelegate(var step : Step?) {
+abstract class StepDelegate(var step: Step?) {
 
     protected open fun onCreateView(parent: ViewGroup) = LayoutInflater.from(parent.context).inflate(R.layout.step_delegate, parent, false)
 

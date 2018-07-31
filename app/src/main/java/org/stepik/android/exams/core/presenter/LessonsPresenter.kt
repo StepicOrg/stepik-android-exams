@@ -96,6 +96,11 @@ constructor(
         viewState = LessonsView.State.NetworkError
     }
 
+    fun joinCourses(id: String) {
+        for (u in parseLessons(id))
+            joinCourse(u)
+    }
+
     private fun joinCourse(id: Long) =
             disposable.add(api.joinCourse(id)
                     .subscribeOn(backgroundScheduler)
@@ -104,8 +109,6 @@ constructor(
 
     fun loadTheoryLessons(id: String) {
         viewState = LessonsView.State.Loading
-        for (u in parseLessons(id))
-            joinCourse(u)
         disposable.add(loadLessons()
                 .andThen { subscriber ->
                     subscriber.onSubscribe(Observable
@@ -117,7 +120,7 @@ constructor(
                 ({
                     view?.showLessons(lessonsList.lessons)
                     viewState = LessonsView.State.Success
-                }, { onError() }))
+                }) { onError() })
     }
 
     fun clearData() {

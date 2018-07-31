@@ -34,7 +34,7 @@ open class SingleLineSendStep(
         return parentContainer
     }
 
-    override fun showAttempt(attempt: Attempt) {
+    override fun showAttempt(attempt: Attempt?) {
         answerField.text.clear()
     }
 

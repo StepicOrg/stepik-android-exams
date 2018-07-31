@@ -15,8 +15,9 @@ import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
 import org.stepik.android.exams.ui.custom.StepikRadioGroup
 
 class ChoiceDelegate(
-         step: Step?
+        step: Step?
 ) : StepAttemptDelegate(step), QuizDelegate, AttemptView {
+
     private lateinit var choiceAdapter: StepikRadioGroupAdapter
 
     override var isEnabled: Boolean = false
@@ -32,7 +33,6 @@ class ChoiceDelegate(
         val parentContainer = super.onCreateView(parent) as ViewGroup
         val view: StepikRadioGroup = LayoutInflater.from(parent.context).inflate(R.layout.view_choice_attempt, parent, false) as StepikRadioGroup
         parentContainer.attempt_container.addView(view)
-        parentContainer.attempt_container.visibility = View.VISIBLE
         return parentContainer
     }
 
@@ -44,7 +44,8 @@ class ChoiceDelegate(
         startLoading(step)
     }
 
-    override fun setSubmission(submission: Submission?) = choiceAdapter.setSubmission(submission)
-    override fun trySetAttempt(attempt: Attempt?) = choiceAdapter.setAttempt(attempt)
+    override fun showAttempt(attempt: Attempt?) = onNeedShowAttempt(attempt)
+    override fun setSubmissions(submission: Submission?) = choiceAdapter.setSubmission(submission)
+    override fun onNeedShowAttempt(attempt: Attempt?) = choiceAdapter.setAttempt(attempt)
     override fun createReply() = choiceAdapter.reply
 }

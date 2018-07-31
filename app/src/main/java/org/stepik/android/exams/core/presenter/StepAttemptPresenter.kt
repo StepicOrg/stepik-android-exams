@@ -23,12 +23,12 @@ constructor(
         private var sharedPreference: SharedPreferenceHelper
 ) : PresenterBase<AttemptView>() {
 
-    private var attempt : Attempt? = null
+    private var attempt: Attempt? = null
 
     override fun attachView(view: AttemptView) {
         super.attachView(view)
         if (attempt != null)
-        view.trySetAttempt(attempt)
+            view.onNeedShowAttempt(attempt)
     }
 
     private fun getCurrentUserId() = sharedPreference.profile?.id
@@ -46,7 +46,8 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribe({
                     attempt = it
-                    view?.trySetAttempt(attempt) }, { /*onError(it)*/ })
+                    view?.onNeedShowAttempt(attempt)
+                }, { /*onError(it)*/ })
     }
 
     override fun destroy() {
