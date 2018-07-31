@@ -21,7 +21,7 @@ open class SingleLineSendStep(
         val parentContainer = super.onCreateView(parent) as ViewGroup
         answerField = LayoutInflater.from(parent.context).inflate(R.layout.view_single_line_attempt, parent, false) as EditText
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_single_line_attempt, parent, false)
-        answerField.setOnEditorActionListener { v, actionId, event ->
+        answerField.setOnEditorActionListener { _, actionId, _ ->
             var handled = false
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 parentContainer.stepAttemptSubmitButton.performClick()

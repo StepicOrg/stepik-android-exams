@@ -6,13 +6,22 @@ import android.view.ViewGroup
 import android.widget.EditText
 import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import org.stepik.android.exams.R
+import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
 
 class StringDelegate(
         step: Step
-) : StepAttemptDelegate(step) {
+) : StepAttemptDelegate(step), AttemptView {
+
+    override fun onNeedShowAttempt(attempt: Attempt?) = showAttempt(attempt)
+
+    override fun setSubmission(submission: Submission?) {
+        super.submissions = submission
+    }
+
     private lateinit var answerField: EditText
 
     override fun onCreateView(parent: ViewGroup): View {
@@ -22,7 +31,14 @@ class StringDelegate(
         return parentContainer
     }
 
+    override fun onViewCreated(view: View) {
+        super.onViewCreated(view)
+        stepAttemptPresenter.attachView(this)
+        startLoading(step)
+    }
+
     override fun showAttempt(attempt: Attempt?) {
+        super.attempt = attempt
         answerField.text.clear()
     }
 
@@ -34,7 +50,7 @@ class StringDelegate(
             Reply(text = answerField.text.toString())
 
     override fun onRestoreSubmission() {
-        val text = submission?.reply?.text ?: return
+        val text = submissions?.reply?.text ?: return
         answerField.setText(text)
     }
 

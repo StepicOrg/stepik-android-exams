@@ -33,19 +33,27 @@ class ChoiceDelegate(
         val parentContainer = super.onCreateView(parent) as ViewGroup
         val view: StepikRadioGroup = LayoutInflater.from(parent.context).inflate(R.layout.view_choice_attempt, parent, false) as StepikRadioGroup
         parentContainer.attempt_container.addView(view)
+        choiceAdapter = StepikRadioGroupAdapter(view.choice_container)
+        choiceAdapter.actionButton = view.findViewById(R.id.stepAttemptSubmitButton)
         return parentContainer
     }
 
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
-        choiceAdapter = StepikRadioGroupAdapter(view.choice_container)
-        choiceAdapter.actionButton = view.findViewById(R.id.stepAttemptSubmitButton)
         stepAttemptPresenter.attachView(this)
         startLoading(step)
     }
 
     override fun showAttempt(attempt: Attempt?) = onNeedShowAttempt(attempt)
-    override fun setSubmissions(submission: Submission?) = choiceAdapter.setSubmission(submission)
-    override fun onNeedShowAttempt(attempt: Attempt?) = choiceAdapter.setAttempt(attempt)
-    override fun createReply() = choiceAdapter.reply
+    override fun setSubmission(submission: Submission?) {
+        choiceAdapter.setSubmission(submission)
+        super.submissions = submission
+    }
+
+    override fun onNeedShowAttempt(attempt: Attempt?) {
+        super.attempt = attempt
+        choiceAdapter.setAttempt(attempt)
+    }
+
+    override fun generateReply() = choiceAdapter.reply
 }

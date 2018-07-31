@@ -16,14 +16,12 @@ class FreeAnswerDelegate(
 
     lateinit var answerField: EditText
 
-
     override fun onCreateView(parent: ViewGroup): View {
         val parentContainer = super.onCreateView(parent) as ViewGroup
         answerField = LayoutInflater.from(parent.context).inflate(R.layout.view_free_answer_attempt, parent, false) as EditText
         parentContainer.attempt_container.addView(answerField)
         return parentContainer
     }
-
 
     override fun showAttempt(attempt: Attempt?) {
         answerField.text.clear()
@@ -42,7 +40,7 @@ class FreeAnswerDelegate(
     }
 
     override fun onRestoreSubmission() {
-        val reply = submission?.reply ?: return
+        val reply = submissions?.reply ?: return
 
         val text = reply.text
         if (attempt?._dataset?.isHtmlEnabled == true) {

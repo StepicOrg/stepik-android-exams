@@ -11,6 +11,7 @@ import org.stepik.android.exams.data.model.AccountCredentials
 import org.stepik.android.exams.data.model.EnrollmentWrapper
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.data.model.StepResponse
+import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.network.NetworkHelper
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
@@ -27,7 +28,8 @@ constructor(
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
         private val cookieHelper: CookieHelper,
-        private val stepikService: StepikRestService
+        private val stepikService: StepikRestService,
+        private var sharedPreference: SharedPreferenceHelper
 ) {
 
     companion object {
@@ -96,5 +98,7 @@ constructor(
 
     fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =
             stepikService.getLessons(lesson)
+
+    fun getCurrentUserId() = sharedPreference.profile?.id
 
 }
