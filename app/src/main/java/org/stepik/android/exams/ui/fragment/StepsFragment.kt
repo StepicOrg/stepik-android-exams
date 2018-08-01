@@ -23,7 +23,7 @@ class StepsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         stepTypeResolver = StepTypeImpl(context)
         val lesson: Lesson = arguments.getParcelable("lesson")
-        val stepAdapter = StepPagerAdapter(activity, lesson.stepsList, stepTypeResolver)
+        val stepAdapter = StepPagerAdapter(lesson.stepsList, stepTypeResolver)
         pagers.adapter = stepAdapter
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
@@ -36,7 +36,6 @@ class StepsFragment : Fragment() {
             tab?.icon = stepPagerAdapter.getTabDrawable(index)
         }
     }
-
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
             inflater?.inflate(R.layout.fragment_steps, container, false)

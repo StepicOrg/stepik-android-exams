@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
@@ -27,14 +26,8 @@ class StringDelegate(
     override fun onCreateView(parent: ViewGroup): View {
         val parentContainer = super.onCreateView(parent) as ViewGroup
         answerField = LayoutInflater.from(parent.context).inflate(R.layout.view_free_answer_attempt, parent, false) as EditText
-        parentContainer.attempt_container.addView(answerField)
+        attemptContainer.addView(answerField)
         return parentContainer
-    }
-
-    override fun onViewCreated(view: View) {
-        super.onViewCreated(view)
-        stepAttemptPresenter.attachView(this)
-        startLoading(step)
     }
 
     override fun showAttempt(attempt: Attempt?) {

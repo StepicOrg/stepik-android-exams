@@ -8,13 +8,18 @@ class Submission(
         val score: String? = null,
         val hint: String? = null,
         val time: String? = null,
-        val reply: Reply? = null,
+        reply: Reply? = null,
         val attempt: Long = 0,
         val session: String? = null,
         val eta: String? = null
 ) {
-
     constructor(reply: Reply?, attempt: Long) : this(id = 0, reply = reply, attempt = attempt)
+
+    @SerializedName("reply")
+    private val replyWrapper: ReplyWrapper? = reply?.let(::ReplyWrapper)
+
+    val reply: Reply?
+        get() = replyWrapper?.reply
 
     enum class Status(val scope: String) {
         @SerializedName("correct")

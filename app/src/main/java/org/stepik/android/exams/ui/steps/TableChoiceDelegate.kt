@@ -12,7 +12,6 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
-import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.TableChoiceAnswer
 import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.adapter.TableChoiceAdapter
@@ -43,15 +42,16 @@ class TableChoiceDelegate(
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
         context = view.context as Activity
-        stepAttemptPresenter.attachView(this)
-        startLoading(step)
     }
 
-    override fun onNeedShowAttempt(attempt: Attempt?) = showAttempt(attempt)
+    override fun onNeedShowAttempt(attempt: Attempt?) {
+        super.onNeedShowAttempt(attempt)
+        showAttempt(attempt)
+    }
 
 
     override fun showAttempt(attempt: Attempt?) {
-        val dataset = attempt?._dataset ?: return
+        val dataset = attempt?.dataset ?: return
         val rows = dataset.rows ?: return
         val columns = dataset.columns ?: return
         val description = dataset.description ?: return
@@ -68,9 +68,9 @@ class TableChoiceDelegate(
     private fun initAnswerListFromAttempt(rows: List<String>, columns: List<String>): ArrayList<TableChoiceAnswer> {
         val result = ArrayList<TableChoiceAnswer>(rows.size)
         for (nameRow in rows) {
-            val oneRowAnswer = ArrayList<TableChoiceAnswer.Companion.Cell>(columns.size)
+            val oneRowAnswer = ArrayList<TableChoiceAnswer.Cell>(columns.size)
             for (nameColumn in columns) {
-                oneRowAnswer.add(TableChoiceAnswer.Companion.Cell(nameColumn, false))
+                oneRowAnswer.add(TableChoiceAnswer.Cell(nameColumn, false))
             }
             result.add(TableChoiceAnswer(nameRow, oneRowAnswer))
         }
@@ -88,10 +88,6 @@ class TableChoiceDelegate(
     override fun onRestoreSubmission() {
         val choices = submissions?.reply?.tableChoices ?: return
         adapter.answers = choices
-    }
-
-    override fun setSubmission(submission: Submission?) {
-
     }
 
 }

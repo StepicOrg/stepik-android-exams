@@ -2,12 +2,13 @@ package org.stepik.android.exams.ui.steps
 
 import android.text.InputType
 import android.view.View
+import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
 
 class NumberDelegate(
         step: Step?
-) : SingleLineSendStep(step) {
+) : SingleLineSendStep(step), AttemptView {
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
         answerField.setRawInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL)

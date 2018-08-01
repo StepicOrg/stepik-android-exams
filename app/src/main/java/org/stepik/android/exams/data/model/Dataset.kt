@@ -18,3 +18,5 @@ data class Dataset(
         @SerializedName("is_html_enabled")
         val isHtmlEnabled: Boolean = false
 )
+
+class DatasetWrapper(val dataset: Dataset? = null)

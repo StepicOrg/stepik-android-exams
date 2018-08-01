@@ -14,6 +14,7 @@ import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.ui.custom.LatexSupportableWebView
 import org.stepik.android.exams.ui.fragment.LessonFragment
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
+import org.stepik.android.exams.ui.fragment.StepsFragment
 import org.stepik.android.exams.ui.steps.StepAttemptDelegate
 
 @AppSingleton
@@ -49,4 +50,6 @@ interface AppCoreComponent {
     fun inject(stepikRadioGroupAdapter: StepikRadioGroupAdapter)
 
     fun inject(stepAttemptDelegate: StepAttemptDelegate)
+
+    fun inject(stepsFragment: StepsFragment)
 }

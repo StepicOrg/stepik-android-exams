@@ -2,6 +2,7 @@ package org.stepik.android.exams.data.model.attempts
 
 import com.google.gson.annotations.SerializedName
 import org.stepik.android.exams.data.model.Dataset
+import org.stepik.android.exams.data.model.DatasetWrapper
 
 class Attempt(
         val id: Long = 0,
@@ -9,7 +10,7 @@ class Attempt(
         val user: Long = 0,
 
         @SerializedName("dataset")
-        val _dataset: Dataset? = null,
+        private val _dataset: DatasetWrapper? = null,
         @SerializedName("dataset_url")
         val datasetUrl: String? = null,
 
@@ -18,4 +19,7 @@ class Attempt(
 
         @SerializedName("time_left")
         val timeLeft: String? = null
-)
+) {
+    val dataset: Dataset?
+        get() = _dataset?.dataset
+}

@@ -1,6 +1,5 @@
 package org.stepik.android.exams.ui.adapter
 
-import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 class StepPagerAdapter(
-        val context: Activity,
         val steps: List<Step>?,
         val stepTypeResolver: StepTypeResolver
 ) : PagerAdapter(), StepsView {
@@ -24,7 +22,7 @@ class StepPagerAdapter(
     override fun getCount(): Int = steps?.size ?: 0
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(container?.context)
         val stepViewContainer = inflater.inflate(R.layout.step_item_view, container, false) as ViewGroup
         val stepDelegate = stepTypeResolver.getStepDelegate(steps?.get(position))
         val view = stepDelegate.createView(stepViewContainer)

@@ -18,7 +18,6 @@ import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.resolvers.text.TextResolver
 import org.stepik.android.exams.util.resolvers.text.TextResolverImpl

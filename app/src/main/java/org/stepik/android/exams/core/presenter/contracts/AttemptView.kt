@@ -8,4 +8,14 @@ interface AttemptView {
     fun setSubmission(submission: Submission?)
     fun onCorrectAnswer()
     fun onWrongAnswer()
+    fun setState(state: AttemptView.State)
+    sealed class State {
+        object FirstLoading : State()
+        object Idle : State()
+        object Loading : State()
+        object Success : State()
+        object NetworkError : State()
+        object CorrectAnswerState : State()
+        object WrongAnswerState : State()
+    }
 }
