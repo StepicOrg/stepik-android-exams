@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_steps.*
 import org.stepik.android.exams.R
+import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
@@ -15,7 +16,7 @@ import org.stepik.android.exams.util.resolvers.StepTypeImpl
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 
-class StepsFragment : Fragment() {
+class StepsFragment : Fragment(), RoutingViewListener {
 
     lateinit var stepTypeResolver: StepTypeResolver
 
@@ -23,11 +24,15 @@ class StepsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         stepTypeResolver = StepTypeImpl(context)
         val lesson: Lesson = arguments.getParcelable("lesson")
-        val stepAdapter = StepPagerAdapter(lesson.stepsList, stepTypeResolver)
+        val stepAdapter = StepPagerAdapter(lesson.stepsList, stepTypeResolver, this)
         pagers.adapter = stepAdapter
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
         setTabs(lesson.stepsList, stepAdapter)
+    }
+
+    override fun scrollNext(position: Int) {
+        pagers.currentItem = position + 1
     }
 
     private fun setTabs(steps: List<Step>?, stepPagerAdapter: StepPagerAdapter) {

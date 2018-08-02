@@ -12,6 +12,7 @@ import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
+import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
@@ -42,6 +43,8 @@ open class StepAttemptDelegate(
     private lateinit var answerField: TextView
 
     protected lateinit var attemptContainer: ViewGroup
+
+    lateinit var routingViewListener: RoutingViewListener
 
     init {
         App.component().inject(this)
@@ -148,10 +151,17 @@ open class StepAttemptDelegate(
 
     override fun onCorrectAnswer() {
         setTextToActionButton(actionButton, context.getString(R.string.next))
+        onNext()
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.correct_answer_background))
         answerField.setText(R.string.correct)
         answerField.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_correct, 0, 0, 0)
         answerField.visibility = View.VISIBLE
+    }
+
+    private fun onNext() {
+        actionButton?.setOnClickListener {
+            routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+        }
     }
 
     override fun onWrongAnswer() {

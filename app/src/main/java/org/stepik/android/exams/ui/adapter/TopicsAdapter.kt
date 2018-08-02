@@ -35,7 +35,7 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
 
         init {
             topicsText.setOnClickListener {
-                screenManager.showCourse(topics[adapterPosition].id, context)
+                screenManager.showLessons(topics[adapterPosition].id, context)
             }
         }
 

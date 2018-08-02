@@ -21,7 +21,7 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun showCourse(id: String, context: Context) {
+    override fun showLessons(id: String, context: Context) {
         val intent = Intent(context, LessonsActivity::class.java)
         intent.putExtra("id", id)
         context.startActivity(intent)

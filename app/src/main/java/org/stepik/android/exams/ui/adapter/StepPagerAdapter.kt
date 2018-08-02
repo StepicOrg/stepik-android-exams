@@ -7,14 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.step_text_header.view.*
 import org.stepik.android.exams.R
+import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.core.presenter.contracts.StepsView
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
+import org.stepik.android.exams.ui.steps.StepAttemptDelegate
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 class StepPagerAdapter(
         val steps: List<Step>?,
-        val stepTypeResolver: StepTypeResolver
+        val stepTypeResolver: StepTypeResolver,
+        val routingViewListener: RoutingViewListener
 ) : PagerAdapter(), StepsView {
 
     override fun isViewFromObject(view: View?, obj: Any?) = view == obj
@@ -25,6 +28,8 @@ class StepPagerAdapter(
         val inflater = LayoutInflater.from(container?.context)
         val stepViewContainer = inflater.inflate(R.layout.step_item_view, container, false) as ViewGroup
         val stepDelegate = stepTypeResolver.getStepDelegate(steps?.get(position))
+        if (stepDelegate is StepAttemptDelegate)
+            stepDelegate.routingViewListener = routingViewListener
         val view = stepDelegate.createView(stepViewContainer)
         stepViewContainer.addView(view)
         container?.addView(stepViewContainer)
