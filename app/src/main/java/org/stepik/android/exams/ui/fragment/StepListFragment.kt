@@ -8,23 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_steps.*
 import org.stepik.android.exams.R
-import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
+import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.util.resolvers.StepTypeImpl
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 
-class StepsFragment : Fragment(), RoutingViewListener {
-
+class StepListFragment : Fragment(), RoutingViewListener {
     lateinit var stepTypeResolver: StepTypeResolver
-
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stepTypeResolver = StepTypeImpl(context)
         val lesson: Lesson = arguments.getParcelable("lesson")
-        val stepAdapter = StepPagerAdapter(lesson.stepsList, stepTypeResolver, this)
+        stepTypeResolver = StepTypeImpl(context)
+        val stepAdapter = StepPagerAdapter(fragmentManager, lesson.stepsList, stepTypeResolver,this)
         pagers.adapter = stepAdapter
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
@@ -46,10 +44,10 @@ class StepsFragment : Fragment(), RoutingViewListener {
             inflater?.inflate(R.layout.fragment_steps, container, false)
 
     companion object {
-        fun newInstance(lesson: Lesson): StepsFragment {
+        fun newInstance(lesson: Lesson): StepListFragment {
             val args = Bundle()
             args.putParcelable("lesson", lesson)
-            val fragment = StepsFragment()
+            val fragment = StepListFragment()
             fragment.arguments = args
             return fragment
         }

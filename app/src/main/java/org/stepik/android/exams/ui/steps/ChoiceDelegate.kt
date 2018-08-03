@@ -13,11 +13,12 @@ import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
 import org.stepik.android.exams.ui.custom.StepikRadioGroup
 
-class ChoiceDelegate(
-        step: Step?
-) : StepAttemptDelegate(step), AttemptView {
+class ChoiceDelegate : AttemptDelegate() {
 
     private lateinit var choiceAdapter: StepikRadioGroupAdapter
+
+    override var isEnabled: Boolean = false
+        set(value) = choiceAdapter.setEnabled(value)
 
     override var actionButton: Button?
         get() = choiceAdapter.actionButton
@@ -25,29 +26,14 @@ class ChoiceDelegate(
             choiceAdapter.actionButton = value
         }
 
-    override fun onCreateView(parent: ViewGroup): View {
-        val parentContainer = super.onCreateView(parent) as ViewGroup
-        val view: StepikRadioGroup = LayoutInflater.from(parent.context).inflate(R.layout.view_choice_attempt, parent, false) as StepikRadioGroup
-        attemptContainer.addView(view)
+    override fun onCreateView(parent: ViewGroup): View =
+            LayoutInflater.from(parent.context).inflate(R.layout.view_choice_attempt, parent, false)
+
+    override fun onViewCreated(view: View) {
         choiceAdapter = StepikRadioGroupAdapter(view.choice_container)
-        choiceAdapter.actionButton = view.findViewById(R.id.stepAttemptSubmitButton)
-        return parentContainer
     }
 
-    override fun showAttempt(attempt: Attempt?) = onNeedShowAttempt(attempt)
-    override fun setSubmission(submission: Submission?) {
-        super.setSubmission(submission)
-        choiceAdapter.setSubmission(submission)
-    }
-
-    override fun onNeedShowAttempt(attempt: Attempt?) {
-        super.onNeedShowAttempt(attempt)
-        choiceAdapter.setAttempt(attempt)
-    }
-
-    override fun blockUIBeforeSubmit(needBlock: Boolean) {
-        choiceAdapter.setEnabled(needBlock)
-    }
-
-    override fun generateReply() = choiceAdapter.reply
+    override fun setSubmission(submission: Submission?) = choiceAdapter.setSubmission(submission)
+    override fun setAttempt(attempt: Attempt?) = choiceAdapter.setAttempt(attempt)
+    override fun createReply() = choiceAdapter.reply
 }

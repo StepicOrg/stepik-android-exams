@@ -150,20 +150,19 @@ constructor(
     }
 
     override fun getStepDelegate(step: Step?): StepDelegate {
-        val errorDelegate = NotSupportedDelegate(step)
+        val errorDelegate = NotSupportedDelegate()
         if (step?.block.toString().isEmpty())
             return errorDelegate
 
         val type = step?.block?.name
         return when (type) {
-            AppConstants.TYPE_VIDEO -> VideoDelegate(step)
-            AppConstants.TYPE_STRING -> StringDelegate(step)
-            AppConstants.TYPE_NUMBER -> NumberDelegate(step)
-            AppConstants.TYPE_TEXT -> TextDelegate(step)
-            AppConstants.TYPE_CHOICE -> ChoiceDelegate(step)
-            AppConstants.TYPE_FREE_ANSWER -> FreeAnswerDelegate(step)
-            AppConstants.TYPE_TABLE -> TableChoiceDelegate(step)
-            else -> TextDelegate(step)
+            AppConstants.TYPE_STRING -> StringDelegate()
+            AppConstants.TYPE_NUMBER -> NumberDelegate()
+            AppConstants.TYPE_CHOICE -> ChoiceDelegate()
+            AppConstants.TYPE_FREE_ANSWER -> FreeAnswerDelegate()
+            AppConstants.TYPE_TABLE -> TableChoiceDelegate()
+            AppConstants.TYPE_TEXT -> TextDelegate()
+            else -> errorDelegate
         }
     }
 }

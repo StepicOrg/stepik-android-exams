@@ -2,18 +2,18 @@ package org.stepik.android.exams.ui.steps
 
 import android.text.InputType
 import android.view.View
-import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.Submission
 
-class NumberDelegate(
-        step: Step?
-) : SingleLineSendStep(step), AttemptView {
+class NumberDelegate: StringDelegate() {
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
-        answerField.setRawInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL)
+        answerField.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
     }
 
-    override fun generateReply(): Reply =
-            Reply(number = answerField.text.toString())
+    override fun setSubmission(submission: Submission?) {
+        submission?.reply?.number?.let { answerField.setText(it) }
+    }
+
+    override fun createReply() = Reply(number = answerField.text.toString())
 }

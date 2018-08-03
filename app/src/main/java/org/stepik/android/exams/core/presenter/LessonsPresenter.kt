@@ -107,7 +107,7 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribe({}, { onError() }))
 
-    fun loadTheoryLessons(id: String) {
+    fun loadTheoryLessons() {
         viewState = LessonsView.State.Loading
         disposable.add(loadLessons()
                 .andThen { subscriber ->

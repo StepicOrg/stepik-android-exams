@@ -1,8 +1,8 @@
 package org.stepik.android.exams.ui.steps
 
-import org.stepik.android.exams.data.model.Step
+import android.view.ViewGroup
 
-class TextDelegate(
-        step: Step?
-) : StepDelegate(step) {
+class TextDelegate : StepDelegate(){
+    override fun onCreateView(parent: ViewGroup) = parent.rootView
+
 }

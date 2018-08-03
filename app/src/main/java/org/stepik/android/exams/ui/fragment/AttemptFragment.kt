@@ -1,6 +1,8 @@
-package org.stepik.android.exams.ui.steps
+package org.stepik.android.exams.ui.fragment
 
 import android.app.Activity
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -12,42 +14,52 @@ import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.listeners.AnswerListener
+import org.stepik.android.exams.ui.listeners.RoutingViewListener
+import org.stepik.android.exams.ui.steps.AttemptDelegate
+import org.stepik.android.exams.ui.steps.StepDelegate
 import org.stepik.android.exams.util.resolvers.text.TextResolver
 import javax.inject.Inject
+import android.widget.LinearLayout
 
-open class StepAttemptDelegate(
-        step: Step?
-) : StepDelegate(step), AnswerListener, AttemptView {
+
+
+open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     protected var attempt: Attempt? = null
 
-    protected var submissions: Submission? = null
+    private var submissions: Submission? = null
 
     protected open var actionButton: Button? = null
 
-    @Inject
-    lateinit var stepAttemptPresenter: StepAttemptPresenter
-
+    lateinit var stepDelegate : StepDelegate
     @Inject
     lateinit var textResolver: TextResolver
 
     lateinit var context: Activity
 
-    protected lateinit var parentContainer: ViewGroup
-
     private lateinit var answerField: TextView
-
-    protected lateinit var attemptContainer: ViewGroup
 
     lateinit var routingViewListener: RoutingViewListener
 
-    init {
-        App.component().inject(this)
+    companion object {
+        fun newInstance(step: Step?): StepFragment {
+            val args = Bundle()
+            args.putParcelable("step", step)
+            val fragment = AttemptFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    private fun resolveStep(){
+        stepDelegate = stepTypeResolver.getStepDelegate(step)
+        attemptContainer.addView(stepDelegate.createView(parentContainer))
+        answerField = parentContainer.answer_status_text
+        // stepDelegate.routingViewListener = routingViewListener
     }
 
     override fun setState(state: AttemptView.State): Unit = when (state) {
@@ -78,16 +90,9 @@ open class StepAttemptDelegate(
         actionButton?.text = text
     }
 
-    override fun onCreateView(parent: ViewGroup): View {
-        parentContainer = super.onCreateView(parent) as ViewGroup
-        answerField = parentContainer.answer_status_text
-        attemptContainer = parentContainer.attempt_container
-        return parentContainer
-    }
-
-    override fun onViewCreated(view: View) {
-        super.onViewCreated(view)
-        attachView()
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        resolveStep()
         loadUI(view)
         actionButton?.setOnClickListener {
             if (submissions != null && submissions?.status != Submission.Status.LOCAL) {
@@ -95,21 +100,29 @@ open class StepAttemptDelegate(
                 tryAgain()
             } else makeSubmission()
         }
-        context = view.context as Activity
+        context = view?.context as Activity
     }
 
-    private fun loadUI(view: View) {
+    override fun onStart() {
+        super.onStart()
+        presenter?.attachView(this)
+    }
+
+    override fun onStop() {
+        presenter?.detachView(this)
+        super.onStop()
+    }
+
+    private fun loadUI(view: View?) {
         parentContainer.buttonsContainer.visibility = View.VISIBLE
         parentContainer.stepAttemptSubmitButton.visibility = View.VISIBLE
-        actionButton = view.stepAttemptSubmitButton
-        setTextToActionButton(actionButton, view.resources.getString(R.string.submit))
+        actionButton = view?.stepAttemptSubmitButton
+        setTextToActionButton(actionButton, view?.resources?.getString(R.string.submit) ?: "")
     }
-
-    private fun attachView() = stepAttemptPresenter.attachView(this)
 
     private fun tryAgain() {
         submissions = null
-        stepAttemptPresenter.createNewAttempt(step)
+        presenter?.createNewAttempt(step)
     }
 
     private fun clearAttemptContainer() {
@@ -121,32 +134,25 @@ open class StepAttemptDelegate(
 
     override fun onNeedShowAttempt(attempt: Attempt?) {
         this.attempt = attempt
+        (stepDelegate as AttemptDelegate).setAttempt(attempt)
     }
 
     override fun setSubmission(submission: Submission?) {
         submissions = submission
+        (stepDelegate as AttemptDelegate).setSubmission(submission)
     }
 
     private fun makeSubmission() {
         if (attempt == null || attempt?.id ?: 0 <= 0) return
         blockUIBeforeSubmit(true)
         val attemptId = attempt?.id ?: 0
-        val reply = generateReply()
-        stepAttemptPresenter.answerListener = this
-        stepAttemptPresenter.createSubmission(attemptId, reply)
-        onRestoreSubmission()
+        val reply = (stepDelegate as AttemptDelegate).createReply()
+        presenter?.answerListener = this
+        presenter?.createSubmission(attemptId, reply)
     }
 
     protected open fun startLoading(step: Step?) {
-        stepAttemptPresenter.createNewAttempt(step)
-    }
-
-    protected open fun showAttempt(attempt: Attempt?) {
-        this.attempt = attempt
-    }
-
-    protected open fun generateReply(): Reply {
-        return Reply()
+        presenter?.createNewAttempt(step)
     }
 
     override fun onCorrectAnswer() {
@@ -160,7 +166,7 @@ open class StepAttemptDelegate(
 
     private fun onNext() {
         actionButton?.setOnClickListener {
-            routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+            routingViewListener.scrollNext(step.position.toInt())
         }
     }
 
@@ -172,14 +178,10 @@ open class StepAttemptDelegate(
         answerField.visibility = View.VISIBLE
     }
 
-    protected open fun blockUIBeforeSubmit(needBlock: Boolean) {
-        answerField.isEnabled = !needBlock
+    private fun blockUIBeforeSubmit(block: Boolean) {
+        for (i in 0 until attemptContainer.childCount) {
+            val child = attemptContainer.getChildAt(i)
+            child.isEnabled = !block
+        }
     }
-
-    protected open fun onRestoreSubmission() {}
-
-    protected open fun onPause() {}
-
-    protected open fun getCorrectString(): String = context.getString(R.string.correct_free_response)
-
 }

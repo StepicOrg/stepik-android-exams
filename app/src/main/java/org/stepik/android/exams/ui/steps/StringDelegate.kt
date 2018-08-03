@@ -3,6 +3,7 @@ package org.stepik.android.exams.ui.steps
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
@@ -11,44 +12,31 @@ import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
 
-class StringDelegate(
-        step: Step
-) : StepAttemptDelegate(step), AttemptView {
+open class StringDelegate: AttemptDelegate() {
+    protected lateinit var answerField: EditText
 
-    override fun onNeedShowAttempt(attempt: Attempt?) = showAttempt(attempt)
+    override var isEnabled: Boolean
+        get() = answerField.isEnabled
+        set(value) {
+            answerField.isEnabled = value
+        }
 
-    override fun setSubmission(submission: Submission?) {
-        super.submissions = submission
+    override var actionButton: Button? = null
+
+    override fun onCreateView(parent: ViewGroup): View =
+            LayoutInflater.from(parent.context).inflate(R.layout.view_free_answer_attempt, parent, false)
+
+    override fun onViewCreated(view: View) {
+        answerField = view as EditText
     }
 
-    private lateinit var answerField: EditText
-
-    override fun onCreateView(parent: ViewGroup): View {
-        val parentContainer = super.onCreateView(parent) as ViewGroup
-        answerField = LayoutInflater.from(parent.context).inflate(R.layout.view_free_answer_attempt, parent, false) as EditText
-        attemptContainer.addView(answerField)
-        return parentContainer
-    }
-
-    override fun showAttempt(attempt: Attempt?) {
-        super.attempt = attempt
+    override fun setAttempt(attempt: Attempt?) {
         answerField.text.clear()
     }
 
-    override fun blockUIBeforeSubmit(needBlock: Boolean) {
-        answerField.isEnabled = !needBlock
+    override fun setSubmission(submission: Submission?) {
+        submission?.reply?.text?.let { answerField.setText(it) }
     }
 
-    override fun generateReply(): Reply =
-            Reply(text = answerField.text.toString())
-
-    override fun onRestoreSubmission() {
-        val text = submissions?.reply?.text ?: return
-        answerField.setText(text)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        answerField.clearFocus()
-    }
+    override fun createReply() = Reply(text = answerField.text.toString())
 }

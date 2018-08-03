@@ -25,6 +25,29 @@ class Actions(
     }
 
     override fun describeContents(): Int = 0
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Actions
+
+        if (vote != other.vote) return false
+        if (delete != other.delete) return false
+        if (testSection != other.testSection) return false
+        if (doReview != other.doReview) return false
+        if (editInstructions != other.editInstructions) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = vote.hashCode()
+        result = 31 * result + delete.hashCode()
+        result = 31 * result + (testSection?.hashCode() ?: 0)
+        result = 31 * result + (doReview?.hashCode() ?: 0)
+        result = 31 * result + (editInstructions?.hashCode() ?: 0)
+        return result
+    }
 
     companion object CREATOR : Parcelable.Creator<Actions> {
         override fun createFromParcel(parcel: Parcel): Actions = Actions(

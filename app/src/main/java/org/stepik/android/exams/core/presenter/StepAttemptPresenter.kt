@@ -44,6 +44,8 @@ constructor(
 
     override fun attachView(view: AttemptView) {
         super.attachView(view)
+        view.onNeedShowAttempt(attempt)
+        view.setSubmission(submission)
         view.setState(viewState)
     }
 
@@ -87,11 +89,10 @@ constructor(
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 if (it.status == Submission.Status.CORRECT) {
-                    answerListener?.onCorrectAnswer()
+                    viewState = AttemptView.State.CorrectAnswerState
                 } else {
-                    answerListener?.onWrongAnswer()
+                    viewState = AttemptView.State.WrongAnswerState
                 }
-                view?.setSubmission(submission)
             }
         }
     }

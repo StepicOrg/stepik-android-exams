@@ -34,7 +34,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
             presenter?.joinCourses(id) ?: Unit
-            presenter?.loadTheoryLessons(id) ?: Unit
+            presenter?.loadTheoryLessons() ?: Unit
         }
 
 
@@ -88,7 +88,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         id = arguments.getString("id", "")
         swipeRefreshLessons.setOnRefreshListener {
             presenter?.clearData()
-            presenter?.loadTheoryLessons(id)
+            presenter?.loadTheoryLessons()
         }
 
     }
