@@ -20,6 +20,7 @@ ext.versions = [
         jsoup                : '1.8.3',
         calligraphy          : '2.1.0',
         butterKnife          : '8.8.1',
+        room                 : '1.1.1'
 ]
 
 ext.gradlePlugins = [
@@ -51,4 +52,6 @@ ext.libraries = [
         calligraphy          : "uk.co.chrisjenx:calligraphy:$versions.calligraphy",
         butterKnife          : "com.jakewharton:butterknife:$versions.butterKnife",
         butterKnifeCompiler  : "com.jakewharton:butterknife-compiler:$versions.butterKnife",
+        room                 : "android.arch.persistence.room:runtime:$versions.room",
+        roomCompiler                 : "android.arch.persistence.room:compiler:$versions.room"
 ]

@@ -2,19 +2,13 @@ package org.stepik.android.exams.ui.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.answer_layout.view.*
-import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import kotlinx.android.synthetic.main.button_container.view.*
-import org.stepik.android.exams.App
 import org.stepik.android.exams.R
-import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
@@ -24,8 +18,6 @@ import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
 import org.stepik.android.exams.util.resolvers.text.TextResolver
 import javax.inject.Inject
-import android.widget.LinearLayout
-
 
 
 open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
@@ -35,7 +27,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
 
     protected open var actionButton: Button? = null
 
-    lateinit var stepDelegate : StepDelegate
+    lateinit var stepDelegate: StepDelegate
     @Inject
     lateinit var textResolver: TextResolver
 
@@ -55,7 +47,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         }
     }
 
-    private fun resolveStep(){
+    private fun resolveStep() {
         stepDelegate = stepTypeResolver.getStepDelegate(step)
         attemptContainer.addView(stepDelegate.createView(parentContainer))
         answerField = parentContainer.answer_status_text
@@ -95,7 +87,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         resolveStep()
         loadUI(view)
         actionButton?.setOnClickListener {
-            if (submissions != null && submissions?.status != Submission.Status.LOCAL) {
+            if (submissions != null) {
                 clearAttemptContainer()
                 tryAgain()
             } else makeSubmission()
@@ -143,7 +135,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     }
 
     private fun makeSubmission() {
-        if (attempt == null || attempt?.id ?: 0 <= 0) return
+        if (attempt == null || attempt?.id ?: 0 <= 0 && !step.is_custom_passed) return
         blockUIBeforeSubmit(true)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
@@ -151,8 +143,8 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         presenter?.createSubmission(attemptId, reply)
     }
 
-    protected open fun startLoading(step: Step?) {
-        presenter?.createNewAttempt(step)
+    private fun startLoading(step: Step?) {
+        presenter?.checkStepInDb(step)
     }
 
     override fun onCorrectAnswer() {

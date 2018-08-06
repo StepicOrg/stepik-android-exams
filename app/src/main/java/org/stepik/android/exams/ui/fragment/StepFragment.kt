@@ -1,7 +1,6 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         App.component().inject(this)
     }
 
-    protected lateinit var step : Step
+    protected lateinit var step: Step
     lateinit var stepTypeResolver: StepTypeResolver
     protected lateinit var parentContainer: ViewGroup
     protected lateinit var attemptContainer: ViewGroup
@@ -39,7 +38,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         stepTypeResolver = StepTypeImpl(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) : View? {
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.step_delegate, container, false)
     }
 

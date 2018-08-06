@@ -6,6 +6,8 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.StepikRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
+import org.stepik.android.exams.data.db.dao.StepDao
+import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.*
 import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -23,9 +25,10 @@ constructor(
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
         private var backgroundScheduler: Scheduler,
-        private var api: Api
+        private var api: Api,
+        private var stepDao: StepDao
 ) : PresenterBase<AttemptView>() {
-
+    private var step: Step? = null
     private var disposable = CompositeDisposable()
 
     private var viewState: AttemptView.State = AttemptView.State.Idle
@@ -49,7 +52,33 @@ constructor(
         view.setState(viewState)
     }
 
+    fun checkStepInDb(step: Step?) {
+        Observable.fromCallable {
+            stepDao.findStepById(step?.id ?: 0)
+        }
+                .onErrorReturn { StepInfo(null, null, null) }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { stepInfo ->
+                    if (stepInfo.attempt != null || stepInfo.submission != null) {
+                        stepInfo.attempt?.let { attempts ->
+                            this.step = step
+                            attempt = attempts
+                            view?.onNeedShowAttempt(attempts)
+                        }
+                        stepInfo.submission?.let { sub ->
+                            submission = sub
+                            view?.setSubmission(sub)
+                            checkSubmissionState(sub)
+                        }
+                    } else {
+                        createNewAttempt(step)
+                    }
+                }
+    }
+
     fun createNewAttempt(step: Step?) {
+        this.step = step
         disposable.add(Observable.concat(
                 stepikRestService.getExistingAttempts(step?.id ?: 0, api.getCurrentUserId()
                         ?: 0).toObservable(),
@@ -66,8 +95,18 @@ constructor(
     private fun attemptLoaded(it: Attempt?) {
         viewState = AttemptView.State.Success
         attempt = it
+        addStepToDb(step?.id, attempt, null, false)
         view?.onNeedShowAttempt(attempt)
     }
+
+    private fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?, needUpdate: Boolean) =
+            Observable.fromCallable {
+                if (!needUpdate)
+                    stepDao.insertStep(StepInfo(id, attempt, submission))
+                else stepDao.updateStep(StepInfo(id, attempt, submission))
+            }
+                    .subscribeOn(backgroundScheduler)
+                    .subscribe()
 
     fun createSubmission(id: Long, reply: Reply) {
         submission = Submission(reply, id)
@@ -88,12 +127,18 @@ constructor(
                         .observeOn(mainScheduler)
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
-                if (it.status == Submission.Status.CORRECT) {
-                    viewState = AttemptView.State.CorrectAnswerState
-                } else {
-                    viewState = AttemptView.State.WrongAnswerState
-                }
+                addStepToDb(step?.id, attempt, submission, true)
+                view?.setSubmission(submission)
+                checkSubmissionState(it)
             }
+        }
+    }
+
+    private fun checkSubmissionState(submission: Submission?) {
+        viewState = if (submission?.status == Submission.Status.CORRECT) {
+            AttemptView.State.CorrectAnswerState
+        } else {
+            AttemptView.State.WrongAnswerState
         }
     }
 

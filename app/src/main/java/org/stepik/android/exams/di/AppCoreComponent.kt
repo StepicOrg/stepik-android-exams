@@ -6,16 +6,20 @@ import dagger.Component
 import org.stepik.android.exams.App
 import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
+import org.stepik.android.exams.di.network.RoomModule
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.ui.custom.LatexSupportableWebView
-import org.stepik.android.exams.ui.fragment.*
+import org.stepik.android.exams.ui.fragment.AttemptFragment
+import org.stepik.android.exams.ui.fragment.LessonFragment
+import org.stepik.android.exams.ui.fragment.OnboardingFragment
+import org.stepik.android.exams.ui.fragment.StepFragment
 
 @AppSingleton
-@Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class])
+@Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class, RoomModule::class])
 interface AppCoreComponent {
 
     @Component.Builder
@@ -24,6 +28,7 @@ interface AppCoreComponent {
 
         @BindsInstance
         fun context(context: Context): Builder
+
     }
 
     fun loginComponentBuilder(): LoginComponent.Builder

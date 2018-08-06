@@ -40,7 +40,7 @@ dependencies {
     implementation libraries.dagger
     kapt libraries.daggerCompiler
     implementation libraries.gson
-    annotationProcessor libraries.daggerCompiler
+    kapt libraries.daggerCompiler
     implementation libraries.retrofit
     implementation libraries.retrofitGsonConverter
     implementation libraries.retrofitRxJavaAdapter
@@ -57,4 +57,10 @@ dependencies {
     implementation libraries.calligraphy
     implementation libraries.butterKnife
     kapt libraries.butterKnifeCompiler
+    implementation libraries.room
+    annotationProcessor libraries.roomCompiler
+    kapt libraries.roomCompiler
+    api "android.arch.lifecycle:extensions:1.1.1"
+    kapt "android.arch.lifecycle:compiler:1.1.1"
+    testImplementation "android.arch.core:core-testing:1.1.1"
 }

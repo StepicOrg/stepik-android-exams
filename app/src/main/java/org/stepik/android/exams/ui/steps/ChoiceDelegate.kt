@@ -6,12 +6,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import kotlinx.android.synthetic.main.view_choice_attempt.view.*
 import org.stepik.android.exams.R
-import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
-import org.stepik.android.exams.ui.custom.StepikRadioGroup
 
 class ChoiceDelegate : AttemptDelegate() {
 

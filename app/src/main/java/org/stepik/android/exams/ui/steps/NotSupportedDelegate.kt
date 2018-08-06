@@ -5,11 +5,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import org.stepik.android.exams.R
 import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
 
-class NotSupportedDelegate: AttemptDelegate() {
+class NotSupportedDelegate : AttemptDelegate() {
     override var isEnabled: Boolean = false
     override var actionButton: Button? = null
         set(value) {

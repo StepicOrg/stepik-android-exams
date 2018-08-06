@@ -6,5 +6,4 @@ class ComponentManager(
     val loginComponent by lazy {
         appCoreComponent.loginComponentBuilder().build()
     }
-
 }

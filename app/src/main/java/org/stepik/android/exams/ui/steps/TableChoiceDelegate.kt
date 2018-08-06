@@ -1,7 +1,6 @@
 package org.stepik.android.exams.ui.steps
 
 import android.app.Activity
-import android.content.Context
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,9 +10,7 @@ import android.widget.Button
 import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import kotlinx.android.synthetic.main.view_table_quiz_layout.view.*
 import org.stepik.android.exams.R
-import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.TableChoiceAnswer
 import org.stepik.android.exams.data.model.attempts.Attempt
@@ -22,18 +19,18 @@ import org.stepik.android.exams.ui.decorations.GridDividerItemDecoration
 import org.stepik.android.exams.util.DpPixelsHelper
 import java.util.*
 
-class TableChoiceDelegate: AttemptDelegate(){
+class TableChoiceDelegate : AttemptDelegate() {
     override var isEnabled: Boolean
-    get() = recyclerContainer.isEnabled
-    set(value) {
-        recyclerContainer.isEnabled = value
-    }
+        get() = recyclerContainer.isEnabled
+        set(value) {
+            recyclerContainer.isEnabled = value
+        }
     override var actionButton: Button? = null
 
     private lateinit var recyclerContainer: RecyclerView
     private lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var adapter: TableChoiceAdapter
-    private lateinit var context : Activity
+    private lateinit var context: Activity
 
     override fun onCreateView(parent: ViewGroup): View {
         val tableQuizView = LayoutInflater.from(parent.context).inflate(R.layout.view_table_quiz_layout, parent, false)
@@ -74,7 +71,7 @@ class TableChoiceDelegate: AttemptDelegate(){
     }
 
     override fun createReply() =
-    Reply(tableChoices = adapter.answers)
+            Reply(tableChoices = adapter.answers)
 
     override fun setSubmission(submission: Submission?) {
         val choices = submission?.reply?.tableChoices ?: return

@@ -5,7 +5,7 @@ import android.view.View
 import org.stepik.android.exams.data.model.Reply
 import org.stepik.android.exams.data.model.Submission
 
-class NumberDelegate: StringDelegate() {
+class NumberDelegate : StringDelegate() {
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
         answerField.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL)
