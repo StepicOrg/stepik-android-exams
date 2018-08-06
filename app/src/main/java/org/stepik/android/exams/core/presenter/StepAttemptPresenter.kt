@@ -72,9 +72,46 @@ constructor(
                             checkSubmissionState(sub)
                         }
                     } else {
-                        createNewAttempt(step)
+                        checkExistingAttempts(step)
                     }
                 }
+    }
+
+    private fun checkExistingAttempts(step: Step?) {
+        stepikRestService
+                .getExistingAttempts(step?.id ?: 0, api.getCurrentUserId() ?: 0)
+                .filter { it.attempts.isNotEmpty() }
+                .map { it.attempts.firstOrNull() }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .doOnSuccess {
+                    attempt = it
+                    attemptLoaded(attempt)
+                    if (attempt == null)
+                        createNewAttempt(step)
+
+                }
+                .toSingle()
+                .toCompletable()
+                .andThen { sub ->
+                    sub.onComplete()
+                    sub.onSubscribe(
+                            stepikRestService.getSubmissions(attempt?.id ?: 0, "desc")
+                                    .filter { it.submissions?.isNotEmpty() ?: false }
+                                    .subscribeOn(backgroundScheduler)
+                                    .observeOn(mainScheduler)
+                                    .subscribe { response ->
+                                        submission = response.submissions?.first()
+                                        view?.setSubmission(submission)
+                                        checkSubmissionState(submission)
+                                        response.submissions?.forEach {
+                                            if (it.status?.equals("CORRECT") == true)
+                                            //marked as passed
+                                                print("")
+                                        }
+                                    })
+                }.subscribe()
+
     }
 
     fun createNewAttempt(step: Step?) {
