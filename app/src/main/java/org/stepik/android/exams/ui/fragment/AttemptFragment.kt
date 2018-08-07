@@ -3,7 +3,6 @@ package org.stepik.android.exams.ui.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.answer_layout.view.*
@@ -13,7 +12,6 @@ import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
-import org.stepik.android.exams.ui.adapter.TableChoiceAdapter
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
@@ -51,7 +49,6 @@ class AttemptFragment :
         stepDelegate = stepTypeResolver.getStepDelegate(step)
         attemptContainer.addView(stepDelegate.createView(parentContainer))
         answerField = parentContainer.answer_status_text
-        // stepDelegate.routingViewListener = routingViewListener
     }
 
     override fun setState(state: AttemptView.State): Unit = when (state) {
@@ -150,6 +147,9 @@ class AttemptFragment :
     override fun onCorrectAnswer() {
         blockUIBeforeSubmit(false)
         setTextToActionButton(actionButton, context.getString(R.string.next))
+        actionButton?.setOnClickListener{
+            routingViewListener.scrollNext(step.position.toInt())
+        }
         onNext()
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.correct_answer_background))
         answerField.setText(R.string.correct)
@@ -158,8 +158,11 @@ class AttemptFragment :
     }
 
     private fun onNext() {
+        routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
-            routingViewListener.scrollNext(step.position.toInt())
+            if (step.is_last)
+                navigatePresenter.navigateToLesson(step)
+            else routingViewListener.scrollNext(step.position.toInt())
         }
     }
 

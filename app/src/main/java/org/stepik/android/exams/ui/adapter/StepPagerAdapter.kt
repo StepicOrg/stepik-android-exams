@@ -14,13 +14,11 @@ import org.stepik.android.exams.util.resolvers.StepTypeResolver
 class StepPagerAdapter(
         fragmentManager: FragmentManager,
         val steps: List<Step>?,
-        val stepTypeResolver: StepTypeResolver,
-        val routingViewListener: RoutingViewListener
+        val stepTypeResolver: StepTypeResolver
 ) : FragmentPagerAdapter(fragmentManager) {
     override fun getItem(position: Int): Fragment {
-        val delegate = stepTypeResolver.getStepDelegate(steps?.getOrNull(position))
-        return when (delegate) {
-            is TextDelegate -> StepFragment.newInstance(steps?.getOrNull(position))
+        return when (steps?.getOrNull(position)?.block?.name) {
+            "text" -> StepFragment.newInstance(steps.getOrNull(position))
             else -> AttemptFragment.newInstance(steps?.getOrNull(position))
         }
     }

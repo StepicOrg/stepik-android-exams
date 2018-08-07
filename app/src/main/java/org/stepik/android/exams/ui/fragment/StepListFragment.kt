@@ -22,7 +22,7 @@ class StepListFragment : Fragment(), RoutingViewListener {
         super.onViewCreated(view, savedInstanceState)
         val lesson: Lesson = arguments.getParcelable("lesson")
         stepTypeResolver = StepTypeImpl(context)
-        val stepAdapter = StepPagerAdapter(fragmentManager, lesson.stepsList, stepTypeResolver, this)
+        val stepAdapter = StepPagerAdapter(childFragmentManager, lesson.stepsList, stepTypeResolver)
         pagers.adapter = stepAdapter
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
