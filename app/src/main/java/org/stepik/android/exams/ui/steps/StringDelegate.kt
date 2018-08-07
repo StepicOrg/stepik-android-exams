@@ -37,4 +37,7 @@ open class StringDelegate : AttemptDelegate() {
     }
 
     override fun createReply() = Reply(text = answerField.text.toString())
+    override fun blockUIBeforeSubmit(enabled: Boolean) {
+        answerField.isEnabled = enabled
+    }
 }

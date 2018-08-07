@@ -77,4 +77,8 @@ class TableChoiceDelegate : AttemptDelegate() {
         val choices = submission?.reply?.tableChoices ?: return
         adapter.answers = choices
     }
+
+    override fun blockUIBeforeSubmit(enabled: Boolean) =
+            adapter.setAllItemsEnabled(enabled)
+
 }

@@ -33,4 +33,5 @@ class ChoiceDelegate : AttemptDelegate() {
     override fun setSubmission(submission: Submission?) = choiceAdapter.setSubmission(submission)
     override fun setAttempt(attempt: Attempt?) = choiceAdapter.setAttempt(attempt)
     override fun createReply() = choiceAdapter.reply
+    override fun blockUIBeforeSubmit(enabled: Boolean) = choiceAdapter.setEnabled(enabled)
 }

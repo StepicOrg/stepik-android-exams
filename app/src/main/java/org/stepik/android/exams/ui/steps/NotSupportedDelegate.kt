@@ -23,4 +23,6 @@ class NotSupportedDelegate : AttemptDelegate() {
     override fun setSubmission(submission: Submission?) {}
 
     override fun createReply() = Reply()
+
+    override fun blockUIBeforeSubmit(enabled: Boolean) {}
 }

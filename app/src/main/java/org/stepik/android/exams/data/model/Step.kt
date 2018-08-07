@@ -3,6 +3,8 @@ package org.stepik.android.exams.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import org.stepik.android.exams.util.readBoolean
+import org.stepik.android.exams.util.writeBoolean
 import java.util.*
 
 data class Step(
@@ -26,7 +28,8 @@ data class Step(
         @SerializedName("has_submissions_restrictions")
         var hasSubmissionRestriction: Boolean = false,
         @SerializedName("max_submissions_count")
-        var maxSubmissionCount: Int = 0
+        var maxSubmissionCount: Int = 0,
+        var is_last: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -47,7 +50,8 @@ data class Step(
             parcel.readInt(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.readInt()) {
+            parcel.readInt(),
+            parcel.readBoolean()) {
     }
 
     override fun equals(other: Any?): Boolean {
@@ -75,7 +79,7 @@ data class Step(
         if (discussion_proxy != other.discussion_proxy) return false
         if (hasSubmissionRestriction != other.hasSubmissionRestriction) return false
         if (maxSubmissionCount != other.maxSubmissionCount) return false
-
+        if (is_last != other.is_last) return false
         return true
     }
 
@@ -99,6 +103,7 @@ data class Step(
         result = 31 * result + (discussion_proxy?.hashCode() ?: 0)
         result = 31 * result + hasSubmissionRestriction.hashCode()
         result = 31 * result + maxSubmissionCount
+        result = 31 * result + is_last.hashCode()
         return result
     }
 
@@ -122,6 +127,7 @@ data class Step(
         parcel.writeString(discussion_proxy)
         parcel.writeByte(if (hasSubmissionRestriction) 1 else 0)
         parcel.writeInt(maxSubmissionCount)
+        parcel.writeBoolean(is_last)
     }
 
     override fun describeContents(): Int {

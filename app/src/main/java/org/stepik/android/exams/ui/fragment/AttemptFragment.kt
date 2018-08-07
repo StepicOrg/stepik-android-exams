@@ -3,6 +3,7 @@ package org.stepik.android.exams.ui.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.answer_layout.view.*
@@ -12,6 +13,7 @@ import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
 import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.exams.ui.adapter.TableChoiceAdapter
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
@@ -20,21 +22,19 @@ import org.stepik.android.exams.util.resolvers.text.TextResolver
 import javax.inject.Inject
 
 
-open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
-    protected var attempt: Attempt? = null
+class AttemptFragment :
+        StepFragment(),
+        AnswerListener,
+        AttemptView {
 
+    private var attempt: Attempt? = null
     private var submissions: Submission? = null
-
-    protected open var actionButton: Button? = null
-
+    private var actionButton: Button? = null
     lateinit var stepDelegate: StepDelegate
     @Inject
     lateinit var textResolver: TextResolver
-
     lateinit var context: Activity
-
     private lateinit var answerField: TextView
-
     lateinit var routingViewListener: RoutingViewListener
 
     companion object {
@@ -121,7 +121,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         setTextToActionButton(actionButton, context.getString(R.string.submit))
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.white))
         answerField.visibility = View.GONE
-        blockUIBeforeSubmit(false)
+        blockUIBeforeSubmit(true)
     }
 
     override fun onNeedShowAttempt(attempt: Attempt?) {
@@ -136,7 +136,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
 
     private fun makeSubmission() {
         if (attempt == null || attempt?.id ?: 0 <= 0 && !step.is_custom_passed) return
-        blockUIBeforeSubmit(true)
+        blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
         presenter?.answerListener = this
@@ -148,6 +148,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     }
 
     override fun onCorrectAnswer() {
+        blockUIBeforeSubmit(false)
         setTextToActionButton(actionButton, context.getString(R.string.next))
         onNext()
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.correct_answer_background))
@@ -163,6 +164,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     }
 
     override fun onWrongAnswer() {
+        blockUIBeforeSubmit(false)
         setTextToActionButton(actionButton, context.getString(R.string.try_again))
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.wrong_answer_background))
         answerField.setText(R.string.wrong)
@@ -170,10 +172,7 @@ open class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         answerField.visibility = View.VISIBLE
     }
 
-    private fun blockUIBeforeSubmit(block: Boolean) {
-        for (i in 0 until attemptContainer.childCount) {
-            val child = attemptContainer.getChildAt(i)
-            child.isEnabled = !block
-        }
+    private fun blockUIBeforeSubmit(enable: Boolean) {
+        (stepDelegate as AttemptDelegate).blockUIBeforeSubmit(enable)
     }
 }

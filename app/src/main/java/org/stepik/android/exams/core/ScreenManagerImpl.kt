@@ -17,6 +17,7 @@ constructor(
 ) : ScreenManager {
     override fun showStepsList(lesson: Lesson, context: Context) {
         val intent = Intent(context, StepsActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra("lesson", lesson)
         context.startActivity(intent)
     }

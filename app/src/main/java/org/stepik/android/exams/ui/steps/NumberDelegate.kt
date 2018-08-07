@@ -16,4 +16,8 @@ class NumberDelegate : StringDelegate() {
     }
 
     override fun createReply() = Reply(number = answerField.text.toString())
+
+    override fun blockUIBeforeSubmit(enabled: Boolean) {
+        answerField.isEnabled = enabled
+    }
 }

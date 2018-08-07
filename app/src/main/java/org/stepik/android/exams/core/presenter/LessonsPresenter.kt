@@ -5,7 +5,10 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
+import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.data.NavigationInfo
 import org.stepik.android.exams.data.model.LessonStepicResponse
+import org.stepik.android.exams.data.model.StepResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
@@ -21,7 +24,8 @@ constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val navigationDao: NavigationDao
 ) : PresenterBase<LessonsView>() {
 
     private var viewState: LessonsView.State = LessonsView.State.Idle
@@ -88,8 +92,9 @@ constructor(
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .doOnError { viewState = LessonsView.State.NetworkError }
-                    .subscribe { response ->
+                    .doOnSuccess { response ->
                         lessonsList.lessons?.get(id)?.stepsList = response.steps?.toMutableList()
+                        lessonsList.lessons?.get(id)?.stepsList?.last()?.is_last = true
                     }
 
     private fun onError() {
@@ -101,6 +106,25 @@ constructor(
             joinCourse(u)
     }
 
+    private fun findLessonsInDb(id: Long) =
+            navigationDao.findLessonById(id)?.lesson
+
+    private fun saveLessonsToDb() =
+            Observable.fromCallable {
+                val iterator = lessonsList.lessons?.listIterator()
+                while (iterator?.hasNext() == true) {
+                    val next = iterator.next()
+                    if (findLessonsInDb(next.id) != null)
+                        return@fromCallable
+                    val nextIndex = iterator.nextIndex().toLong().plus(1)
+                    val prevIndex = iterator.previousIndex().toLong()
+                    navigationDao.insertLessons(NavigationInfo(next.id, next, nextIndex, prevIndex))
+                }
+            }
+                    .subscribeOn(backgroundScheduler)
+                    .subscribe()
+
+
     private fun joinCourse(id: Long) =
             disposable.add(api.joinCourse(id)
                     .subscribeOn(backgroundScheduler)
@@ -110,17 +134,21 @@ constructor(
     fun loadTheoryLessons() {
         viewState = LessonsView.State.Loading
         disposable.add(loadLessons()
-                .andThen { subscriber ->
-                    subscriber.onSubscribe(Observable
-                            .fromIterable(listId)
-                            .forEach { loadSteps(it, listId.indexOf(it)) })
-                    subscriber.onComplete()
+                .andThen { _ ->
+                    val observableList: MutableList<Observable<StepResponse>>? = mutableListOf()
+                    listId.forEach { list ->
+                        observableList?.add(loadSteps(list, listId.indexOf(list)).toObservable())
+                    }
+                    Observable.zip(observableList) {}
+                            .doOnComplete {
+                                view?.showLessons(lessonsList.lessons)
+                                viewState = LessonsView.State.Success
+                                saveLessonsToDb()
+                            }
+                            .subscribe()
                 }
-                .subscribe
-                ({
-                    view?.showLessons(lessonsList.lessons)
-                    viewState = LessonsView.State.Success
-                }) { onError() })
+                .doOnError { onError() }
+                .subscribe())
     }
 
     fun clearData() {
@@ -132,8 +160,10 @@ constructor(
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        if (listId.isNotEmpty())
+        if (listId.isNotEmpty()) {
             view.showLessons(lessonsList.lessons)
+            saveLessonsToDb()
+        }
     }
 
     override fun destroy() {
