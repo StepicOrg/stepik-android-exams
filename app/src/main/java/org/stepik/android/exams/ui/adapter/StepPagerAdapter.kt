@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.fragment.AttemptFragment
 import org.stepik.android.exams.ui.fragment.StepFragment
-import org.stepik.android.exams.ui.listeners.RoutingViewListener
-import org.stepik.android.exams.ui.steps.TextDelegate
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 class StepPagerAdapter(

@@ -11,5 +11,5 @@ abstract class AttemptDelegate : StepDelegate() {
     abstract fun setAttempt(attempt: Attempt?)
     abstract fun setSubmission(submission: Submission?)
     abstract fun createReply(): Reply
-    abstract fun blockUIBeforeSubmit(enabled : Boolean)
+    abstract fun blockUIBeforeSubmit(enabled: Boolean)
 }

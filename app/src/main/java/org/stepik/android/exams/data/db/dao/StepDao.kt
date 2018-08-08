@@ -9,7 +9,7 @@ interface StepDao {
     @Query("SELECT * FROM StepInfo WHERE id = :id")
     fun findStepById(id: Long): StepInfo
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStep(stepInfo: StepInfo)
 
     @Update(onConflict = REPLACE)

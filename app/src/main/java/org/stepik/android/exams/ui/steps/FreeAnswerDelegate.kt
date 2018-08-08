@@ -13,7 +13,9 @@ class FreeAnswerDelegate : StringDelegate() {
 
     override fun setAttempt(attempt: Attempt?) =
             answerField.text.clear()
+
     override fun blockUIBeforeSubmit(enabled: Boolean) {
-        answerField.isEnabled = enabled }
+        answerField.isEnabled = enabled
+    }
 
 }

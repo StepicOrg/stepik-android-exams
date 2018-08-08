@@ -16,8 +16,6 @@ import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
-import org.stepik.android.exams.util.resolvers.text.TextResolver
-import javax.inject.Inject
 
 
 class AttemptFragment :
@@ -29,11 +27,10 @@ class AttemptFragment :
     private var submissions: Submission? = null
     private var actionButton: Button? = null
     lateinit var stepDelegate: StepDelegate
-    @Inject
-    lateinit var textResolver: TextResolver
     lateinit var context: Activity
     private lateinit var answerField: TextView
     lateinit var routingViewListener: RoutingViewListener
+    private var shouldUpdate = false
 
     companion object {
         fun newInstance(step: Step?): StepFragment {
@@ -84,7 +81,8 @@ class AttemptFragment :
         resolveStep()
         loadUI(view)
         actionButton?.setOnClickListener {
-            if (submissions != null) {
+            if (submissions?.status?.name == "CORRECT"
+                    || submissions?.status?.name == "WRONG") {
                 clearAttemptContainer()
                 tryAgain()
             } else makeSubmission()
@@ -102,6 +100,19 @@ class AttemptFragment :
         super.onStop()
     }
 
+    override fun updateSubmission(shouldUpdate: Boolean) {
+        this.shouldUpdate = shouldUpdate
+    }
+
+    override fun onDestroyView() {
+        val reply = (stepDelegate as AttemptDelegate).createReply()
+        val stepExist = presenter?.checkStepExistance(step.id) ?: false
+        if (stepExist && !shouldUpdate)
+            submissions = Submission(reply, attempt?.id ?: 0)
+        presenter?.addStepToDb(step.id, attempt, submissions, stepExist)
+        super.onDestroyView()
+    }
+
     private fun loadUI(view: View?) {
         parentContainer.buttonsContainer.visibility = View.VISIBLE
         parentContainer.stepAttemptSubmitButton.visibility = View.VISIBLE
@@ -110,6 +121,7 @@ class AttemptFragment :
     }
 
     private fun tryAgain() {
+        shouldUpdate = false
         submissions = null
         presenter?.createNewAttempt(step)
     }
@@ -132,6 +144,7 @@ class AttemptFragment :
     }
 
     private fun makeSubmission() {
+        shouldUpdate = true
         if (attempt == null || attempt?.id ?: 0 <= 0 && !step.is_custom_passed) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
@@ -140,6 +153,7 @@ class AttemptFragment :
         presenter?.createSubmission(attemptId, reply)
     }
 
+
     private fun startLoading(step: Step?) {
         presenter?.checkStepInDb(step)
     }
@@ -147,7 +161,7 @@ class AttemptFragment :
     override fun onCorrectAnswer() {
         blockUIBeforeSubmit(false)
         setTextToActionButton(actionButton, context.getString(R.string.next))
-        actionButton?.setOnClickListener{
+        actionButton?.setOnClickListener {
             routingViewListener.scrollNext(step.position.toInt())
         }
         onNext()

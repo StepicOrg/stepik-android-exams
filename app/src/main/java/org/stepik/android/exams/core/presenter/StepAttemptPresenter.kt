@@ -30,6 +30,7 @@ constructor(
 ) : PresenterBase<AttemptView>() {
     private var step: Step? = null
     private var disposable = CompositeDisposable()
+    private var shouldUpdate = false
 
     private var viewState: AttemptView.State = AttemptView.State.Idle
         set(value) {
@@ -49,7 +50,21 @@ constructor(
         super.attachView(view)
         view.onNeedShowAttempt(attempt)
         view.setSubmission(submission)
+        view.updateSubmission(shouldUpdate)
         view.setState(viewState)
+    }
+
+    fun checkStepExistance(id: Long): Boolean {
+        var needUpdate = false
+        Observable.fromCallable {
+            stepDao.findStepById(step?.id ?: 0)
+        }
+                .onErrorReturn { StepInfo(null, null, null) }
+                .subscribeOn(backgroundScheduler)
+                .blockingSubscribe {
+                    needUpdate = it.attempt != null
+                }
+        return needUpdate
     }
 
     fun checkStepInDb(step: Step?) {
@@ -71,9 +86,7 @@ constructor(
                             view?.setSubmission(sub)
                             checkSubmissionState(sub)
                         }
-                    } else {
-                        checkExistingAttempts(step)
-                    }
+                    } else checkExistingAttempts(step)
                 }
     }
 
@@ -85,10 +98,10 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnSuccess {
-                    attempt = it
-                    attemptLoaded(attempt)
-                    if (attempt == null)
+                    attemptLoaded(it)
+                    if (attempt == null) {
                         createNewAttempt(step)
+                    }
 
                 }
                 .toSingle()
@@ -116,6 +129,7 @@ constructor(
 
     fun createNewAttempt(step: Step?) {
         this.step = step
+        view?.updateSubmission(shouldUpdate = false)
         disposable.add(Observable.concat(
                 stepikRestService.getExistingAttempts(step?.id ?: 0, api.getCurrentUserId()
                         ?: 0).toObservable(),
@@ -130,13 +144,15 @@ constructor(
     }
 
     private fun attemptLoaded(it: Attempt?) {
-        viewState = AttemptView.State.Success
         attempt = it
-        addStepToDb(step?.id, attempt, null, false)
-        view?.onNeedShowAttempt(attempt)
+        attempt?.let {
+            view?.onNeedShowAttempt(attempt)
+            addStepToDb(step?.id, attempt, null, false)
+            viewState = AttemptView.State.Success
+        }
     }
 
-    private fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?, needUpdate: Boolean) =
+    fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?, needUpdate: Boolean) =
             Observable.fromCallable {
                 if (!needUpdate)
                     stepDao.insertStep(StepInfo(id, attempt, submission))
@@ -166,17 +182,21 @@ constructor(
             } else {
                 addStepToDb(step?.id, attempt, submission, true)
                 view?.setSubmission(submission)
+                view?.updateSubmission(shouldUpdate = true)
                 checkSubmissionState(it)
             }
         }
     }
 
     private fun checkSubmissionState(submission: Submission?) {
-        viewState = if (submission?.status == Submission.Status.CORRECT) {
-            AttemptView.State.CorrectAnswerState
-        } else {
-            AttemptView.State.WrongAnswerState
+        if (submission?.status == Submission.Status.CORRECT) {
+            viewState = AttemptView.State.CorrectAnswerState
+            view?.updateSubmission(shouldUpdate = true)
         }
+        if (submission?.status == Submission.Status.WRONG) {
+            viewState = AttemptView.State.WrongAnswerState
+            view?.updateSubmission(shouldUpdate = true)
+        } else return
     }
 
     private fun onError(error: Throwable) {
