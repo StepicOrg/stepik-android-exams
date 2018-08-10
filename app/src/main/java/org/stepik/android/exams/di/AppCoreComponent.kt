@@ -9,14 +9,8 @@ import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.di.network.RoomModule
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
-import org.stepik.android.exams.ui.adapter.StepPagerAdapter
-import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
-import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
-import org.stepik.android.exams.ui.custom.LatexSupportableWebView
-import org.stepik.android.exams.ui.fragment.AttemptFragment
 import org.stepik.android.exams.ui.fragment.LessonFragment
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
-import org.stepik.android.exams.ui.fragment.StepFragment
 
 @AppSingleton
 @Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class, RoomModule::class])
@@ -33,6 +27,8 @@ interface AppCoreComponent {
 
     fun loginComponentBuilder(): LoginComponent.Builder
 
+    fun stepComponentBuilder(): StepComponent.Builder
+
     fun inject(activity: SplashActivity)
 
     fun inject(fragment: OnboardingFragment)
@@ -42,16 +38,4 @@ interface AppCoreComponent {
     fun inject(activityTopics: TopicsListActivity)
 
     fun inject(lessonsFragment: LessonFragment)
-
-    fun inject(latexSupportableWebView: LatexSupportableWebView)
-
-    fun inject(latexSupportableEnhancedFrameLayout: LatexSupportableEnhancedFrameLayout)
-
-    fun inject(stepPagerAdapter: StepPagerAdapter)
-
-    fun inject(stepikRadioGroupAdapter: StepikRadioGroupAdapter)
-
-    fun inject(attemptFragment: AttemptFragment)
-
-    fun inject(stepFragment: StepFragment)
 }

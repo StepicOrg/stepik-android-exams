@@ -69,7 +69,7 @@ public class LatexSupportableWebView extends WebView implements View.OnClickList
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     private void init() {
-        App.Companion.component().inject(this);
+        App.Companion.componentManager().getStepComponent().inject(this);
         setBackgroundColor(Color.argb(1, 0, 0, 0));
         setOnLongClickListener(v -> true);
 

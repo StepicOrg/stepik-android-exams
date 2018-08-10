@@ -8,7 +8,7 @@ import org.stepik.android.exams.web.AttemptRequest
 import org.stepik.android.exams.web.AttemptResponse
 import retrofit2.http.*
 
-interface StepikRestService {
+interface StepicRestService {
     @Headers("Content-Type: application/json")
     @POST("api/enrollments")
     fun joinCourse(
@@ -46,4 +46,9 @@ interface StepikRestService {
             @Query("attempt") attempt_id: Long,
             @Query("order") desc: String
     ): Observable<SubmissionResponse>
+
+    @GET("api/progresses")
+    fun getProgresses(@Query(
+            "ids[]") progresses: Array<String>
+    ): Single<ProgressesResponse>
 }

@@ -28,7 +28,7 @@ constructor(
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
         private val cookieHelper: CookieHelper,
-        private val stepikService: StepikRestService,
+        private val stepicService: StepicRestService,
         private var sharedPreference: SharedPreferenceHelper
 ) {
 
@@ -91,13 +91,13 @@ constructor(
     }
 
     fun joinCourse(course: Long): Completable =
-            stepikService.joinCourse(EnrollmentWrapper(course))
+            stepicService.joinCourse(EnrollmentWrapper(course))
 
     fun getSteps(lesson: LongArray): Single<StepResponse> =
-            stepikService.getSteps(lesson)
+            stepicService.getSteps(lesson)
 
     fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =
-            stepikService.getLessons(lesson)
+            stepicService.getLessons(lesson)
 
     fun getCurrentUserId() = sharedPreference.profile?.id
 

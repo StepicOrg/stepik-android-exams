@@ -26,10 +26,10 @@ class AttemptFragment :
     private var attempt: Attempt? = null
     private var submissions: Submission? = null
     private var actionButton: Button? = null
-    lateinit var stepDelegate: StepDelegate
+    private lateinit var stepDelegate: StepDelegate
     lateinit var context: Activity
     private lateinit var answerField: TextView
-    lateinit var routingViewListener: RoutingViewListener
+    private lateinit var routingViewListener: RoutingViewListener
     private var shouldUpdate = false
 
     companion object {
@@ -106,10 +106,10 @@ class AttemptFragment :
 
     override fun onDestroyView() {
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        val stepExist = presenter?.checkStepExistance(step.id) ?: false
+        val stepExist = presenter?.checkStepExistance() ?: false
         if (stepExist && !shouldUpdate)
             submissions = Submission(reply, attempt?.id ?: 0)
-        presenter?.addStepToDb(step.id, attempt, submissions, stepExist)
+        presenter?.addStepToDb(step?.id, attempt, submissions, stepExist)
         super.onDestroyView()
     }
 
@@ -141,11 +141,14 @@ class AttemptFragment :
     override fun setSubmission(submission: Submission?) {
         submissions = submission
         (stepDelegate as AttemptDelegate).setSubmission(submission)
+        submission?.let {
+            progressPresenter.isStepPassed(step)
+        }
     }
 
     private fun makeSubmission() {
         shouldUpdate = true
-        if (attempt == null || attempt?.id ?: 0 <= 0 && !step.is_custom_passed) return
+        if (attempt == null || attempt?.id ?: 0 <= 0 && step?.is_custom_passed != true) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
@@ -162,7 +165,7 @@ class AttemptFragment :
         blockUIBeforeSubmit(false)
         setTextToActionButton(actionButton, context.getString(R.string.next))
         actionButton?.setOnClickListener {
-            routingViewListener.scrollNext(step.position.toInt())
+            routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
         onNext()
         attemptContainer.setBackgroundColor(context.resources.getColor(R.color.correct_answer_background))
@@ -174,9 +177,9 @@ class AttemptFragment :
     private fun onNext() {
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
-            if (step.is_last)
+            if (step?.is_last == true)
                 navigatePresenter.navigateToLesson(step)
-            else routingViewListener.scrollNext(step.position.toInt())
+            else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }
 

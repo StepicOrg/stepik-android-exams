@@ -11,22 +11,34 @@ import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 class StepPagerAdapter(
         fragmentManager: FragmentManager,
-        val steps: List<Step>?,
-        val stepTypeResolver: StepTypeResolver
+        stepsList: List<Step>?,
+        private val stepTypeResolver: StepTypeResolver
 ) : FragmentPagerAdapter(fragmentManager) {
+    private var steps: MutableList<Step> = stepsList as MutableList<Step>
     override fun getItem(position: Int): Fragment {
-        return when (steps?.getOrNull(position)?.block?.name) {
+        return when (steps.getOrNull(position)?.block?.name) {
             "text" -> StepFragment.newInstance(steps.getOrNull(position))
-            else -> AttemptFragment.newInstance(steps?.getOrNull(position))
+            else -> AttemptFragment.newInstance(steps.getOrNull(position))
         }
     }
 
-    override fun getCount(): Int = steps?.size ?: 0
+    fun updateSteps(steps: MutableList<Step>?) {
+        steps?.let {
+            this.steps = steps
+            notifyDataSetChanged()
+        }
+    }
+
+    fun updateStep(step: Step, position: Int) {
+        steps[position] = step
+    }
+
+    override fun getCount(): Int = steps.size
     fun getTabDrawable(position: Int): Drawable? {
-        if (position >= steps?.size ?: 0) return null
-        val step = steps?.get(position)
-        return stepTypeResolver.getDrawableForType(step?.block?.name, step?.is_custom_passed
-                ?: false, step?.actions?.doReview != null)
+        if (position >= steps.size) return null
+        val step = steps[position]
+        return stepTypeResolver.getDrawableForType(step.block?.name, step.is_custom_passed,
+                step.actions?.doReview != null)
     }
 
 }

@@ -101,16 +101,16 @@ constructor(
         }
 
         if (viewed) {
-            var drawable: Drawable? = mapFromTypeToDrawable.get(type)
+            var drawable: Drawable? = mapFromTypeToDrawable[type]
             if (drawable == null) {
-                drawable = mapFromTypeToDrawable.get(AppConstants.TYPE_TEXT)
+                drawable = mapFromTypeToDrawable[AppConstants.TYPE_TEXT]
             }
 
             return drawable
         } else {
-            var drawable: Drawable? = mapFromTypeToDrawableNotViewed.get(type)
+            var drawable: Drawable? = mapFromTypeToDrawableNotViewed[type]
             if (drawable == null) {
-                drawable = mapFromTypeToDrawableNotViewed.get(AppConstants.TYPE_TEXT)
+                drawable = mapFromTypeToDrawableNotViewed[AppConstants.TYPE_TEXT]
             }
             return drawable
         }

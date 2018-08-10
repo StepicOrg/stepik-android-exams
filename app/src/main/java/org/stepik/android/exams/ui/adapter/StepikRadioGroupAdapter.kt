@@ -14,7 +14,7 @@ import java.lang.Math.min
 
 class StepikRadioGroupAdapter(private val group: StepikRadioGroup) {
     init {
-        App.component().inject(this)
+        App.componentManager().stepComponent.inject(this)
     }
 
     var actionButton: Button? = null

@@ -27,23 +27,16 @@ constructor(
         private val mainScheduler: Scheduler,
         private val navigationDao: NavigationDao
 ) : PresenterBase<LessonsView>() {
-
     private var viewState: LessonsView.State = LessonsView.State.Idle
         set(value) {
             field = value
             view?.setState(value)
         }
-
     private var theoryLessons: LinkedList<Lesson> = LinkedList()
-
     private var practiceLessons: LinkedList<Lesson> = LinkedList()
-
-    lateinit var lessonsList: LessonStepicResponse
-
-    var listId: MutableList<LongArray> = mutableListOf()
-
-    var id: String = ""
-
+    private lateinit var lessonsList: LessonStepicResponse
+    private var listId: MutableList<LongArray> = mutableListOf()
+    private var id: String = ""
     private var disposable = CompositeDisposable()
 
     init {
@@ -97,20 +90,21 @@ constructor(
                         lessonsList.lessons?.get(id)?.stepsList?.last()?.is_last = true
                     }
 
-    private fun onError() {
-        viewState = LessonsView.State.NetworkError
-    }
-
-    fun joinCourses(id: String) {
+    fun tryJoinCourse(id: String) {
         for (u in parseLessons(id))
             joinCourse(u)
+    }
+
+    fun tryLoadLessons(id: String) {
+        this.id = id
+        loadTheoryLessonsLocal()
     }
 
     private fun findLessonsInDb(id: Long) =
             navigationDao.findLessonById(id)?.lesson
 
     private fun saveLessonsToDb() =
-            Observable.fromCallable {
+            disposable.add(Observable.fromCallable {
                 val iterator = lessonsList.lessons?.listIterator()
                 while (iterator?.hasNext() == true) {
                     val next = iterator.next()
@@ -118,11 +112,11 @@ constructor(
                         return@fromCallable
                     val nextIndex = iterator.nextIndex().toLong().plus(1)
                     val prevIndex = iterator.previousIndex().toLong()
-                    navigationDao.insertLessons(NavigationInfo(next.id, next, nextIndex, prevIndex))
+                    navigationDao.insertLessons(NavigationInfo(id, next.id, next, nextIndex, prevIndex))
                 }
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe()
+                    .subscribe())
 
 
     private fun joinCourse(id: Long) =
@@ -131,9 +125,25 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribe({}, { onError() }))
 
-    fun loadTheoryLessons() {
+    private fun loadTheoryLessonsLocal() =
+            disposable.add(navigationDao.findAllLesson(id)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .doOnSuccess { list ->
+                        if (list.isEmpty()) loadTheoryLessons()
+                        else {
+                            val lessons = list.map { it.lesson!! }
+                            lessonsList = LessonStepicResponse(null, lessons)
+                            lessonsList.lessons = lessons
+                            onComplete()
+                        }
+                    }
+                    .subscribe())
+
+
+    private fun loadTheoryLessons() {
         viewState = LessonsView.State.Loading
-        disposable.add(loadLessons()
+        loadLessons()
                 .andThen { _ ->
                     val observableList: MutableList<Observable<StepResponse>>? = mutableListOf()
                     listId.forEach { list ->
@@ -141,14 +151,18 @@ constructor(
                     }
                     Observable.zip(observableList) {}
                             .doOnComplete {
-                                view?.showLessons(lessonsList.lessons)
-                                viewState = LessonsView.State.Success
+                                onComplete()
                                 saveLessonsToDb()
                             }
                             .subscribe()
                 }
                 .doOnError { onError() }
-                .subscribe())
+                .subscribe()
+    }
+
+    private fun onComplete() {
+        view?.showLessons(lessonsList.lessons)
+        viewState = LessonsView.State.Success
     }
 
     fun clearData() {
@@ -164,6 +178,10 @@ constructor(
             view.showLessons(lessonsList.lessons)
             saveLessonsToDb()
         }
+    }
+
+    private fun onError() {
+        viewState = LessonsView.State.NetworkError
     }
 
     override fun destroy() {

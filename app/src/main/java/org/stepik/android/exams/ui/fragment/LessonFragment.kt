@@ -33,8 +33,8 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
-            presenter?.joinCourses(id) ?: Unit
-            presenter?.loadTheoryLessons() ?: Unit
+            presenter?.tryJoinCourse(id) ?: Unit
+            presenter?.tryLoadLessons(id) ?: Unit
         }
 
 
@@ -88,7 +88,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         id = arguments.getString("id", "")
         swipeRefreshLessons.setOnRefreshListener {
             presenter?.clearData()
-            presenter?.loadTheoryLessons()
+            presenter?.tryLoadLessons(id)
         }
 
     }
@@ -98,7 +98,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_study, container, false);
+        return inflater?.inflate(R.layout.fragment_study, container, false)
     }
 
     override fun onStart() {

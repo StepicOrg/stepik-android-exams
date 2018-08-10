@@ -47,7 +47,7 @@ public class LatexSupportableEnhancedFrameLayout extends FrameLayout {
 
     public LatexSupportableEnhancedFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        App.Companion.component().inject(this);
+        App.Companion.componentManager().getStepComponent().inject(this);
 
 
         int[] set = {

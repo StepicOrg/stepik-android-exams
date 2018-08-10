@@ -9,6 +9,7 @@ import org.stepik.android.exams.data.model.Lesson
 
 @Entity(tableName = "NavigationInfo")
 class NavigationInfo(
+        @ColumnInfo(name = "topicId") val topicId: String?,
         @ColumnInfo(name = "lessonId") val lessonId: Long?,
         @TypeConverters(GsonConverter::class)
         @ColumnInfo(name = "lesson") val lesson: Lesson?,

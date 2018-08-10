@@ -1,7 +1,7 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Observable
 import io.reactivex.Scheduler
+import org.stepik.android.exams.core.interactor.LessonInteractor
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.data.db.dao.NavigationDao
 import org.stepik.android.exams.data.model.Step
@@ -12,11 +12,12 @@ import javax.inject.Inject
 class NavigatePresenter
 @Inject
 constructor(
-        val navigationDao: NavigationDao,
+        private val navigationDao: NavigationDao,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val lessonNavigatorInteractor: LessonInteractor
 ) : PresenterBase<NavigateView>() {
 
     fun navigateToLesson(step: Step?) {
@@ -27,21 +28,23 @@ constructor(
     }
 
     private fun navigateToPrev(id: Long) {
-        Observable.fromCallable { navigationDao.findPrevIdByLessonId(id)?.lesson }
+        navigationDao.findPrevByLessonId(id)
                 .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { lesson ->
-                    view?.moveToLesson(lesson)
-                }
+                .subscribe({ info ->
+                    view?.moveToLesson(info?.lesson)
+                }, {
+                    lessonNavigatorInteractor.resolvePrevLesson(id)
+                })
     }
 
     private fun navigateToNext(id: Long) {
-        Observable.fromCallable { navigationDao.findNextIdByLessonId(id)?.lesson }
+        navigationDao.findNextByLessonId(id)
                 .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { lesson ->
-                    view?.moveToLesson(lesson)
-                }
+                .subscribe({ info ->
+                    view?.moveToLesson(info?.lesson)
+                }, {
+                    lessonNavigatorInteractor.resolveNextLesson(id)
+                })
     }
 
 

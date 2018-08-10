@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.api.StepikRestService
+import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.StepInfo
@@ -14,13 +14,14 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.web.AttemptRequest
+import org.stepik.android.exams.web.AttemptResponse
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class StepAttemptPresenter
 @Inject
 constructor(
-        private var stepikRestService: StepikRestService,
+        private var stepicRestService: StepicRestService,
         @MainScheduler
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
@@ -54,7 +55,7 @@ constructor(
         view.setState(viewState)
     }
 
-    fun checkStepExistance(id: Long): Boolean {
+    fun checkStepExistance(): Boolean {
         var needUpdate = false
         Observable.fromCallable {
             stepDao.findStepById(step?.id ?: 0)
@@ -83,45 +84,35 @@ constructor(
                         }
                         stepInfo.submission?.let { sub ->
                             submission = sub
-                            view?.setSubmission(sub)
-                            checkSubmissionState(sub)
+                            onSubmissionLoaded(submission as Submission)
                         }
                     } else checkExistingAttempts(step)
                 }
     }
 
     private fun checkExistingAttempts(step: Step?) {
-        stepikRestService
+        stepicRestService
                 .getExistingAttempts(step?.id ?: 0, api.getCurrentUserId() ?: 0)
-                .filter { it.attempts.isNotEmpty() }
-                .map { it.attempts.firstOrNull() }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
+                .onErrorReturnItem(AttemptResponse(listOf()))
                 .doOnSuccess {
-                    attemptLoaded(it)
-                    if (attempt == null) {
+                    if (it.attempts.isEmpty())
                         createNewAttempt(step)
-                    }
-
+                    else attemptLoaded(it.attempts.firstOrNull())
                 }
-                .toSingle()
                 .toCompletable()
                 .andThen { sub ->
+                    if (attempt == null) return@andThen
                     sub.onComplete()
                     sub.onSubscribe(
-                            stepikRestService.getSubmissions(attempt?.id ?: 0, "desc")
+                            stepicRestService.getSubmissions(attempt?.id ?: 0, "desc")
                                     .filter { it.submissions?.isNotEmpty() ?: false }
                                     .subscribeOn(backgroundScheduler)
                                     .observeOn(mainScheduler)
                                     .subscribe { response ->
                                         submission = response.submissions?.first()
-                                        view?.setSubmission(submission)
-                                        checkSubmissionState(submission)
-                                        response.submissions?.forEach {
-                                            if (it.status?.equals("CORRECT") == true)
-                                            //marked as passed
-                                                print("")
-                                        }
+                                        onSubmissionLoaded(submission as Submission)
                                     })
                 }.subscribe()
 
@@ -130,17 +121,13 @@ constructor(
     fun createNewAttempt(step: Step?) {
         this.step = step
         view?.updateSubmission(shouldUpdate = false)
-        disposable.add(Observable.concat(
-                stepikRestService.getExistingAttempts(step?.id ?: 0, api.getCurrentUserId()
-                        ?: 0).toObservable(),
-                stepikRestService.createNewAttempt(AttemptRequest(step?.id ?: 0)).toObservable()
-        )
-                .filter { it.attempts.isNotEmpty() }
-                .take(1)
-                .map { it.attempts.firstOrNull() }
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe { (this::attemptLoaded)(it) })
+        disposable.add(
+                stepicRestService.createNewAttempt(AttemptRequest(step?.id ?: 0)).toObservable()
+                        .filter { it.attempts.isNotEmpty() }
+                        .map { it.attempts.first() }
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe { (this::attemptLoaded)(it) })
     }
 
     private fun attemptLoaded(it: Attempt?) {
@@ -163,8 +150,8 @@ constructor(
 
     fun createSubmission(id: Long, reply: Reply) {
         submission = Submission(reply, id)
-        disposable.add(stepikRestService.createSubmission(SubmissionRequest(submission))
-                .andThen(stepikRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
+        disposable.add(stepicRestService.createSubmission(SubmissionRequest(submission))
+                .andThen(stepicRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(this::onSubmissionLoaded, this::onError))
@@ -174,18 +161,22 @@ constructor(
         submission = submissionResponse.firstSubmission
         submission?.let {
             if (it.status == Submission.Status.EVALUATION) {
-                stepikRestService.getSubmissions(it.attempt, "desc")
+                stepicRestService.getSubmissions(it.attempt, "desc")
                         .delay(1, TimeUnit.SECONDS)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
                 addStepToDb(step?.id, attempt, submission, true)
-                view?.setSubmission(submission)
                 view?.updateSubmission(shouldUpdate = true)
-                checkSubmissionState(it)
+                onSubmissionLoaded(it)
             }
         }
+    }
+
+    private fun onSubmissionLoaded(s: Submission) {
+        view?.setSubmission(submission)
+        checkSubmissionState(s)
     }
 
     private fun checkSubmissionState(submission: Submission?) {
