@@ -32,8 +32,6 @@ constructor(
             field = value
             view?.setState(value)
         }
-    private var theoryLessons: LinkedList<Lesson> = LinkedList()
-    private var practiceLessons: LinkedList<Lesson> = LinkedList()
     private lateinit var lessonsList: LessonStepicResponse
     private var listId: MutableList<LongArray> = mutableListOf()
     private var id: String = ""
@@ -68,7 +66,8 @@ constructor(
         return uniqueCourses
     }
 
-    private fun getIdFromTheory(): LongArray {
+    private fun getIdFromTheory(id: String): LongArray {
+        val theoryLessons = parseLessons(id).first
         val array = LongArray(theoryLessons.size)
         for (lesson in theoryLessons)
             array[theoryLessons.indexOf(lesson)] = lesson.id.toLong()
@@ -113,7 +112,7 @@ constructor(
 
     private fun loadTheoryLessons() {
         viewState = LessonsView.State.Loading
-        api.getLessons(getIdFromTheory())
+        api.getLessons(getIdFromTheory(id))
                 .flatMapObservable {
                     it.lessons!!.toObservable()
                 }
@@ -132,7 +131,7 @@ constructor(
                 .doOnError { viewState = LessonsView.State.NetworkError }
                 .subscribe({ l ->
                     val lessons = mutableListOf<org.stepik.android.exams.data.model.Lesson>()
-                    theoryLessons.forEach { theory ->
+                    parseLessons(id).first.forEach { theory ->
                         lessons.add(l.first { it.id == theory.id.toLong() })
                     }
                     lessonsList = LessonStepicResponse(null, lessons)
@@ -163,8 +162,6 @@ constructor(
 
     fun clearData() {
         listId.clear()
-        theoryLessons.clear()
-        practiceLessons.clear()
     }
 
     override fun attachView(view: LessonsView) {
