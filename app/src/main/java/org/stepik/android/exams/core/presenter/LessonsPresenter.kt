@@ -45,19 +45,26 @@ constructor(
 
     private fun getLessonsById(id: String) = graph[id]?.lessons
 
-    private fun parseLessons(id: String): MutableSet<Long> {
+    private fun parseLessons(id: String): Pair<List<Lesson>,
+            List<org.stepik.android.exams.graph.model.Lesson>> {
         val lessons = getLessonsById(id)
-        val uniqueCourses: MutableSet<Long> = mutableSetOf()
+        val theory = mutableListOf<Lesson>()
+        val practice = mutableListOf<Lesson>()
         if (lessons != null) {
             for (lesson in lessons) {
                 when (lesson.type) {
-                    "theory" -> theoryLessons.add(lesson)
-                    else -> practiceLessons.add(lesson)
+                    "theory" -> theory.add(lesson)
+                    else -> practice.add(lesson)
                 }
-                if (lesson.course != 0L)
-                    uniqueCourses.add(lesson.course)
             }
         }
+        return Pair<List<Lesson>,
+                List<Lesson>>(theory, practice)
+    }
+
+    private fun getUniqueCourses(lessons: List<Lesson>): MutableList<Long> {
+        val uniqueCourses = mutableListOf<Long>()
+        uniqueCourses.add(lessons.first { l -> l.course != 0L }.course)
         return uniqueCourses
     }
 
@@ -69,7 +76,7 @@ constructor(
     }
 
     fun tryJoinCourse(id: String) {
-        for (u in parseLessons(id))
+        for (u in getUniqueCourses(parseLessons(id).first))
             joinCourse(u)
     }
 
@@ -165,7 +172,6 @@ constructor(
         view.setState(viewState)
         if (listId.isNotEmpty()) {
             view.showLessons(lessonsList.lessons)
-            saveLessonsToDb()
         }
     }
 

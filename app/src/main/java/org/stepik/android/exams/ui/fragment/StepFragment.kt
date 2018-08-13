@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.attempt_container_layout.view.*
+import kotlinx.android.synthetic.main.next_lesson_view.*
 import kotlinx.android.synthetic.main.next_lesson_view.view.*
+import kotlinx.android.synthetic.main.step_text_header.*
 import kotlinx.android.synthetic.main.step_text_header.view.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
@@ -53,6 +55,7 @@ open class StepFragment :
     private lateinit var nextLesson: TextView
     private lateinit var prevLesson: TextView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         step = arguments.getParcelable("step")
@@ -89,21 +92,21 @@ open class StepFragment :
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         parentContainer = view as ViewGroup
         attemptContainer = parentContainer.attempt_container as ViewGroup
-        showHeader(view)
-        showNavigation(view)
+        showHeader()
+        showNavigation()
     }
 
     override fun moveToLesson(id: String, lesson: Lesson?) = screenManager.showStepsList(id, lesson
             ?: Lesson(), context)
 
-    private fun showNavigation(view: View?) {
+    private fun showNavigation() {
         nextLesson = view?.route_lesson_root?.next_lesson_view as TextView
-        prevLesson = view.route_lesson_root.previous_lesson_view
+        prevLesson = route_lesson_root.previous_lesson_view
         if (step?.position == 1L)
             prevLesson.visibility = View.VISIBLE
         if (step?.is_last == true)
             nextLesson.visibility = View.VISIBLE
-        view.route_lesson_root.visibility = View.VISIBLE
+        route_lesson_root.visibility = View.VISIBLE
         nextLesson.setOnClickListener { _ ->
             navigatePresenter.navigateToLesson(step, id)
         }
@@ -112,11 +115,10 @@ open class StepFragment :
         }
     }
 
-
-    private fun showHeader(view: View?) {
-        val header: LatexSupportableEnhancedFrameLayout? = view?.text_header
+    private fun showHeader() {
+        val header: LatexSupportableEnhancedFrameLayout?  = text_header
         header?.setText(step?.block?.text)
-        view?.text_header?.visibility = View.VISIBLE
+        text_header?.visibility = View.VISIBLE
     }
 
     companion object {

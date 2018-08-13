@@ -2,6 +2,7 @@ package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
+
+
 class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
-    lateinit var stepTypeResolver: StepTypeResolver
+    private lateinit var stepTypeResolver: StepTypeResolver
     lateinit var adapter: StepPagerAdapter
     lateinit var steps: List<Step>
     @Inject
@@ -42,6 +45,13 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         stepTypeResolver = StepTypeImpl(context)
         adapter = StepPagerAdapter(childFragmentManager, id, steps, stepTypeResolver)
         pagers.adapter = adapter
+        pagers.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                presenter?.stepPassedLocal(steps[position])
+            }
+        })
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
     }
@@ -88,7 +98,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
             inflater?.inflate(R.layout.fragment_steps, container, false)
 
     companion object {
-        fun newInstance(id: String, lesson: Lesson): StepListFragment {
+        fun newInstance(id : String, lesson: Lesson): StepListFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("lesson", lesson)

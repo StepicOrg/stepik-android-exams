@@ -1,19 +1,13 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Scheduler
 import org.stepik.android.exams.core.interactor.LessonInteractorImpl
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
-import org.stepik.android.exams.data.db.dao.NavigationDao
 import org.stepik.android.exams.data.model.Step
-import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import javax.inject.Inject
 
 class NavigatePresenter
 @Inject
 constructor(
-        private val navigationDao: NavigationDao,
-        @BackgroundScheduler
-        private val backgroundScheduler: Scheduler,
         private val lessonNavigatorInteractorImpl: LessonInteractorImpl
 ) : PresenterBase<NavigateView>() {
 

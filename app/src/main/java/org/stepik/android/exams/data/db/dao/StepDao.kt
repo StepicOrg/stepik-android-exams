@@ -2,6 +2,8 @@ package org.stepik.android.exams.data.db.dao
 
 import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
+import io.reactivex.Maybe
+import io.reactivex.Observable
 import org.stepik.android.exams.data.db.data.StepInfo
 
 @Dao
@@ -14,6 +16,9 @@ interface StepDao {
 
     @Update(onConflict = REPLACE)
     fun updateStep(stepInfo: StepInfo)
+
+    @Query("UPDATE StepInfo SET isPassed = :progress WHERE id = :id")
+    fun updateStepProgress(id :Long, progress: Boolean)
 
     @Delete
     fun deleteStep(stepInfo: StepInfo)

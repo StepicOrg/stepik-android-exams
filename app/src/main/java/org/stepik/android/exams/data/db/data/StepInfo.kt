@@ -15,5 +15,6 @@ data class StepInfo(
         @TypeConverters(GsonConverter::class)
         @ColumnInfo(name = "attempt") val attempt: Attempt?,
         @TypeConverters(GsonConverter::class)
-        @ColumnInfo(name = "submission") val submission: Submission?
+        @ColumnInfo(name = "submission") val submission: Submission?,
+        @ColumnInfo(name = "isPassed") val isPassed: Boolean
 )

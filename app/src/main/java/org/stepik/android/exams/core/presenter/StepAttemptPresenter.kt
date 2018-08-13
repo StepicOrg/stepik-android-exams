@@ -60,7 +60,7 @@ constructor(
         Observable.fromCallable {
             stepDao.findStepById(step?.id ?: 0)
         }
-                .onErrorReturn { StepInfo(null, null, null) }
+                .onErrorReturn { StepInfo(null, null, null, false) }
                 .subscribeOn(backgroundScheduler)
                 .blockingSubscribe {
                     needUpdate = it.attempt != null
@@ -72,7 +72,7 @@ constructor(
         Observable.fromCallable {
             stepDao.findStepById(step?.id ?: 0)
         }
-                .onErrorReturn { StepInfo(null, null, null) }
+                .onErrorReturn { StepInfo(null, null, null, false) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe { stepInfo ->
@@ -140,13 +140,13 @@ constructor(
     }
 
     fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?, needUpdate: Boolean) =
-            Observable.fromCallable {
+            disposable.add(Observable.fromCallable {
                 if (!needUpdate)
-                    stepDao.insertStep(StepInfo(id, attempt, submission))
-                else stepDao.updateStep(StepInfo(id, attempt, submission))
+                    stepDao.insertStep(StepInfo(id, attempt, submission, false))
+                else stepDao.updateStep(StepInfo(id, attempt, submission, false))
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe()
+                    .subscribe())
 
     fun createSubmission(id: Long, reply: Reply) {
         submission = Submission(reply, id)
