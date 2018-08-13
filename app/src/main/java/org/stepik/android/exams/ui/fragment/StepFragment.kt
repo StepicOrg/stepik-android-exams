@@ -38,6 +38,7 @@ open class StepFragment :
     lateinit var screenManager: ScreenManager
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
+    var id = ""
 
     override fun getPresenterProvider() = stepPresenterProvider
 
@@ -55,6 +56,7 @@ open class StepFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         step = arguments.getParcelable("step")
+        id = arguments.getString("id", "")
         stepTypeResolver = StepTypeImpl(context)
     }
 
@@ -69,7 +71,7 @@ open class StepFragment :
         fragment.markedAsView(step)
     }
 
-    override fun markedAsView(steps: MutableList<Step>) {
+    override fun markedAsView(steps: List<Step>) {
         val fragment = parentFragment as ProgressView
         fragment.markedAsView(steps)
     }
@@ -91,7 +93,7 @@ open class StepFragment :
         showNavigation(view)
     }
 
-    override fun moveToLesson(lesson: Lesson?) = screenManager.showStepsList(lesson
+    override fun moveToLesson(id: String, lesson: Lesson?) = screenManager.showStepsList(id, lesson
             ?: Lesson(), context)
 
     private fun showNavigation(view: View?) {
@@ -103,10 +105,10 @@ open class StepFragment :
             nextLesson.visibility = View.VISIBLE
         view.route_lesson_root.visibility = View.VISIBLE
         nextLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step)
+            navigatePresenter.navigateToLesson(step, id)
         }
         prevLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step)
+            navigatePresenter.navigateToLesson(step, id)
         }
     }
 
@@ -118,8 +120,9 @@ open class StepFragment :
     }
 
     companion object {
-        fun newInstance(step: Step?): StepFragment {
+        fun newInstance(step: Step?, id: String): StepFragment {
             val args = Bundle()
+            args.putString("id", id)
             args.putParcelable("step", step)
             val fragment = StepFragment()
             fragment.arguments = args

@@ -9,12 +9,10 @@ import org.stepik.android.exams.data.model.Lesson
 
 @Entity(tableName = "NavigationInfo")
 class NavigationInfo(
-        @ColumnInfo(name = "topicId") val topicId: String?,
+        @ColumnInfo(name = "topicId") val topicId: String,
         @ColumnInfo(name = "lessonId") val lessonId: Long?,
         @TypeConverters(GsonConverter::class)
-        @ColumnInfo(name = "lesson") val lesson: Lesson?,
-        @ColumnInfo(name = "next_lesson") val nextLesson: Long?,
-        @ColumnInfo(name = "prev_lesson") val prevLesson: Long?
+        @ColumnInfo(name = "lesson") val lesson: Lesson?
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null

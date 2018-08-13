@@ -11,20 +11,21 @@ import org.stepik.android.exams.util.resolvers.StepTypeResolver
 
 class StepPagerAdapter(
         fragmentManager: FragmentManager,
-        stepsList: List<Step>?,
+        val id: String,
+        stepsList: List<Step>,
         private val stepTypeResolver: StepTypeResolver
 ) : FragmentPagerAdapter(fragmentManager) {
     private var steps: MutableList<Step> = stepsList as MutableList<Step>
     override fun getItem(position: Int): Fragment {
         return when (steps.getOrNull(position)?.block?.name) {
-            "text" -> StepFragment.newInstance(steps.getOrNull(position))
-            else -> AttemptFragment.newInstance(steps.getOrNull(position))
+            "text" -> StepFragment.newInstance(steps.getOrNull(position), id)
+            else -> AttemptFragment.newInstance(steps.getOrNull(position), id)
         }
     }
 
-    fun updateSteps(steps: MutableList<Step>?) {
+    fun updateSteps(steps: List<Step>?) {
         steps?.let {
-            this.steps = steps
+            this.steps = steps as MutableList<Step>
             notifyDataSetChanged()
         }
     }

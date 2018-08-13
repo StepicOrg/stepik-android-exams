@@ -33,8 +33,9 @@ class AttemptFragment :
     private var shouldUpdate = false
 
     companion object {
-        fun newInstance(step: Step?): StepFragment {
+        fun newInstance(step: Step?, id: String): AttemptFragment {
             val args = Bundle()
+            args.putString("id", id)
             args.putParcelable("step", step)
             val fragment = AttemptFragment()
             fragment.arguments = args
@@ -178,7 +179,7 @@ class AttemptFragment :
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
             if (step?.is_last == true)
-                navigatePresenter.navigateToLesson(step)
+                navigatePresenter.navigateToLesson(step, id)
             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }

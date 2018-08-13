@@ -93,7 +93,7 @@ constructor(
     fun joinCourse(course: Long): Completable =
             stepicService.joinCourse(EnrollmentWrapper(course))
 
-    fun getSteps(lesson: LongArray): Single<StepResponse> =
+    fun getSteps(vararg lesson: Long): Single<StepResponse> =
             stepicService.getSteps(lesson)
 
     fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =

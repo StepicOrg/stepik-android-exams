@@ -13,6 +13,7 @@ import org.stepik.android.exams.data.model.Lesson
 
 class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
     private var lessons: List<Lesson>? = listOf()
+    var id: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
             StudyViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
@@ -35,7 +36,7 @@ class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : R
 
         init {
             titleText.setOnClickListener {
-                screenManager.showStepsList(lessons?.get(adapterPosition) ?: Lesson(), context)
+                screenManager.showStepsList(id, lessons?.get(adapterPosition) ?: Lesson(), context)
             }
         }
 

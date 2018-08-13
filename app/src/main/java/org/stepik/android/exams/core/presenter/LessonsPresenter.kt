@@ -3,12 +3,12 @@ package org.stepik.android.exams.core.presenter
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.db.dao.NavigationDao
 import org.stepik.android.exams.data.db.data.NavigationInfo
 import org.stepik.android.exams.data.model.LessonStepicResponse
-import org.stepik.android.exams.data.model.StepResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
@@ -68,28 +68,6 @@ constructor(
         return array
     }
 
-    private fun loadLessons() =
-            api.getLessons(getIdFromTheory())
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .doOnError { viewState = LessonsView.State.NetworkError }
-                    .doOnSuccess { response ->
-                        lessonsList = response
-                        lessonsList.lessons?.forEach {
-                            listId.add(it.steps)
-                        }
-                    }.toCompletable()
-
-    private fun loadSteps(step: LongArray, id: Int) =
-            api.getSteps(step)
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .doOnError { viewState = LessonsView.State.NetworkError }
-                    .doOnSuccess { response ->
-                        lessonsList.lessons?.get(id)?.stepsList = response.steps?.toMutableList()
-                        lessonsList.lessons?.get(id)?.stepsList?.last()?.is_last = true
-                    }
-
     fun tryJoinCourse(id: String) {
         for (u in parseLessons(id))
             joinCourse(u)
@@ -101,18 +79,19 @@ constructor(
     }
 
     private fun findLessonsInDb(id: Long) =
-            navigationDao.findLessonById(id)?.lesson
+            navigationDao.findLessonById(id)
 
     private fun saveLessonsToDb() =
             disposable.add(Observable.fromCallable {
                 val iterator = lessonsList.lessons?.listIterator()
                 while (iterator?.hasNext() == true) {
                     val next = iterator.next()
-                    if (findLessonsInDb(next.id) != null)
-                        return@fromCallable
-                    val nextIndex = iterator.nextIndex().toLong().plus(1)
-                    val prevIndex = iterator.previousIndex().toLong()
-                    navigationDao.insertLessons(NavigationInfo(id, next.id, next, nextIndex, prevIndex))
+                    findLessonsInDb(next.id)
+                            .toSingle()
+                            .subscribe({}, {
+                                navigationDao.insertLessons(NavigationInfo(id, next.id, next))
+                            })
+
                 }
             }
                     .subscribeOn(backgroundScheduler)
@@ -125,6 +104,38 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribe({}, { onError() }))
 
+    private fun loadTheoryLessons() {
+        viewState = LessonsView.State.Loading
+        api.getLessons(getIdFromTheory())
+                .flatMapObservable {
+                    it.lessons!!.toObservable()
+                }
+                .flatMap({
+                    api.getSteps(*it.steps).toObservable()
+                }, { a, b -> a to b })
+                .map { (lesson, stepResponse) ->
+                    lesson.apply {
+                        stepsList = stepResponse.steps
+                        stepsList?.last()?.is_last = true
+                    }
+                }
+                .toList()
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .doOnError { viewState = LessonsView.State.NetworkError }
+                .subscribe({ l ->
+                    val lessons = mutableListOf<org.stepik.android.exams.data.model.Lesson>()
+                    theoryLessons.forEach { theory ->
+                        lessons.add(l.first { it.id == theory.id.toLong() })
+                    }
+                    lessonsList = LessonStepicResponse(null, lessons)
+                    onComplete()
+                    saveLessonsToDb()
+                }, {
+                    viewState = LessonsView.State.NetworkError
+                })
+    }
+
     private fun loadTheoryLessonsLocal() =
             disposable.add(navigationDao.findAllLesson(id)
                     .subscribeOn(backgroundScheduler)
@@ -132,33 +143,11 @@ constructor(
                     .doOnSuccess { list ->
                         if (list.isEmpty()) loadTheoryLessons()
                         else {
-                            val lessons = list.map { it.lesson!! }
-                            lessonsList = LessonStepicResponse(null, lessons)
-                            lessonsList.lessons = lessons
+                            lessonsList = LessonStepicResponse(null, list)
                             onComplete()
                         }
                     }
                     .subscribe())
-
-
-    private fun loadTheoryLessons() {
-        viewState = LessonsView.State.Loading
-        loadLessons()
-                .andThen { _ ->
-                    val observableList: MutableList<Observable<StepResponse>>? = mutableListOf()
-                    listId.forEach { list ->
-                        observableList?.add(loadSteps(list, listId.indexOf(list)).toObservable())
-                    }
-                    Observable.zip(observableList) {}
-                            .doOnComplete {
-                                onComplete()
-                                saveLessonsToDb()
-                            }
-                            .subscribe()
-                }
-                .doOnError { onError() }
-                .subscribe()
-    }
 
     private fun onComplete() {
         view?.showLessons(lessonsList.lessons)

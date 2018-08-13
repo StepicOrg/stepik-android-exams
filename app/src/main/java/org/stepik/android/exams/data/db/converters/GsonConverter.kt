@@ -40,4 +40,5 @@ class GsonConverter {
     fun lessonToString(obj: Lesson?): String? {
         return gson.toJson(obj)
     }
+
 }

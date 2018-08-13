@@ -40,7 +40,7 @@ constructor(
                 .subscribe())
     }
 
-    fun isAllStepsPassed(steps: MutableList<Step>) {
+    fun isAllStepsPassed(steps: List<Step>) {
         val progress = Array(steps.size) { "it = $it" }
         steps.forEachIndexed { index, step ->
             progress[index] = step.progress ?: ""

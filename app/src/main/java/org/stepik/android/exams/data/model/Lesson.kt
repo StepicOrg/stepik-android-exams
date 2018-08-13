@@ -33,7 +33,7 @@ data class Lesson(
         var cover_url: String? = null,
         @SerializedName("time_to_complete")
         var timeToComplete: Long = 0,
-        var stepsList: MutableList<Step>? = LinkedList()
+        var stepsList: List<Step>? = LinkedList()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

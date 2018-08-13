@@ -24,7 +24,7 @@ import javax.inject.Provider
 class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
     lateinit var stepTypeResolver: StepTypeResolver
     lateinit var adapter: StepPagerAdapter
-    lateinit var steps: MutableList<Step>
+    lateinit var steps: List<Step>
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
 
@@ -37,9 +37,10 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val lesson: Lesson? = arguments.getParcelable("lesson")
+        val id: String = arguments.getString("id", "")
         steps = lesson?.stepsList!!
         stepTypeResolver = StepTypeImpl(context)
-        adapter = StepPagerAdapter(childFragmentManager, lesson.stepsList, stepTypeResolver)
+        adapter = StepPagerAdapter(childFragmentManager, id, steps, stepTypeResolver)
         pagers.adapter = adapter
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
@@ -60,7 +61,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         setTab(step)
     }
 
-    override fun markedAsView(steps: MutableList<Step>) {
+    override fun markedAsView(steps: List<Step>) {
         setTabs(steps)
     }
 
@@ -75,7 +76,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         pagers.currentItem = position + 1
     }
 
-    private fun setTabs(steps: MutableList<Step>?) {
+    private fun setTabs(steps: List<Step>?) {
         adapter.updateSteps(steps)
         steps?.forEachIndexed { index, _ ->
             val tab = tabs.getTabAt(index)
@@ -87,8 +88,9 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
             inflater?.inflate(R.layout.fragment_steps, container, false)
 
     companion object {
-        fun newInstance(lesson: Lesson): StepListFragment {
+        fun newInstance(id: String, lesson: Lesson): StepListFragment {
             val args = Bundle()
+            args.putString("id", id)
             args.putParcelable("lesson", lesson)
             val fragment = StepListFragment()
             fragment.arguments = args
