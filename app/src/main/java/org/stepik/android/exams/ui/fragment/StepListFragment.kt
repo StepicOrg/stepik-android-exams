@@ -22,15 +22,13 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-
-
 class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
     private lateinit var stepTypeResolver: StepTypeResolver
     lateinit var adapter: StepPagerAdapter
     lateinit var steps: List<Step>
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
-
+    private lateinit var pageChangeListener : ViewPager.OnPageChangeListener
     override fun getPresenterProvider() = stepPresenterProvider
 
     override fun injectComponent() {
@@ -45,13 +43,15 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         stepTypeResolver = StepTypeImpl(context)
         adapter = StepPagerAdapter(childFragmentManager, id, steps, stepTypeResolver)
         pagers.adapter = adapter
-        pagers.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        pageChangeListener = object : ViewPager.OnPageChangeListener {
+
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 presenter?.stepPassedLocal(steps[position])
             }
-        })
+        }
+        pagers.addOnPageChangeListener(pageChangeListener)
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
     }
@@ -59,6 +59,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
     override fun onResume() {
         presenter?.attachView(this)
         presenter?.isAllStepsPassed(steps)
+        pageChangeListener.onPageSelected(0)
         super.onResume()
     }
 
@@ -98,7 +99,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
             inflater?.inflate(R.layout.fragment_steps, container, false)
 
     companion object {
-        fun newInstance(id : String, lesson: Lesson): StepListFragment {
+        fun newInstance(id: String, lesson: Lesson): StepListFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("lesson", lesson)

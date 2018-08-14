@@ -3,11 +3,14 @@ package org.stepik.android.exams.core.presenter
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
+import org.stepik.android.exams.data.model.Progress
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -33,14 +36,17 @@ constructor(
                     if (!stepInfo.isPassed) {
                         val progress = step.progress ?: ""
                         disposable.add(service.getProgresses(arrayOf(progress))
+                                .delay(400, TimeUnit.MILLISECONDS)
                                 .subscribeOn(backgroundScheduler)
                                 .observeOn(mainScheduler)
-                                .delay(400, TimeUnit.MILLISECONDS)
                                 .doOnSuccess {
                                     val isPassed = it.progresses.first().isPassed
                                     step.is_custom_passed = isPassed
-                                    view?.markedAsView(step)
-                                    updateProgress(step.id, isPassed).subscribe()
+                                    updateProgress(step.id, true)
+                                            .observeOn(mainScheduler)
+                                            .subscribe { _ ->
+                                                view?.markedAsView(step)
+                                            }
                                 }
                                 .subscribe())
                     }
@@ -48,35 +54,32 @@ constructor(
     }
 
     fun isAllStepsPassed(steps: List<Step>) {
-        val progress = Array(steps.size) { "it = $it" }
-        steps.forEachIndexed { index, step ->
-            progress[index] = step.progress ?: ""
-        }
-        var index = 0
-        disposable.add(service.getProgresses(progress)
+        val progresses = steps.mapNotNull(Step::progress).toTypedArray()
+        service.getProgresses(progresses)
+                .flatMapObservable { it.progresses.toObservable() }
+                .flatMap { progress ->
+                    val step = steps.find { it.progress == progress.id } ?: return@flatMap Observable.empty<Step>()
+                    resolveStepProgress(step, progress)
+                }
+                .toList()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .doOnError {
-                    it.printStackTrace()
+                .subscribeBy ({
+                    // handle error
+                }) {
+                    it.sortBy { step -> step.position }
+                    view?.markedAsView(it)
                 }
-                .subscribe { s ->
-                    s.progresses.toObservable()
-                            .subscribeOn(backgroundScheduler)
-                            .observeOn(mainScheduler)
-                            .flatMap ({ fetchProgressFromDb(steps[index].id).toObservable() },
-                                    { a, b -> a to b })
-                            .map { (p, stepInfo) ->
-                                val progressLocal: Boolean = if (stepInfo.isPassed)
-                                    stepInfo.isPassed
-                                else
-                                    p.isPassed
-                                steps[index].is_custom_passed = progressLocal
-                                updateProgress(steps[index].id, progressLocal).subscribe()
-                                index++
-                            }.subscribe()
-                    view?.markedAsView(steps)
-                })
     }
+
+    private fun resolveStepProgress(step: Step, progress: Progress): Observable<Step> =
+            fetchProgressFromDb(step.id).flatMap { info ->
+                val isPassed = info.isPassed || progress.isPassed
+                 updateProgress(step.id, isPassed)
+                return@flatMap Single.just(isPassed)
+            }.flatMapObservable {
+                Observable.just(step.copy(is_custom_passed = it))
+            }
 
     fun stepPassedLocal(step: Step?) {
         if (step?.block?.name == "text") {
@@ -93,6 +96,7 @@ constructor(
             Maybe.fromCallable { stepDao.findStepById(id) }
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
+                    .toSingle()
 
     private fun updateProgress(id: Long, progress: Boolean) =
             Maybe.fromCallable { stepDao.updateStepProgress(id, progress) }

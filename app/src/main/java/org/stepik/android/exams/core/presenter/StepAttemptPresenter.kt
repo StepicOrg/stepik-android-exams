@@ -134,17 +134,14 @@ constructor(
         attempt = it
         attempt?.let {
             view?.onNeedShowAttempt(attempt)
-            addStepToDb(step?.id, attempt, null, false)
+            addStepToDb(step?.id, attempt, null)
             viewState = AttemptView.State.Success
         }
     }
 
-    fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?, needUpdate: Boolean) =
+    fun addStepToDb(id: Long?, attempt: Attempt?, submission: Submission?) =
             disposable.add(Observable.fromCallable {
-                if (!needUpdate)
-                    stepDao.insertStep(StepInfo(id, attempt, submission, false))
-                else stepDao.updateStep(StepInfo(id, attempt, submission, false))
-            }
+                stepDao.updateStep(StepInfo(id, attempt, submission, false)) }
                     .subscribeOn(backgroundScheduler)
                     .subscribe())
 
@@ -167,7 +164,7 @@ constructor(
                         .observeOn(mainScheduler)
                         .subscribe(this::onSubmissionLoaded, this::onError)
             } else {
-                addStepToDb(step?.id, attempt, submission, true)
+                addStepToDb(step?.id, attempt, submission)
                 view?.updateSubmission(shouldUpdate = true)
                 onSubmissionLoaded(it)
             }

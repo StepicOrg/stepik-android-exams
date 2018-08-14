@@ -14,6 +14,9 @@ interface StepDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStep(stepInfo: StepInfo)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSteps(id: List<StepInfo>)
+
     @Update(onConflict = REPLACE)
     fun updateStep(stepInfo: StepInfo)
 

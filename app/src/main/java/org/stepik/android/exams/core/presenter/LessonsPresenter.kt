@@ -1,5 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -7,8 +8,11 @@ import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.NavigationInfo
+import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonStepicResponse
+import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
@@ -25,7 +29,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val navigationDao: NavigationDao
+        private val navigationDao: NavigationDao,
+        private val stepDao: StepDao
 ) : PresenterBase<LessonsView>() {
     private var viewState: LessonsView.State = LessonsView.State.Idle
         set(value) {
@@ -121,6 +126,7 @@ constructor(
                 }, { a, b -> a to b })
                 .map { (lesson, stepResponse) ->
                     lesson.apply {
+                        saveStepsToDb(stepResponse.steps!!)
                         stepsList = stepResponse.steps
                         stepsList?.last()?.is_last = true
                     }
@@ -140,6 +146,15 @@ constructor(
                 }, {
                     viewState = LessonsView.State.NetworkError
                 })
+    }
+    private fun saveStepsToDb(steps : List<Step>) {
+        val list = mutableListOf<StepInfo>()
+        steps.forEach {
+            list.add(StepInfo(it.id))
+        }
+        Maybe.fromCallable { stepDao.insertSteps(list) }
+                .subscribeOn(backgroundScheduler)
+                .subscribe()
     }
 
     private fun loadTheoryLessonsLocal() =
