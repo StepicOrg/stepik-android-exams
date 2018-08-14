@@ -179,7 +179,7 @@ class AttemptFragment :
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
             if (step?.is_last == true)
-                navigatePresenter.navigateToLesson(step, id)
+                navigatePresenter.navigateToLesson(step, id, move = true)
             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }

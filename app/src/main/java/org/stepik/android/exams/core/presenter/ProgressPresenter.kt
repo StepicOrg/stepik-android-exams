@@ -4,6 +4,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
@@ -51,34 +52,30 @@ constructor(
         steps.forEachIndexed { index, step ->
             progress[index] = step.progress ?: ""
         }
-        var index  = 0
+        var index = 0
         disposable.add(service.getProgresses(progress)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError {
                     it.printStackTrace()
                 }
-                .doOnSuccess { p ->
-                    Observable.fromIterable(p.progresses)
-                            .map { progress ->
-                                fetchProgressFromDb(steps[index].id)
-                                        .subscribe({ step ->
-                                            val progressLocal: Boolean
-                                            if (step.isPassed) {
-                                                progressLocal = step.isPassed
-                                                steps[index].is_custom_passed = progressLocal
-                                            } else {
-                                                progressLocal = progress.isPassed
-                                                steps[index].is_custom_passed = progressLocal
-                                            }
-                                            updateProgress(steps[index].id, progressLocal).subscribe()
-                                            index++
-                                        }, {})
-                            }
-                            .subscribe()
+                .subscribe { s ->
+                    s.progresses.toObservable()
+                            .subscribeOn(backgroundScheduler)
+                            .observeOn(mainScheduler)
+                            .flatMap ({ fetchProgressFromDb(steps[index].id).toObservable() },
+                                    { a, b -> a to b })
+                            .map { (p, stepInfo) ->
+                                val progressLocal: Boolean = if (stepInfo.isPassed)
+                                    stepInfo.isPassed
+                                else
+                                    p.isPassed
+                                steps[index].is_custom_passed = progressLocal
+                                updateProgress(steps[index].id, progressLocal).subscribe()
+                                index++
+                            }.subscribe()
                     view?.markedAsView(steps)
-                }
-                .subscribe())
+                })
     }
 
     fun stepPassedLocal(step: Step?) {
@@ -95,6 +92,7 @@ constructor(
     private fun fetchProgressFromDb(id: Long) =
             Maybe.fromCallable { stepDao.findStepById(id) }
                     .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
 
     private fun updateProgress(id: Long, progress: Boolean) =
             Maybe.fromCallable { stepDao.updateStepProgress(id, progress) }

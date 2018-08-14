@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import kotlinx.android.synthetic.main.next_lesson_view.*
 import kotlinx.android.synthetic.main.next_lesson_view.view.*
 import kotlinx.android.synthetic.main.step_text_header.*
-import kotlinx.android.synthetic.main.step_text_header.view.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
@@ -93,25 +92,37 @@ open class StepFragment :
         parentContainer = view as ViewGroup
         attemptContainer = parentContainer.attempt_container as ViewGroup
         showHeader()
-        showNavigation()
+        loadNavigation()
     }
 
     override fun moveToLesson(id: String, lesson: Lesson?) = screenManager.showStepsList(id, lesson
             ?: Lesson(), context)
 
-    private fun showNavigation() {
-        nextLesson = view?.route_lesson_root?.next_lesson_view as TextView
-        prevLesson = route_lesson_root.previous_lesson_view
+    override fun hideNavigation() {
+        if (step?.position == 1L)
+            prevLesson.visibility = View.GONE
+        if (step?.is_last == true)
+            nextLesson.visibility = View.GONE
+        route_lesson_root.visibility = View.GONE
+    }
+
+    override fun showNavigation() {
         if (step?.position == 1L)
             prevLesson.visibility = View.VISIBLE
         if (step?.is_last == true)
             nextLesson.visibility = View.VISIBLE
         route_lesson_root.visibility = View.VISIBLE
+    }
+
+    private fun loadNavigation() {
+        nextLesson = view?.route_lesson_root?.next_lesson_view as TextView
+        prevLesson = route_lesson_root.previous_lesson_view
+        navigatePresenter.navigateToLesson(step, id, move = false)
         nextLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, id)
+            navigatePresenter.navigateToLesson(step, id, move = true)
         }
         prevLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, id)
+            navigatePresenter.navigateToLesson(step, id, move = true)
         }
     }
 
