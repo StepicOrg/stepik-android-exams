@@ -2,12 +2,15 @@ package org.stepik.android.exams.ui.fragment
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.answer_layout.view.*
 import kotlinx.android.synthetic.main.button_container.view.*
+import kotlinx.android.synthetic.main.step_delegate.*
 import org.stepik.android.exams.R
+import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.Submission
@@ -47,10 +50,12 @@ class AttemptFragment :
         stepDelegate = stepTypeResolver.getStepDelegate(step)
         attemptContainer.addView(stepDelegate.createView(parentContainer))
         answerField = parentContainer.answer_status_text
+        nestedScrollView.isFillViewport = true
     }
 
     override fun setState(state: AttemptView.State): Unit = when (state) {
         is AttemptView.State.FirstLoading -> {
+            showRefreshView()
             startLoading(step)
         }
 
@@ -58,12 +63,17 @@ class AttemptFragment :
         }
 
         is AttemptView.State.Loading -> {
+            showRefreshView()
         }
 
         is AttemptView.State.NetworkError -> {
+            hideRefreshView()
+            onError(Errors.ConnectionProblem)
         }
 
         is AttemptView.State.Success -> {
+            hideRefreshView()
+            hideErrorMessage()
         }
         is AttemptView.State.CorrectAnswerState -> {
             onCorrectAnswer()
@@ -71,6 +81,30 @@ class AttemptFragment :
         is AttemptView.State.WrongAnswerState -> {
             onWrongAnswer()
         }
+    }
+
+    private fun onError(error: Errors) {
+        @StringRes val messageResId = when (error) {
+            Errors.ConnectionProblem -> R.string.auth_error_connectivity
+        }
+        showErrorMessage(messageResId)
+    }
+
+    private fun showRefreshView() {
+       // swipeRefreshAttempt.isRefreshing = true
+    }
+
+    private fun hideRefreshView() {
+        //swipeRefreshAttempt.isRefreshing = false
+    }
+
+    private fun showErrorMessage(messageResId: Int) {
+        //errorText.setText(messageResId)
+        //errorText.changeVisibillity(true)
+    }
+
+    private fun hideErrorMessage() {
+        //errorText.changeVisibillity(false)
     }
 
     private fun setTextToActionButton(actionButton: Button?, text: String) {
@@ -107,10 +141,10 @@ class AttemptFragment :
 
     override fun onDestroyView() {
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        val stepExist = presenter?.checkStepExistance() ?: false
+        val stepExist = presenter?.checkStepExistence() ?: false
         if (stepExist && !shouldUpdate)
             submissions = Submission(reply, attempt?.id ?: 0)
-        presenter?.addStepToDb(step?.id, attempt, submissions)
+        presenter?.updateStepInDb(step?.id, attempt, submissions)
         super.onDestroyView()
     }
 
@@ -124,7 +158,7 @@ class AttemptFragment :
     private fun tryAgain() {
         shouldUpdate = false
         submissions = null
-        presenter?.createNewAttempt(step)
+        presenter?.createNewAttempt(step as Step)
     }
 
     private fun clearAttemptContainer() {
@@ -159,7 +193,7 @@ class AttemptFragment :
 
 
     private fun startLoading(step: Step?) {
-        presenter?.checkStepInDb(step)
+        presenter?.checkStep(step as Step)
     }
 
     override fun onCorrectAnswer() {

@@ -68,6 +68,10 @@ open class StepFragment :
         progressPresenter.attachView(this)
     }
 
+    override fun showTabs(steps: List<Step>) {
+        markedAsView(steps)
+    }
+
     override fun markedAsView(step: Step) {
         val fragment = parentFragment as ProgressView
         fragment.markedAsView(step)

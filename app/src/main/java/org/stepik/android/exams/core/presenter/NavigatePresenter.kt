@@ -31,8 +31,10 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
                     view?.showNavigation()
-                    if (move)
-                    view?.moveToLesson(l.theoryId, l.lesson)
+                    if (move) {
+                        view?.moveToLesson(l.theoryId, l.lesson)
+                        view?.showTabs(l.lesson.stepsList!!)
+                    }
                 }, {
                     view?.hideNavigation()
                 })
@@ -44,8 +46,10 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
                     view?.showNavigation()
-                    if (move)
-                    view?.moveToLesson(l.theoryId, l.lesson)
+                    if (move) {
+                        view?.moveToLesson(l.theoryId, l.lesson)
+                        view?.showTabs(l.lesson.stepsList!!)
+                    }
                 }, {
                     view?.hideNavigation()
                 })
