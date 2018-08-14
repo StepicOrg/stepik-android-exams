@@ -84,7 +84,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
     }
 
     override fun scrollNext(position: Int) {
-        pagers.currentItem = position + 1
+        pagers.currentItem = position
     }
 
     private fun setTabs(steps: List<Step>?) {
