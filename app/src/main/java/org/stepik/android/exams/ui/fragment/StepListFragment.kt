@@ -28,7 +28,7 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
     lateinit var steps: List<Step>
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
-    private lateinit var pageChangeListener : ViewPager.OnPageChangeListener
+    private lateinit var pageChangeListener: ViewPager.OnPageChangeListener
     override fun getPresenterProvider() = stepPresenterProvider
 
     override fun injectComponent() {

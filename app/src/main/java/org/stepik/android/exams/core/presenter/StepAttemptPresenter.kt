@@ -4,7 +4,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.reactivestreams.Subscriber
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
@@ -84,15 +83,15 @@ constructor(
                     .observeOn(mainScheduler)
                     .filter { return@filter (it.attempt != null || it.submission != null) }
                     .map { stepInfo ->
-                            stepInfo.attempt?.let { attempts ->
-                                this.step = step
-                                attempt = attempts
-                                view?.onNeedShowAttempt(attempts)
-                            }
-                            stepInfo.submission?.let { sub ->
-                                submission = sub
-                                onSubmissionLoaded(submission as Submission)
-                            }
+                        stepInfo.attempt?.let { attempts ->
+                            this.step = step
+                            attempt = attempts
+                            view?.onNeedShowAttempt(attempts)
+                        }
+                        stepInfo.submission?.let { sub ->
+                            submission = sub
+                            onSubmissionLoaded(submission as Submission)
+                        }
                     }
 
     private fun checkStepApi(step: Step) =
@@ -101,10 +100,11 @@ constructor(
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .onErrorReturnItem(AttemptResponse(listOf()))
-                    .doOnSuccess {
-                        if (it.attempts.isEmpty())
+                    .map { it.attempts }
+                    .doOnSuccess { attempt ->
+                        if (attempt.isEmpty())
                             createNewAttempt(step)
-                        else attemptLoaded(step, it.attempts.firstOrNull())
+                        else attemptLoaded(step, attempt.firstOrNull())
                     }
                     .toCompletable()
                     .andThen { sub ->
@@ -134,7 +134,7 @@ constructor(
                         .subscribe { (this::attemptLoaded)(step, it) })
     }
 
-    private fun attemptLoaded(step : Step, it: Attempt?) {
+    private fun attemptLoaded(step: Step, it: Attempt?) {
         attempt = it
         attempt?.let {
             view?.onNeedShowAttempt(attempt)

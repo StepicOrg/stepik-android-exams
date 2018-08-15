@@ -131,7 +131,7 @@ open class StepFragment :
     }
 
     private fun showHeader() {
-        val header: LatexSupportableEnhancedFrameLayout?  = text_header
+        val header: LatexSupportableEnhancedFrameLayout? = text_header
         header?.setText(step?.block?.text)
         text_header?.visibility = View.VISIBLE
     }

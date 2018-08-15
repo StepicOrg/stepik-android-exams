@@ -15,6 +15,6 @@ data class StepInfo(
         @ColumnInfo(name = "submission") val submission: Submission?,
         @ColumnInfo(name = "isPassed") val isPassed: Boolean
 ) {
-        @Ignore
-        constructor(id : Long) : this(id, null, null, false)
+    @Ignore
+    constructor(id: Long) : this(id, null, null, false)
 }

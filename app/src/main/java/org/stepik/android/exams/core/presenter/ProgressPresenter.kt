@@ -58,13 +58,14 @@ constructor(
         service.getProgresses(progresses)
                 .flatMapObservable { it.progresses.toObservable() }
                 .flatMap { progress ->
-                    val step = steps.find { it.progress == progress.id } ?: return@flatMap Observable.empty<Step>()
+                    val step = steps.find { it.progress == progress.id }
+                            ?: return@flatMap Observable.empty<Step>()
                     resolveStepProgress(step, progress)
                 }
                 .toList()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribeBy ({
+                .subscribeBy({
                     // handle error
                 }) {
                     it.sortBy { step -> step.position }
@@ -75,7 +76,7 @@ constructor(
     private fun resolveStepProgress(step: Step, progress: Progress): Observable<Step> =
             fetchProgressFromDb(step.id).flatMap { info ->
                 val isPassed = info.isPassed || progress.isPassed
-                 updateProgress(step.id, isPassed)
+                updateProgress(step.id, isPassed)
                 return@flatMap Single.just(isPassed)
             }.flatMapObservable {
                 Observable.just(step.copy(is_custom_passed = it))

@@ -7,5 +7,5 @@ interface NavigateView {
     fun moveToLesson(id: String, lesson: Lesson?)
     fun showNavigation()
     fun hideNavigation()
-    fun showTabs(steps : List<Step>)
+    fun showTabs(steps: List<Step>)
 }

@@ -88,7 +88,6 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         id = arguments.getString("id", "")
         lessonsAdapter.id = id
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.clearData()
             presenter?.tryLoadLessons(id)
         }
 

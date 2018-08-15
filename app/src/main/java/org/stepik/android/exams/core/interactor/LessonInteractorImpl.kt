@@ -7,8 +7,11 @@ import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.interactor.contacts.LessonInteractor
 import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.NavigationInfo
+import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.Lesson
+import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.graph.Graph
 import javax.inject.Inject
@@ -20,7 +23,8 @@ constructor(
         private val navigationDao: NavigationDao,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
-        private val api: Api
+        private val api: Api,
+        private val stepDao: StepDao
 ) : LessonInteractor {
     private lateinit var lessonsList: List<Lesson>
 
@@ -116,15 +120,20 @@ constructor(
                     }, { a, b -> a to b })
                     .map { (lesson, stepResponse) ->
                         lesson.apply {
+                            saveStepsToDb(stepResponse.steps!!)
                             stepsList = stepResponse.steps
                             stepsList?.last()?.is_last = true
                         }
                     }
                     .toList()
                     .subscribeOn(backgroundScheduler)
-                    .doOnSuccess {
-                        lessonsList = it
-                        saveLessonsToDb(id, it)
+                    .doOnSuccess { l ->
+                        val lessons = mutableListOf<Lesson>()
+                        parseLessons(id).first.forEach { theory ->
+                            lessons.add(l.first { it.id == theory.id.toLong() })
+                        }
+                        lessonsList = lessons
+                        saveLessonsToDb(id, lessons)
                     }
                     .map {
                         if (first) LessonWrapper(id, it.first())
@@ -180,16 +189,37 @@ constructor(
             navigationDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
-    private fun saveLessonsToDb(id: String, lessonsList: List<Lesson>) =
+    private fun saveLessonsToDb(id: String, list: List<Lesson>) =
             Observable.fromCallable {
-                val iterator = lessonsList.listIterator()
-                while (iterator.hasNext()) {
-                    val next = iterator.next()
-                    if (findLessonsInDb(next.id) != null)
-                        return@fromCallable
-                    navigationDao.insertLessons(NavigationInfo(id, next.id, next))
-                }
+                val iterator = list.listIterator()
+                val listToSave = mutableListOf<NavigationInfo>()
+                findLessonsInDb(list.first().id)
+                        .toSingle()
+                        .subscribe({}, {
+                            while (iterator.hasNext()) {
+                                val next = iterator.next()
+                                listToSave.add(NavigationInfo(id, next.id, next))
+                            }
+                            lessonsToDb(listToSave)
+                        })
             }
                     .subscribeOn(backgroundScheduler)
+                    .subscribe({}, {
+                    })
+
+
+    private fun lessonsToDb(list: List<NavigationInfo>) =
+            Maybe.fromCallable { navigationDao.insertLessons(list) }
+                    .subscribeOn(backgroundScheduler)
                     .subscribe()
+
+    private fun saveStepsToDb(steps: List<Step>) {
+        val list = mutableListOf<StepInfo>()
+        steps.forEach {
+            list.add(StepInfo(it.id))
+        }
+        Maybe.fromCallable { stepDao.insertSteps(list) }
+                .subscribeOn(backgroundScheduler)
+                .subscribe()
+    }
 }

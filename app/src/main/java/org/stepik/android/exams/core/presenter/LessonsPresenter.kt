@@ -36,8 +36,7 @@ constructor(
             field = value
             view?.setState(value)
         }
-    private lateinit var lessonsList: LessonStepicResponse
-    private var listId: MutableList<LongArray> = mutableListOf()
+    private var lessonsList: LessonStepicResponse? = null
     private var id: String = ""
     private var disposable = CompositeDisposable()
 
@@ -94,22 +93,29 @@ constructor(
             navigationDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
-    private fun saveLessonsToDb() =
+    private fun saveLessonsToDb(list: List<org.stepik.android.exams.data.model.Lesson>) =
             disposable.add(Observable.fromCallable {
-                val iterator = lessonsList.lessons?.listIterator()
-                while (iterator?.hasNext() == true) {
-                    val next = iterator.next()
-                    findLessonsInDb(next.id)
-                            .toSingle()
-                            .subscribe({}, {
-                                navigationDao.insertLessons(NavigationInfo(id, next.id, next))
-                            })
-                }
+                val iterator = list.listIterator()
+                val listToSave = mutableListOf<NavigationInfo>()
+                findLessonsInDb(list.first().id)
+                        .toSingle()
+                        .subscribe({}, {
+                            while (iterator.hasNext()) {
+                                val next = iterator.next()
+                                listToSave.add(NavigationInfo(id, next.id, next))
+                            }
+                            lessonsToDb(listToSave)
+                        })
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe({},{
+                    .subscribe({}, {
                         onError()
                     }))
+
+    private fun lessonsToDb(list: List<NavigationInfo>) =
+            Maybe.fromCallable { navigationDao.insertLessons(list) }
+                    .subscribeOn(backgroundScheduler)
+                    .subscribe()
 
 
     private fun joinCourse(id: Long) =
@@ -144,8 +150,8 @@ constructor(
                         lessons.add(l.first { it.id == theory.id.toLong() })
                     }
                     lessonsList = LessonStepicResponse(null, lessons)
-                    saveLessonsToDb()
-                    onComplete()
+                    saveLessonsToDb(lessons)
+                    onComplete(lessons)
                 }
                 .toMaybe()
     }
@@ -168,24 +174,21 @@ constructor(
                     .filter { t: List<org.stepik.android.exams.data.model.Lesson> -> t.isNotEmpty() }
                     .map { list ->
                         lessonsList = LessonStepicResponse(null, list)
-                        onComplete()
+                        onComplete(list)
                     }
 
 
-    private fun onComplete() {
-        view?.showLessons(lessonsList.lessons)
+    private fun onComplete(list: List<org.stepik.android.exams.data.model.Lesson>) {
+        view?.showLessons(list)
         viewState = LessonsView.State.Success
-    }
-
-    fun clearData() {
-        listId.clear()
     }
 
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        if (listId.isNotEmpty()) {
-            view.showLessons(lessonsList.lessons)
+        lessonsList?.lessons.let {
+            if (it?.isNotEmpty() == true)
+                view.showLessons(it)
         }
     }
 

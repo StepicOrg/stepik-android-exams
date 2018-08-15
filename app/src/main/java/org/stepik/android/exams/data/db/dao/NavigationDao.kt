@@ -18,5 +18,5 @@ interface NavigationDao {
     fun findLessonById(id: Long): Maybe<Lesson>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLessons(navigationInfo: NavigationInfo)
+    fun insertLessons(navigationInfos: List<NavigationInfo>)
 }
