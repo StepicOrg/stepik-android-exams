@@ -70,9 +70,7 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        checkStepIdDb(step)
-                .switchIfEmpty(checkStepApi(step))
-                .subscribe()
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1).subscribe()
     }
 
     private fun checkStepIdDb(step: Step) =
@@ -82,11 +80,10 @@ constructor(
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .filter { return@filter (it.attempt != null || it.submission != null) }
-                    .map { stepInfo ->
+                    .doOnSuccess { stepInfo ->
                         stepInfo.attempt?.let { attempts ->
                             this.step = step
-                            attempt = attempts
-                            view?.onNeedShowAttempt(attempts)
+                            attemptLoaded(attempts)
                         }
                         stepInfo.submission?.let { sub ->
                             submission = sub
@@ -100,11 +97,13 @@ constructor(
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .onErrorReturnItem(AttemptResponse(listOf()))
-                    .map { it.attempts }
-                    .doOnSuccess { attempt ->
-                        if (attempt.isEmpty())
+                    .doOnSuccess { it ->
+                        if (it.attempts.isEmpty())
                             createNewAttempt(step)
-                        else attemptLoaded(step, attempt.firstOrNull())
+                        else {
+                            attemptLoaded(it.attempts.firstOrNull())
+                            updateStepAttempt(step)
+                        }
                     }
                     .toCompletable()
                     .andThen { sub ->
@@ -131,17 +130,20 @@ constructor(
                         .map { it.attempts.first() }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe { (this::attemptLoaded)(step, it) })
+                        .subscribe { attemptLoaded(it)
+                            updateStepAttempt(step)})
     }
 
-    private fun attemptLoaded(step: Step, it: Attempt?) {
+    private fun attemptLoaded(it: Attempt?) {
         attempt = it
         attempt?.let {
             view?.onNeedShowAttempt(attempt)
-            updateStep(step.id, attempt, null)
             viewState = AttemptView.State.Success
         }
     }
+
+    private fun updateStepAttempt(step : Step) =
+            updateStep(step.id, attempt, null)
 
     private fun updateStep(id: Long?, attempt: Attempt?, submission: Submission?) =
             disposable.add(Observable.fromCallable {
@@ -182,6 +184,7 @@ constructor(
             updateStep(id, attempt, submission)
 
     private fun onSubmissionLoaded(s: Submission) {
+        viewState = AttemptView.State.Success
         view?.setSubmission(submission)
         checkSubmissionState(s)
     }

@@ -8,6 +8,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import kotlinx.android.synthetic.main.next_lesson_view.*
 import kotlinx.android.synthetic.main.next_lesson_view.view.*
+import kotlinx.android.synthetic.main.step_delegate.*
 import kotlinx.android.synthetic.main.step_text_header.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
@@ -97,6 +98,8 @@ open class StepFragment :
         attemptContainer = parentContainer.attempt_container as ViewGroup
         showHeader()
         loadNavigation()
+        swipeRefreshAttempt.isEnabled = false
+        swipeRefreshAttempt.isRefreshing = false
     }
 
     override fun moveToLesson(id: String, lesson: Lesson?) = screenManager.showStepsList(id, lesson

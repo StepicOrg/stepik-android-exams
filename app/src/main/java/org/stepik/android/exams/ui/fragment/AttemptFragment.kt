@@ -19,6 +19,7 @@ import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
+import org.stepik.android.exams.util.changeVisibillity
 
 
 class AttemptFragment :
@@ -50,7 +51,6 @@ class AttemptFragment :
         stepDelegate = stepTypeResolver.getStepDelegate(step)
         attemptContainer.addView(stepDelegate.createView(parentContainer))
         answerField = parentContainer.answer_status_text
-        nestedScrollView.isFillViewport = true
     }
 
     override fun setState(state: AttemptView.State): Unit = when (state) {
@@ -91,20 +91,20 @@ class AttemptFragment :
     }
 
     private fun showRefreshView() {
-        // swipeRefreshAttempt.isRefreshing = true
+         swipeRefreshAttempt.isRefreshing = true
     }
 
     private fun hideRefreshView() {
-        //swipeRefreshAttempt.isRefreshing = false
+        swipeRefreshAttempt.isRefreshing = false
     }
 
     private fun showErrorMessage(messageResId: Int) {
-        //errorText.setText(messageResId)
-        //errorText.changeVisibillity(true)
+        errorText.setText(messageResId)
+        errorText.changeVisibillity(true)
     }
 
     private fun hideErrorMessage() {
-        //errorText.changeVisibillity(false)
+        errorText.changeVisibillity(false)
     }
 
     private fun setTextToActionButton(actionButton: Button?, text: String) {
@@ -122,6 +122,7 @@ class AttemptFragment :
                 tryAgain()
             } else makeSubmission()
         }
+        nestedScrollView.isFillViewport = true
         context = view?.context as Activity
     }
 
