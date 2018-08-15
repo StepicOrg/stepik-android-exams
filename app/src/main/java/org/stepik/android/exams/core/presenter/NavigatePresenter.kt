@@ -1,7 +1,7 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
-import org.stepik.android.exams.core.interactor.LessonInteractorImpl
+import org.stepik.android.exams.core.interactor.contacts.LessonInteractor
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -15,7 +15,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val lessonNavigatorInteractorImpl: LessonInteractorImpl
+        private val lessonNavigatorInteractor: LessonInteractor
 ) : PresenterBase<NavigateView>() {
 
     fun navigateToLesson(step: Step?, id: String, move: Boolean) {
@@ -26,7 +26,7 @@ constructor(
     }
 
     private fun navigateToPrev(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractorImpl.resolvePrevLesson(topicId, id, move)
+        lessonNavigatorInteractor.resolvePrevLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -39,7 +39,7 @@ constructor(
     }
 
     private fun navigateToNext(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractorImpl.resolveNextLesson(topicId, id, move)
+        lessonNavigatorInteractor.resolveNextLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->

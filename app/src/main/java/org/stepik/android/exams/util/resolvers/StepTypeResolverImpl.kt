@@ -15,7 +15,7 @@ import org.stepik.android.exams.util.AppConstants
 import java.util.*
 import javax.inject.Inject
 
-class StepTypeImpl
+class StepTypeResolverImpl
 @Inject
 constructor(
         private val context: Context

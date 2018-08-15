@@ -91,7 +91,7 @@ class AttemptFragment :
     }
 
     private fun showRefreshView() {
-         swipeRefreshAttempt.isRefreshing = true
+        swipeRefreshAttempt.isRefreshing = true
     }
 
     private fun hideRefreshView() {

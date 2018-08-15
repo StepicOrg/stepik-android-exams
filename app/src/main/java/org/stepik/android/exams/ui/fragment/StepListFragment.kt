@@ -16,18 +16,18 @@ import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
-import org.stepik.android.exams.util.resolvers.StepTypeImpl
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import javax.inject.Inject
 import javax.inject.Provider
 
 
 class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
-    private lateinit var stepTypeResolver: StepTypeResolver
     lateinit var adapter: StepPagerAdapter
     lateinit var steps: List<Step>
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
+    @Inject
+    lateinit var stepTypeResolver: StepTypeResolver
     private lateinit var pageChangeListener: ViewPager.OnPageChangeListener
     override fun getPresenterProvider() = stepPresenterProvider
 
@@ -40,7 +40,6 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
         val lesson: Lesson? = arguments.getParcelable("lesson")
         val id: String = arguments.getString("id", "")
         steps = lesson?.stepsList!!
-        stepTypeResolver = StepTypeImpl(context)
         adapter = StepPagerAdapter(childFragmentManager, id, steps, stepTypeResolver)
         pagers.adapter = adapter
         pageChangeListener = object : ViewPager.OnPageChangeListener {

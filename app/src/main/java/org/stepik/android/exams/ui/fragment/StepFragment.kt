@@ -23,8 +23,8 @@ import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
-import org.stepik.android.exams.util.resolvers.StepTypeImpl
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
+import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -60,7 +60,7 @@ open class StepFragment :
         super.onCreate(savedInstanceState)
         step = arguments.getParcelable("step")
         id = arguments.getString("id", "")
-        stepTypeResolver = StepTypeImpl(context)
+        stepTypeResolver = StepTypeResolverImpl(context)
     }
 
     override fun onStart() {

@@ -130,8 +130,10 @@ constructor(
                         .map { it.attempts.first() }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe { attemptLoaded(it)
-                            updateStepAttempt(step)})
+                        .subscribe {
+                            attemptLoaded(it)
+                            updateStepAttempt(step)
+                        })
     }
 
     private fun attemptLoaded(it: Attempt?) {
@@ -142,7 +144,7 @@ constructor(
         }
     }
 
-    private fun updateStepAttempt(step : Step) =
+    private fun updateStepAttempt(step: Step) =
             updateStep(step.id, attempt, null)
 
     private fun updateStep(id: Long?, attempt: Attempt?, submission: Submission?) =

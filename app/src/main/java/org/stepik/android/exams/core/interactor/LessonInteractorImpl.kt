@@ -28,12 +28,12 @@ constructor(
 ) : LessonInteractor {
     private lateinit var lessonsList: List<Lesson>
 
-    data class LessonWrapper(val theoryId: String, val lesson: Lesson){
+    data class LessonWrapper(val theoryId: String, val lesson: Lesson) {
         constructor() : this("", Lesson())
     }
 
 
-    override fun resolveNextLesson(topicId: String, lesson: Long, move : Boolean): Maybe<LessonWrapper> {
+    override fun resolveNextLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonWrapper> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
                 graph[topicId]?.lessons?.last()?.id == lesson.toInt())
             return Maybe.empty()
@@ -59,7 +59,7 @@ constructor(
         return Maybe.just(LessonWrapper())
     }
 
-    override fun resolvePrevLesson(topicId: String, lesson: Long, move : Boolean): Maybe<LessonWrapper> {
+    override fun resolvePrevLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonWrapper> {
         if (graph[topicId]?.children?.isEmpty() == true &&
                 graph[topicId]?.lessons?.first()?.id == lesson.toInt())
             return Maybe.empty()
