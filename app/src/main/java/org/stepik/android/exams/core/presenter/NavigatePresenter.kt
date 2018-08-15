@@ -26,7 +26,7 @@ constructor(
     }
 
     private fun navigateToPrev(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractorImpl.resolvePrevLesson(topicId, id)
+        lessonNavigatorInteractorImpl.resolvePrevLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -39,7 +39,7 @@ constructor(
     }
 
     private fun navigateToNext(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractorImpl.resolveNextLesson(topicId, id)
+        lessonNavigatorInteractorImpl.resolveNextLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->

@@ -7,8 +7,8 @@ import android.arch.persistence.room.TypeConverters
 import org.stepik.android.exams.data.db.converters.GsonConverter
 import org.stepik.android.exams.data.model.Lesson
 
-@Entity(tableName = "NavigationInfo")
-class NavigationInfo(
+@Entity(tableName = "LessonInfo")
+class LessonInfo(
         @ColumnInfo(name = "topicId") val topicId: String,
         @ColumnInfo(name = "lessonId") val lessonId: Long?,
         @TypeConverters(GsonConverter::class)

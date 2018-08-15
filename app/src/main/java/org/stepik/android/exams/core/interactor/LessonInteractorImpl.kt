@@ -6,9 +6,9 @@ import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.interactor.contacts.LessonInteractor
-import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.db.data.NavigationInfo
+import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.Lesson
 import org.stepik.android.exams.data.model.Step
@@ -20,7 +20,7 @@ class LessonInteractorImpl
 @Inject
 constructor(
         val graph: Graph<String>,
-        private val navigationDao: NavigationDao,
+        private val lessonDao: LessonDao,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         private val api: Api,
@@ -28,9 +28,12 @@ constructor(
 ) : LessonInteractor {
     private lateinit var lessonsList: List<Lesson>
 
-    data class LessonWrapper(val theoryId: String, val lesson: Lesson)
+    data class LessonWrapper(val theoryId: String, val lesson: Lesson){
+        constructor() : this("", Lesson())
+    }
 
-    override fun resolveNextLesson(topicId: String, lesson: Long): Maybe<LessonWrapper> {
+
+    override fun resolveNextLesson(topicId: String, lesson: Long, move : Boolean): Maybe<LessonWrapper> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
                 graph[topicId]?.lessons?.last()?.id == lesson.toInt())
             return Maybe.empty()
@@ -43,20 +46,20 @@ constructor(
                 if (next.id == lesson.toInt())
                     nextLesson = iterator.next().id.toLong()
             }
-            if (nextLesson != 0L) {
+            if (nextLesson != 0L && move) {
                 return findLessonInDb(topicId, nextLesson)
             }
         } else {
 
             val nextTopic = graph[topicId]?.parent?.first()?.id ?: ""
-            if (nextTopic.isNotEmpty()) {
+            if (nextTopic.isNotEmpty() && move) {
                 return loadLessons(nextTopic, first = true)
             }
         }
-        return Maybe.empty()
+        return Maybe.just(LessonWrapper())
     }
 
-    override fun resolvePrevLesson(topicId: String, lesson: Long): Maybe<LessonWrapper> {
+    override fun resolvePrevLesson(topicId: String, lesson: Long, move : Boolean): Maybe<LessonWrapper> {
         if (graph[topicId]?.children?.isEmpty() == true &&
                 graph[topicId]?.lessons?.first()?.id == lesson.toInt())
             return Maybe.empty()
@@ -72,16 +75,16 @@ constructor(
                     break
                 }
             }
-            if (nextLesson != 0L) {
+            if (nextLesson != 0L && move) {
                 return findLessonInDb(topicId, nextLesson)
             }
         } else {
             val nextTopic = graph[topicId]?.children?.first()?.id ?: ""
-            if (nextTopic.isNotEmpty()) {
+            if (nextTopic.isNotEmpty() && move) {
                 return loadLessons(nextTopic, first = false)
             }
         }
-        return Maybe.empty()
+        return Maybe.just(LessonWrapper())
     }
 
     private fun loadLessons(topicId: String, first: Boolean): Maybe<LessonWrapper> {
@@ -97,7 +100,7 @@ constructor(
 
 
     private fun loadLessonFromDb(id: String, first: Boolean): Maybe<LessonWrapper> =
-            navigationDao.findAllLessonsByTopicId(id)
+            lessonDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .flatMap { list ->
                         if (list.isEmpty())
@@ -186,19 +189,19 @@ constructor(
     }
 
     private fun findLessonsInDb(id: Long) =
-            navigationDao.findLessonById(id)
+            lessonDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
     private fun saveLessonsToDb(id: String, list: List<Lesson>) =
             Observable.fromCallable {
                 val iterator = list.listIterator()
-                val listToSave = mutableListOf<NavigationInfo>()
+                val listToSave = mutableListOf<LessonInfo>()
                 findLessonsInDb(list.first().id)
                         .toSingle()
                         .subscribe({}, {
                             while (iterator.hasNext()) {
                                 val next = iterator.next()
-                                listToSave.add(NavigationInfo(id, next.id, next))
+                                listToSave.add(LessonInfo(id, next.id, next))
                             }
                             lessonsToDb(listToSave)
                         })
@@ -208,8 +211,8 @@ constructor(
                     })
 
 
-    private fun lessonsToDb(list: List<NavigationInfo>) =
-            Maybe.fromCallable { navigationDao.insertLessons(list) }
+    private fun lessonsToDb(list: List<LessonInfo>) =
+            Maybe.fromCallable { lessonDao.insertLessons(list) }
                     .subscribeOn(backgroundScheduler)
                     .subscribe()
 

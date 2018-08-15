@@ -4,7 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import org.stepik.android.exams.data.db.AppDatabase
-import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.di.AppSingleton
 
@@ -26,7 +26,7 @@ class RoomModule {
 
     @Provides
     @AppSingleton
-    fun providesNavigationDao(app: AppDatabase): NavigationDao {
+    fun providesNavigationDao(app: AppDatabase): LessonDao {
         return app.navigationDao()
     }
 }

@@ -7,9 +7,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.db.dao.NavigationDao
+import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.db.data.NavigationInfo
+import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.data.model.Step
@@ -28,7 +28,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val navigationDao: NavigationDao,
+        private val lessonDao: LessonDao,
         private val stepDao: StepDao
 ) : PresenterBase<LessonsView>() {
     private var viewState: LessonsView.State = LessonsView.State.Idle
@@ -90,19 +90,19 @@ constructor(
     }
 
     private fun findLessonsInDb(id: Long) =
-            navigationDao.findLessonById(id)
+            lessonDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
     private fun saveLessonsToDb(list: List<org.stepik.android.exams.data.model.Lesson>) =
             disposable.add(Observable.fromCallable {
                 val iterator = list.listIterator()
-                val listToSave = mutableListOf<NavigationInfo>()
+                val listToSave = mutableListOf<LessonInfo>()
                 findLessonsInDb(list.first().id)
                         .toSingle()
                         .subscribe({}, {
                             while (iterator.hasNext()) {
                                 val next = iterator.next()
-                                listToSave.add(NavigationInfo(id, next.id, next))
+                                listToSave.add(LessonInfo(id, next.id, next))
                             }
                             lessonsToDb(listToSave)
                         })
@@ -112,8 +112,8 @@ constructor(
                         onError()
                     }))
 
-    private fun lessonsToDb(list: List<NavigationInfo>) =
-            Maybe.fromCallable { navigationDao.insertLessons(list) }
+    private fun lessonsToDb(list: List<LessonInfo>) =
+            Maybe.fromCallable { lessonDao.insertLessons(list) }
                     .subscribeOn(backgroundScheduler)
                     .subscribe()
 
@@ -168,7 +168,7 @@ constructor(
     }
 
     private fun loadTheoryLessonsLocal() =
-            navigationDao.findAllLessonsByTopicId(id)
+            lessonDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .filter { t: List<org.stepik.android.exams.data.model.Lesson> -> t.isNotEmpty() }
