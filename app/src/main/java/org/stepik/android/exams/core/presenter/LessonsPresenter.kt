@@ -17,7 +17,6 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.Lesson
-import java.util.*
 import javax.inject.Inject
 
 class LessonsPresenter
@@ -86,11 +85,14 @@ constructor(
 
     fun tryLoadLessons(id: String) {
         this.id = id
-        loadTheoryLessonsLocal()
+        Maybe.concat(loadTheoryLessonsLocal(), loadTheoryLessons()).take(1).subscribe({}, {
+            onError()
+        })
     }
 
     private fun findLessonsInDb(id: Long) =
             navigationDao.findLessonById(id)
+                    .subscribeOn(backgroundScheduler)
 
     private fun saveLessonsToDb() =
             disposable.add(Observable.fromCallable {
@@ -102,11 +104,12 @@ constructor(
                             .subscribe({}, {
                                 navigationDao.insertLessons(NavigationInfo(id, next.id, next))
                             })
-
                 }
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe())
+                    .subscribe({},{
+                        onError()
+                    }))
 
 
     private fun joinCourse(id: Long) =
@@ -115,9 +118,9 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribe({}, { onError() }))
 
-    private fun loadTheoryLessons() {
+    private fun loadTheoryLessons(): Maybe<Unit> {
         viewState = LessonsView.State.Loading
-        api.getLessons(getIdFromTheory(id))
+        return api.getLessons(getIdFromTheory(id))
                 .flatMapObservable {
                     it.lessons!!.toObservable()
                 }
@@ -135,19 +138,20 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .doOnError { viewState = LessonsView.State.NetworkError }
-                .subscribe({ l ->
+                .map { l ->
                     val lessons = mutableListOf<org.stepik.android.exams.data.model.Lesson>()
                     parseLessons(id).first.forEach { theory ->
                         lessons.add(l.first { it.id == theory.id.toLong() })
                     }
                     lessonsList = LessonStepicResponse(null, lessons)
-                    onComplete()
                     saveLessonsToDb()
-                }, {
-                    viewState = LessonsView.State.NetworkError
-                })
+                    onComplete()
+                }
+                .toMaybe()
     }
-    private fun saveStepsToDb(steps : List<Step>) {
+
+
+    private fun saveStepsToDb(steps: List<Step>) {
         val list = mutableListOf<StepInfo>()
         steps.forEach {
             list.add(StepInfo(it.id))
@@ -158,17 +162,15 @@ constructor(
     }
 
     private fun loadTheoryLessonsLocal() =
-            disposable.add(navigationDao.findAllLesson(id)
+            navigationDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .doOnSuccess { list ->
-                        if (list.isEmpty()) loadTheoryLessons()
-                        else {
-                            lessonsList = LessonStepicResponse(null, list)
-                            onComplete()
-                        }
+                    .filter { t: List<org.stepik.android.exams.data.model.Lesson> -> t.isNotEmpty() }
+                    .map { list ->
+                        lessonsList = LessonStepicResponse(null, list)
+                        onComplete()
                     }
-                    .subscribe())
+
 
     private fun onComplete() {
         view?.showLessons(lessonsList.lessons)

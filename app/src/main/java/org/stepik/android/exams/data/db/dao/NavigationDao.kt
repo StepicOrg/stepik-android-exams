@@ -12,7 +12,7 @@ import org.stepik.android.exams.data.model.Lesson
 interface NavigationDao {
 
     @Query("SELECT lesson FROM NavigationInfo WHERE topicId = :id")
-    fun findAllLesson(id: String): Maybe<List<Lesson>>
+    fun findAllLessonsByTopicId(id: String): Maybe<List<Lesson>>
 
     @Query("SELECT lesson FROM NavigationInfo WHERE lessonId = :id")
     fun findLessonById(id: Long): Maybe<Lesson>

@@ -93,7 +93,7 @@ constructor(
 
 
     private fun loadLessonFromDb(id: String, first: Boolean): Maybe<LessonWrapper> =
-            navigationDao.findAllLesson(id)
+            navigationDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .flatMap { list ->
                         if (list.isEmpty())
