@@ -14,9 +14,9 @@ import android.widget.CompoundButton;
 
 import org.jetbrains.annotations.NotNull;
 import org.stepik.android.exams.R;
-import org.stepik.android.exams.data.model.TableChoiceAnswer;
 import org.stepik.android.exams.ui.custom.ProgressLatexView;
 import org.stepik.android.exams.ui.listeners.CheckedChangeListenerWithPosition;
+import org.stepik.android.model.TableChoiceAnswer;
 
 import java.util.ArrayList;
 import java.util.List;

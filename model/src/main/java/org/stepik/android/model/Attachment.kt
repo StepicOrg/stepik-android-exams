@@ -1,4 +1,4 @@
-package org.stepik.android.exams.data.model
+package org.stepik.android.model
 
 class Attachment(
         val name: String,

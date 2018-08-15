@@ -2,8 +2,8 @@ package org.stepik.android.exams.ui.steps
 
 import android.text.InputType
 import android.view.View
-import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Submission
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
 
 class NumberDelegate : StringDelegate() {
     override fun onViewCreated(view: View) {

@@ -1,7 +1,7 @@
 package org.stepik.android.exams.core.presenter.contracts
 
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 
 interface AttemptView {
     fun onNeedShowAttempt(attempt: Attempt?)

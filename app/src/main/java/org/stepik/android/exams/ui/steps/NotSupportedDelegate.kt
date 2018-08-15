@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import org.stepik.android.exams.R
-import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 
 class NotSupportedDelegate : AttemptDelegate() {
     override var isEnabled: Boolean = false

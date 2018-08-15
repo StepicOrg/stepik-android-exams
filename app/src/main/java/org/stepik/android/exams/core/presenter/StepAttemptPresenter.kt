@@ -9,13 +9,17 @@ import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.StepInfo
-import org.stepik.android.exams.data.model.*
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.SubmissionRequest
+import org.stepik.android.exams.data.model.SubmissionResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.web.AttemptRequest
 import org.stepik.android.exams.web.AttemptResponse
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

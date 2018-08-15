@@ -10,10 +10,10 @@ import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.model.Progress
 import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.model.Progress
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

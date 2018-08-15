@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation project(':model')
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
     implementation libraries.rxKotlin

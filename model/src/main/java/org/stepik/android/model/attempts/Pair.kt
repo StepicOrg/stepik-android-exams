@@ -1,6 +1,6 @@
-package org.stepik.android.exams.data.model.attempts
+package org.stepik.android.model.attempts
 
-data class Pair(
+data class Pair (
         var first: String? = null,
         var second: String? = null
 )

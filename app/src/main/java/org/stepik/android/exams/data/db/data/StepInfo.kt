@@ -2,8 +2,8 @@ package org.stepik.android.exams.data.db.data
 
 import android.arch.persistence.room.*
 import org.stepik.android.exams.data.db.converters.GsonConverter
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 
 @Entity(tableName = "StepInfo")
 data class StepInfo(

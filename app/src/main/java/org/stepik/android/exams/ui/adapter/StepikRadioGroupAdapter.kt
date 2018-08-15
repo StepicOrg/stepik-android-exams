@@ -2,13 +2,13 @@ package org.stepik.android.exams.ui.adapter
 
 import android.widget.Button
 import org.stepik.android.exams.App
-import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.custom.StepikCheckBox
 import org.stepik.android.exams.ui.custom.StepikOptionView
 import org.stepik.android.exams.ui.custom.StepikRadioButton
 import org.stepik.android.exams.ui.custom.StepikRadioGroup
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 import java.lang.Math.min
 
 

@@ -1,12 +1,12 @@
-package org.stepik.android.exams.data.model
+package org.stepik.android.model.attempts
 
 import com.google.gson.annotations.SerializedName
-import org.stepik.android.exams.data.model.attempts.Pair
 
-data class Dataset(
+class Dataset(
         val options: List<String>? = null,
         val someStringValueFromServer: String? = null,
         val pairs: List<Pair>? = null,
+        val components: List<FillBlankComponent>? = null,
         val rows: List<String>? = null,
         val columns: List<String>? = null,
         val description: String? = null,

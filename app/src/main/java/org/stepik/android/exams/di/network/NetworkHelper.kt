@@ -4,12 +4,12 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import org.stepik.android.exams.api.auth.AuthInterceptor
-import org.stepik.android.exams.data.model.DatasetWrapper
-import org.stepik.android.exams.data.model.ReplyWrapper
 import org.stepik.android.exams.jsonHelpers.DatasetDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplyDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplySerializer
 import org.stepik.android.exams.util.setTimeoutsInSeconds
+import org.stepik.android.model.ReplyWrapper
+import org.stepik.android.model.attempts.DatasetWrapper
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

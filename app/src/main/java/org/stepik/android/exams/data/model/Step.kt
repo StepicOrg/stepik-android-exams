@@ -5,6 +5,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import org.stepik.android.exams.util.readBoolean
 import org.stepik.android.exams.util.writeBoolean
+import org.stepik.android.model.Actions
+import org.stepik.android.model.Block
 import java.util.*
 
 data class Step(

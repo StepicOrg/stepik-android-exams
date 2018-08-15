@@ -1,4 +1,4 @@
-package org.stepik.android.exams.data.model
+package org.stepik.android.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -19,7 +19,9 @@ class Reply(
         var tableChoices: List<TableChoiceAnswer>? = null //this is not serialize by default, because  field 'choices' is already created by different type
 )
 
+
 class ReplyWrapper(val reply: Reply?)
+
 
 data class TableChoiceAnswer(
         @SerializedName("name_row")

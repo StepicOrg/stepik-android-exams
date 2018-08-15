@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import org.stepik.android.exams.R
-import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 
 open class StringDelegate : AttemptDelegate() {
     protected lateinit var answerField: EditText

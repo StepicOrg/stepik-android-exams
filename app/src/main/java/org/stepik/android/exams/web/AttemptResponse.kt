@@ -1,6 +1,6 @@
 package org.stepik.android.exams.web
 
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.attempts.Attempt
 
 class AttemptResponse(
         val attempts: List<Attempt>

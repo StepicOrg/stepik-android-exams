@@ -10,13 +10,13 @@ import android.widget.Button
 import kotlinx.android.synthetic.main.attempt_container_layout.view.*
 import kotlinx.android.synthetic.main.view_table_quiz_layout.view.*
 import org.stepik.android.exams.R
-import org.stepik.android.exams.data.model.Reply
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.TableChoiceAnswer
-import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.adapter.TableChoiceAdapter
 import org.stepik.android.exams.ui.decorations.GridDividerItemDecoration
 import org.stepik.android.exams.util.DpPixelsHelper
+import org.stepik.android.model.Reply
+import org.stepik.android.model.Submission
+import org.stepik.android.model.TableChoiceAnswer
+import org.stepik.android.model.attempts.Attempt
 import java.util.*
 
 class TableChoiceDelegate : AttemptDelegate() {

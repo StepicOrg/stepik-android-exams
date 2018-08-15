@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import org.stepik.android.exams.R
-import org.stepik.android.exams.data.model.attempts.Attempt
+import org.stepik.android.model.attempts.Attempt
 
 class FreeAnswerDelegate : StringDelegate() {
 

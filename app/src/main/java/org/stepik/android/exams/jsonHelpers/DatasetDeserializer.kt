@@ -2,8 +2,8 @@ package org.stepik.android.exams.jsonHelpers
 
 
 import com.google.gson.*
-import org.stepik.android.exams.data.model.Dataset
-import org.stepik.android.exams.data.model.DatasetWrapper
+import org.stepik.android.model.attempts.Dataset
+import org.stepik.android.model.attempts.DatasetWrapper
 import java.lang.reflect.Type
 
 class DatasetDeserializer : JsonDeserializer<DatasetWrapper> {

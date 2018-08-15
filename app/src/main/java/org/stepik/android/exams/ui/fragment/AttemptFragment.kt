@@ -13,13 +13,13 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.Step
-import org.stepik.android.exams.data.model.Submission
-import org.stepik.android.exams.data.model.attempts.Attempt
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.model.Submission
+import org.stepik.android.model.attempts.Attempt
 
 
 class AttemptFragment :

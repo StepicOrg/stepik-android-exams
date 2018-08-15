@@ -8,7 +8,6 @@ import org.stepik.android.exams.api.auth.CookieHelper
 import org.stepik.android.exams.api.auth.EmptyAuthService
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.model.AccountCredentials
-import org.stepik.android.exams.data.model.EnrollmentWrapper
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.data.model.StepResponse
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
@@ -17,6 +16,7 @@ import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.util.addUserAgent
 import org.stepik.android.exams.util.setTimeoutsInSeconds
+import org.stepik.android.model.EnrollmentWrapper
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named

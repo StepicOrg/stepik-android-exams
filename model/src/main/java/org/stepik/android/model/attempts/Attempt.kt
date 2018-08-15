@@ -1,8 +1,6 @@
-package org.stepik.android.exams.data.model.attempts
+package org.stepik.android.model.attempts
 
 import com.google.gson.annotations.SerializedName
-import org.stepik.android.exams.data.model.Dataset
-import org.stepik.android.exams.data.model.DatasetWrapper
 
 class Attempt(
         val id: Long = 0,
