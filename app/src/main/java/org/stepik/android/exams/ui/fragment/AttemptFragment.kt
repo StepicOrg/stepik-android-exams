@@ -145,7 +145,7 @@ class AttemptFragment :
         val reply = (stepDelegate as AttemptDelegate).createReply()
         val stepExist = presenter?.checkStepExistence() ?: false
         if (stepExist && !shouldUpdate)
-            submissions = Submission(reply = reply, id = attempt?.id ?: 0)
+            submissions = Submission(reply, attempt?.id ?: 0, null)
         presenter?.updateStepInDb(step?.id, attempt, submissions)
         super.onDestroyView()
     }
