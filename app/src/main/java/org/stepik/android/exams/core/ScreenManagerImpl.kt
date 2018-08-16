@@ -4,9 +4,10 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import org.stepik.android.exams.data.model.Lesson
+import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
+import org.stepik.android.model.Lesson
 import javax.inject.Inject
 
 @AppSingleton
@@ -15,7 +16,7 @@ class ScreenManagerImpl
 constructor(
         private val context: Context
 ) : ScreenManager {
-    override fun showStepsList(id: String, lesson: Lesson, context: Context) {
+    override fun showStepsList(id: String, lesson: LessonWrapper, context: Context) {
         val intent = Intent(context, StepsActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra("lesson", lesson)

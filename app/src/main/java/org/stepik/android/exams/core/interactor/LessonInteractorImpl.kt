@@ -10,10 +10,11 @@ import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
-import org.stepik.android.exams.data.model.Lesson
-import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.graph.Graph
+import org.stepik.android.model.Lesson
+import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class LessonInteractorImpl
@@ -26,14 +27,14 @@ constructor(
         private val api: Api,
         private val stepDao: StepDao
 ) : LessonInteractor {
-    private lateinit var lessonsList: List<Lesson>
+    private lateinit var lessonsList: MutableList<LessonWrapper>
 
-    data class LessonWrapper(val theoryId: String, val lesson: Lesson) {
-        constructor() : this("", Lesson())
+    data class LessonTheoryWrapper(val theoryId: String, val lesson: LessonWrapper) {
+        constructor() : this("", LessonWrapper(Lesson(), listOf()))
     }
 
 
-    override fun resolveNextLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonWrapper> {
+    override fun resolveNextLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonTheoryWrapper> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
                 graph[topicId]?.lessons?.last()?.id == lesson.toInt())
             return Maybe.empty()
@@ -56,10 +57,10 @@ constructor(
                 return loadLessons(nextTopic, first = true)
             }
         }
-        return Maybe.just(LessonWrapper())
+        return Maybe.just(LessonTheoryWrapper())
     }
 
-    override fun resolvePrevLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonWrapper> {
+    override fun resolvePrevLesson(topicId: String, lesson: Long, move: Boolean): Maybe<LessonTheoryWrapper> {
         if (graph[topicId]?.children?.isEmpty() == true &&
                 graph[topicId]?.lessons?.first()?.id == lesson.toInt())
             return Maybe.empty()
@@ -84,10 +85,10 @@ constructor(
                 return loadLessons(nextTopic, first = false)
             }
         }
-        return Maybe.just(LessonWrapper())
+        return Maybe.just(LessonTheoryWrapper())
     }
 
-    private fun loadLessons(topicId: String, first: Boolean): Maybe<LessonWrapper> {
+    private fun loadLessons(topicId: String, first: Boolean): Maybe<LessonTheoryWrapper> {
         tryJoinCourse(topicId)
         return loadLessonFromDb(topicId, first)
     }
@@ -95,21 +96,21 @@ constructor(
     private fun findLessonInDb(topicId: String, nextLesson: Long) =
             findLessonsInDb(nextLesson)
                     .flatMap { it ->
-                        return@flatMap Maybe.just(LessonWrapper(topicId, it))
+                        return@flatMap Maybe.just(LessonTheoryWrapper(topicId, it))
                     }
 
 
-    private fun loadLessonFromDb(id: String, first: Boolean): Maybe<LessonWrapper> =
+    private fun loadLessonFromDb(id: String, first: Boolean): Maybe<LessonTheoryWrapper> =
             lessonDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .flatMap { list ->
                         if (list.isEmpty())
                             return@flatMap loadLessonFromApi(id, first)
                         else {
-                            lessonsList = list
+                            lessonsList = list as MutableList<LessonWrapper>
                             if (first)
-                                return@flatMap Maybe.just(LessonWrapper(id, lessonsList.first()))
-                            else return@flatMap Maybe.just(LessonWrapper(id, lessonsList.last()))
+                                return@flatMap Maybe.just(LessonTheoryWrapper(id, lessonsList.first()))
+                            else return@flatMap Maybe.just(LessonTheoryWrapper(id, lessonsList.last()))
                         }
                     }
 
@@ -122,28 +123,21 @@ constructor(
                         api.getSteps(*it.steps).toObservable()
                     }, { a, b -> a to b })
                     .map { (lesson, stepResponse) ->
-                        lesson.apply {
-                            saveStepsToDb(stepResponse.steps!!)
-                            stepsList = stepResponse.steps
-                            stepsList?.last()?.is_last = true
+                        LessonWrapper(lesson, stepResponse.steps!!).apply {
+                            saveStepsToDb(stepResponse.steps)
                         }
                     }
                     .toList()
                     .subscribeOn(backgroundScheduler)
-                    .doOnSuccess { l ->
-                        val lessons = mutableListOf<Lesson>()
+                    .map { l ->
+                        val lessons = mutableListOf<LessonWrapper>()
                         parseLessons(id).first.forEach { theory ->
-                            lessons.add(l.first { it.id == theory.id.toLong() })
+                            lessons.add(l.first { it.lesson.id == theory.id.toLong() })
                         }
-                        lessonsList = lessons
                         saveLessonsToDb(id, lessons)
-                    }
-                    .map {
-                        if (first) LessonWrapper(id, it.first())
-                        else LessonWrapper(id, it.last())
-                    }
-                    .toMaybe()
-
+                        if (first) LessonTheoryWrapper(id, l.first())
+                        else LessonTheoryWrapper(id, l.last())
+                    }.toMaybe()
 
     private fun getLessonsById(id: String) = graph[id]?.lessons
 
@@ -192,16 +186,16 @@ constructor(
             lessonDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
-    private fun saveLessonsToDb(id: String, list: List<Lesson>) =
-            Observable.fromCallable {
+    private fun saveLessonsToDb(id: String, list: List<LessonWrapper>) =
+           Observable.fromCallable {
                 val iterator = list.listIterator()
                 val listToSave = mutableListOf<LessonInfo>()
-                findLessonsInDb(list.first().id)
+                findLessonsInDb(list.first().lesson.id)
                         .toSingle()
                         .subscribe({}, {
                             while (iterator.hasNext()) {
                                 val next = iterator.next()
-                                listToSave.add(LessonInfo(id, next.id, next))
+                                listToSave.add(LessonInfo(id, next.lesson.id, next))
                             }
                             lessonsToDb(listToSave)
                         })

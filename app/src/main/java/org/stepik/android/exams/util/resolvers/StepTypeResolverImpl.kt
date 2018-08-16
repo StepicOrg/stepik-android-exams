@@ -9,9 +9,9 @@ import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import org.stepik.android.exams.R
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.steps.*
 import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.model.Step
 import java.util.*
 import javax.inject.Inject
 

@@ -14,9 +14,10 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.model.Lesson
+import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.model.Lesson
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -123,7 +124,7 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
 
     override fun getPresenterProvider() = lessonsPresenterProvider
 
-    override fun showLessons(lesson: List<Lesson>?) {
+    override fun showLessons(lesson: List<LessonWrapper>?) {
         lessonsAdapter.addLessons(lesson)
     }
 }

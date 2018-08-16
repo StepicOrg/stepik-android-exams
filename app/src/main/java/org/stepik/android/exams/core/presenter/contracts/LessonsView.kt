@@ -1,9 +1,10 @@
 package org.stepik.android.exams.core.presenter.contracts
 
-import org.stepik.android.exams.data.model.Lesson
+import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.model.Lesson
 
 interface LessonsView {
-    fun showLessons(lesson: List<Lesson>?)
+    fun showLessons(lesson: List<LessonWrapper>?)
     fun setState(state: LessonsView.State)
     sealed class State {
         object FirstLoading : State()

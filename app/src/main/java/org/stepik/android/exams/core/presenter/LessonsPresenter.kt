@@ -11,12 +11,12 @@ import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
-import org.stepik.android.exams.data.model.LessonStepicResponse
-import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.Lesson
+import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class LessonsPresenter
@@ -36,9 +36,9 @@ constructor(
             field = value
             view?.setState(value)
         }
-    private var lessonsList: LessonStepicResponse? = null
     private var id: String = ""
     private var disposable = CompositeDisposable()
+    private var lessonsList : List<LessonWrapper>? = null
 
     init {
         viewState = LessonsView.State.FirstLoading
@@ -93,16 +93,16 @@ constructor(
             lessonDao.findLessonById(id)
                     .subscribeOn(backgroundScheduler)
 
-    private fun saveLessonsToDb(list: List<org.stepik.android.exams.data.model.Lesson>) =
+    private fun saveLessonsToDb(list: List<LessonWrapper>) =
             disposable.add(Observable.fromCallable {
                 val iterator = list.listIterator()
                 val listToSave = mutableListOf<LessonInfo>()
-                findLessonsInDb(list.first().id)
+                findLessonsInDb(list.first().lesson.id)
                         .toSingle()
                         .subscribe({}, {
                             while (iterator.hasNext()) {
                                 val next = iterator.next()
-                                listToSave.add(LessonInfo(id, next.id, next))
+                                listToSave.add(LessonInfo(id, next.lesson.id, next))
                             }
                             lessonsToDb(listToSave)
                         })
@@ -134,10 +134,8 @@ constructor(
                     api.getSteps(*it.steps).toObservable()
                 }, { a, b -> a to b })
                 .map { (lesson, stepResponse) ->
-                    lesson.apply {
-                        saveStepsToDb(stepResponse.steps!!)
-                        stepsList = stepResponse.steps
-                        stepsList?.last()?.is_last = true
+                    LessonWrapper(lesson, stepResponse.steps!!).apply {
+                        saveStepsToDb(stepResponse.steps)
                     }
                 }
                 .toList()
@@ -145,15 +143,14 @@ constructor(
                 .observeOn(mainScheduler)
                 .doOnError { viewState = LessonsView.State.NetworkError }
                 .map { l ->
-                    val lessons = mutableListOf<org.stepik.android.exams.data.model.Lesson>()
+                    val lessons = mutableListOf<LessonWrapper>()
                     parseLessons(id).first.forEach { theory ->
-                        lessons.add(l.first { it.id == theory.id.toLong() })
+                        lessons.add(l.first { it.lesson.id == theory.id.toLong() })
                     }
-                    lessonsList = LessonStepicResponse(null, lessons)
+                    lessonsList = lessons
                     saveLessonsToDb(lessons)
                     onComplete(lessons)
-                }
-                .toMaybe()
+                }.toMaybe()
     }
 
 
@@ -171,14 +168,14 @@ constructor(
             lessonDao.findAllLessonsByTopicId(id)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .filter { t: List<org.stepik.android.exams.data.model.Lesson> -> t.isNotEmpty() }
+                    .filter { t: List<LessonWrapper> -> t.isNotEmpty() }
                     .map { list ->
-                        lessonsList = LessonStepicResponse(null, list)
+                        lessonsList = list as MutableList<LessonWrapper>
                         onComplete(list)
                     }
 
 
-    private fun onComplete(list: List<org.stepik.android.exams.data.model.Lesson>) {
+    private fun onComplete(list: List<LessonWrapper>) {
         view?.showLessons(list)
         viewState = LessonsView.State.Success
     }
@@ -186,7 +183,7 @@ constructor(
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        lessonsList?.lessons.let {
+        lessonsList.let {
             if (it?.isNotEmpty() == true)
                 view.showLessons(it)
         }

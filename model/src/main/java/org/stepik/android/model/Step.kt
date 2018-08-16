@@ -25,8 +25,7 @@ data class Step(
         val createDate: Date? = null,
         @SerializedName("update_date")
         val updateDate: Date? = null,
-        var isCached: Boolean = false,
-        var isLoading: Boolean = false,
+
         var isCustomPassed: Boolean = false,
         val actions: Actions? = null,
 
@@ -48,7 +47,7 @@ data class Step(
         dest.writeInt(this.status?.ordinal ?: -1)
         dest.writeParcelable(this.block, 0)
         dest.writeString(this.progress)
-        dest.writeList(this.subscriptions)
+        dest.writeStringList(this.subscriptions)
 
         dest.writeLong(this.viewedBy)
         dest.writeLong(this.passedBy)
@@ -56,8 +55,6 @@ data class Step(
         dest.writeDate(this.createDate)
         dest.writeDate(this.updateDate)
 
-        dest.writeBoolean(isCached)
-        dest.writeBoolean(isLoading)
         dest.writeBoolean(isCustomPassed)
         dest.writeParcelable(this.actions, flags)
 
@@ -81,8 +78,6 @@ data class Step(
                 parcel.readDate(),
                 parcel.readDate(),
 
-                parcel.readBoolean(),
-                parcel.readBoolean(),
                 parcel.readBoolean(),
                 parcel.readParcelable(Actions::class.java.classLoader),
 

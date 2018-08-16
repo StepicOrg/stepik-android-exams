@@ -10,10 +10,10 @@ import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.model.Progress
+import org.stepik.android.model.Step
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -41,7 +41,7 @@ constructor(
                                 .observeOn(mainScheduler)
                                 .doOnSuccess {
                                     val isPassed = it.progresses.first().isPassed
-                                    step.is_custom_passed = isPassed
+                                    step.isCustomPassed = isPassed
                                     updateProgress(step.id, true)
                                             .observeOn(mainScheduler)
                                             .subscribe { _ ->
@@ -79,12 +79,12 @@ constructor(
                 updateProgress(step.id, isPassed)
                 return@flatMap Single.just(isPassed)
             }.flatMapObservable {
-                Observable.just(step.copy(is_custom_passed = it))
+                Observable.just(step.copy(isCustomPassed = it))
             }
 
     fun stepPassedLocal(step: Step?) {
         if (step?.block?.name == "text") {
-            step.is_custom_passed = true
+            step.isCustomPassed = true
             updateProgress(step.id, true)
                     .observeOn(mainScheduler)
                     .subscribe {

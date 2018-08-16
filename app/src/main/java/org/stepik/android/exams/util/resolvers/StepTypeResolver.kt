@@ -1,8 +1,8 @@
 package org.stepik.android.exams.util.resolvers
 
 import android.graphics.drawable.Drawable
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.steps.StepDelegate
+import org.stepik.android.model.Step
 
 interface StepTypeResolver {
 

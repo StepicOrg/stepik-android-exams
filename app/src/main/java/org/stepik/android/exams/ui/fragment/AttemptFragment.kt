@@ -12,12 +12,12 @@ import kotlinx.android.synthetic.main.step_delegate.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
@@ -37,10 +37,11 @@ class AttemptFragment :
     private var shouldUpdate = false
 
     companion object {
-        fun newInstance(step: Step?, id: String): AttemptFragment {
+        fun newInstance(step: Step?, id: String, lastPosition : Int): AttemptFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("step", step)
+            args.putInt("last_position", lastPosition)
             val fragment = AttemptFragment()
             fragment.arguments = args
             return fragment
@@ -144,7 +145,7 @@ class AttemptFragment :
         val reply = (stepDelegate as AttemptDelegate).createReply()
         val stepExist = presenter?.checkStepExistence() ?: false
         if (stepExist && !shouldUpdate)
-            submissions = Submission(reply, attempt?.id ?: 0)
+            submissions = Submission(reply = reply, id = attempt?.id ?: 0)
         presenter?.updateStepInDb(step?.id, attempt, submissions)
         super.onDestroyView()
     }
@@ -184,7 +185,7 @@ class AttemptFragment :
 
     private fun makeSubmission() {
         shouldUpdate = true
-        if (attempt == null || attempt?.id ?: 0 <= 0 && step?.is_custom_passed != true) return
+        if (attempt == null || attempt?.id ?: 0 <= 0 && step?.isCustomPassed != true) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
@@ -213,9 +214,9 @@ class AttemptFragment :
     private fun onNext() {
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
-            if (step?.is_last == true)
-                navigatePresenter.navigateToLesson(step, id, move = true)
-            else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+            // if (step?.is_last == true)
+            // navigatePresenter.navigateToLesson(step, id, move = true)
+            /* else*/ routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }
 

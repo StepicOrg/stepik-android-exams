@@ -4,10 +4,10 @@ import android.graphics.drawable.Drawable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.ui.fragment.AttemptFragment
 import org.stepik.android.exams.ui.fragment.StepFragment
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
+import org.stepik.android.model.Step
 
 class StepPagerAdapter(
         fragmentManager: FragmentManager,
@@ -18,8 +18,8 @@ class StepPagerAdapter(
     private var steps: MutableList<Step> = stepsList as MutableList<Step>
     override fun getItem(position: Int): Fragment {
         return when (steps.getOrNull(position)?.block?.name) {
-            "text" -> StepFragment.newInstance(steps.getOrNull(position), id)
-            else -> AttemptFragment.newInstance(steps.getOrNull(position), id)
+            "text" -> StepFragment.newInstance(steps.getOrNull(position), id, lastPosition = steps.size)
+            else -> AttemptFragment.newInstance(steps.getOrNull(position), id, lastPosition = steps.size)
         }
     }
 
@@ -38,7 +38,7 @@ class StepPagerAdapter(
     fun getTabDrawable(position: Int): Drawable? {
         if (position >= steps.size) return null
         val step = steps[position]
-        return stepTypeResolver.getDrawableForType(step.block?.name, step.is_custom_passed,
+        return stepTypeResolver.getDrawableForType(step.block?.name, step.isCustomPassed,
                 step.actions?.doReview != null)
     }
 

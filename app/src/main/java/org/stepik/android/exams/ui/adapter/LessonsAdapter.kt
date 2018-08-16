@@ -9,10 +9,11 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.data.model.Lesson
+import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.model.Lesson
 
 class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
-    private var lessons: List<Lesson>? = listOf()
+    private var lessons: List<LessonWrapper>? = listOf()
     var id: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
@@ -26,7 +27,7 @@ class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : R
         holder?.bind(lessons?.get(position))
     }
 
-    fun addLessons(lessons: List<Lesson>?) {
+    fun addLessons(lessons: List<LessonWrapper>?) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -36,12 +37,12 @@ class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : R
 
         init {
             titleText.setOnClickListener {
-                screenManager.showStepsList(id, lessons?.get(adapterPosition) ?: Lesson(), context)
+                screenManager.showStepsList(id, lessons?.get(adapterPosition)!!, context)
             }
         }
 
-        fun bind(lesson: Lesson?) {
-            titleText.text = lesson?.title
+        fun bind(w: LessonWrapper?) {
+            titleText.text = w?.lesson?.title
         }
     }
 }

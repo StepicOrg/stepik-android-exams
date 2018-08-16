@@ -13,12 +13,13 @@ class Submission(
         val session: String? = null,
         val eta: String? = null
 ) {
-    constructor(reply: Reply?, attempt: Long) : this(id = 0, reply = reply, attempt = attempt)
+    // todo remove this compatibility constructor after rewriting StepAttemptFragment in Kotlin
+    constructor(reply: Reply?, attempt: Long, status: Status?): this(id = 0, reply = reply, attempt = attempt, status = status)
 
     @SerializedName("reply")
     private val replyWrapper: ReplyWrapper? = reply?.let(::ReplyWrapper)
 
-    val reply: Reply?
+    val reply: Reply? // this virtual property allows to work with reply like it regular class field without additional wrapper
         get() = replyWrapper?.reply
 
     enum class Status(val scope: String) {

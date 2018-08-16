@@ -1,11 +1,10 @@
 package org.stepik.android.exams.core.presenter.contracts
 
-import org.stepik.android.exams.data.model.Lesson
-import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.model.Lesson
 
 interface NavigateView {
-    fun moveToLesson(id: String, lesson: Lesson?)
+    fun moveToLesson(id: String, lesson: LessonWrapper?)
     fun showNavigation()
     fun hideNavigation()
-    fun showTabs(steps: List<Step>)
 }

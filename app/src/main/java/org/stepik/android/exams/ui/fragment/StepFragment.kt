@@ -20,11 +20,12 @@ import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
-import org.stepik.android.exams.data.model.Lesson
-import org.stepik.android.exams.data.model.Step
+import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
+import org.stepik.android.model.Lesson
+import org.stepik.android.model.Step
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,7 +41,8 @@ open class StepFragment :
     lateinit var screenManager: ScreenManager
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
-    var id = ""
+    protected var id = ""
+    protected var lastPosition  = 0
 
     override fun getPresenterProvider() = stepPresenterProvider
 
@@ -60,6 +62,7 @@ open class StepFragment :
         super.onCreate(savedInstanceState)
         step = arguments.getParcelable("step")
         id = arguments.getString("id", "")
+        lastPosition = arguments.getInt("last_position")
         stepTypeResolver = StepTypeResolverImpl(context)
     }
 
@@ -67,10 +70,6 @@ open class StepFragment :
         super.onStart()
         navigatePresenter.attachView(this)
         progressPresenter.attachView(this)
-    }
-
-    override fun showTabs(steps: List<Step>) {
-        markedAsView(steps)
     }
 
     override fun markedAsView(step: Step) {
@@ -102,34 +101,35 @@ open class StepFragment :
         swipeRefreshAttempt.isRefreshing = false
     }
 
-    override fun moveToLesson(id: String, lesson: Lesson?) = screenManager.showStepsList(id, lesson
-            ?: Lesson(), context)
+    override fun moveToLesson(id: String, lesson: LessonWrapper?) = screenManager.showStepsList(id, lesson!!, context)
 
     override fun hideNavigation() {
-        if (step?.position == 1L)
-            prevLesson.visibility = View.GONE
-        if (step?.is_last == true)
-            nextLesson.visibility = View.GONE
+        when (step?.position){
+            1L -> prevLesson.visibility = View.GONE
+            lastPosition.toLong() -> nextLesson.visibility = View.GONE
+            else -> return
+        }
         route_lesson_root.visibility = View.GONE
     }
 
     override fun showNavigation() {
-        if (step?.position == 1L)
-            prevLesson.visibility = View.VISIBLE
-        if (step?.is_last == true)
-            nextLesson.visibility = View.VISIBLE
+        when (step?.position){
+            1L -> prevLesson.visibility = View.VISIBLE
+            lastPosition.toLong() -> nextLesson.visibility = View.VISIBLE
+            else -> return
+        }
         route_lesson_root.visibility = View.VISIBLE
     }
 
     private fun loadNavigation() {
-        nextLesson = view?.route_lesson_root?.next_lesson_view as TextView
+        nextLesson = route_lesson_root.next_lesson_view
         prevLesson = route_lesson_root.previous_lesson_view
-        navigatePresenter.navigateToLesson(step, id, move = false)
+        navigatePresenter.navigateToLesson(step, id, lastPosition, move = false)
         nextLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, id, move = true)
+            navigatePresenter.navigateToLesson(step, id, lastPosition, move = true)
         }
         prevLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, id, move = true)
+            navigatePresenter.navigateToLesson(step, id, lastPosition, move = true)
         }
     }
 
@@ -140,10 +140,11 @@ open class StepFragment :
     }
 
     companion object {
-        fun newInstance(step: Step?, id: String): StepFragment {
+        fun newInstance(step: Step?, id: String, lastPosition : Int): StepFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("step", step)
+            args.putInt("last_position", lastPosition)
             val fragment = StepFragment()
             fragment.arguments = args
             return fragment

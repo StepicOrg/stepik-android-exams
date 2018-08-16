@@ -7,6 +7,7 @@ import org.stepik.android.exams.api.auth.AuthInterceptor
 import org.stepik.android.exams.jsonHelpers.DatasetDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplyDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplySerializer
+import org.stepik.android.exams.jsonHelpers.adapters.CodeOptionsAdapterFactory
 import org.stepik.android.exams.util.setTimeoutsInSeconds
 import org.stepik.android.model.ReplyWrapper
 import org.stepik.android.model.attempts.DatasetWrapper
@@ -30,6 +31,7 @@ object NetworkHelper {
     private fun generateGsonFactory(): Converter.Factory {
         val gson = GsonBuilder()
                 .enableComplexMapKeySerialization()
+                .registerTypeAdapterFactory(CodeOptionsAdapterFactory())
                 .registerTypeAdapter(DatasetWrapper::class.java, DatasetDeserializer())
                 .registerTypeAdapter(ReplyWrapper::class.java, ReplyDeserializer())
                 .registerTypeAdapter(ReplyWrapper::class.java, ReplySerializer())

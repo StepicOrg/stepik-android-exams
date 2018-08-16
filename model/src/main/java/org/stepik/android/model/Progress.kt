@@ -9,7 +9,7 @@ import org.stepik.android.model.util.writeBoolean
 data class Progress(
         val id: String? = null,
         @SerializedName("last_viewed")
-        val lastViewed: String? = null,
+        val lastViewed: String? = null, //in SECONDS
         var score: String? = null,
         val cost: Int = 0,
         @SerializedName("n_steps")

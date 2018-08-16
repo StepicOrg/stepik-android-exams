@@ -9,7 +9,6 @@ import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.StepInfo
-import org.stepik.android.exams.data.model.Step
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.exams.data.model.SubmissionResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -18,6 +17,7 @@ import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.web.AttemptRequest
 import org.stepik.android.exams.web.AttemptResponse
 import org.stepik.android.model.Reply
+import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 import java.util.concurrent.TimeUnit
@@ -74,7 +74,7 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1).subscribe()
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1).subscribe({}, { onError() })
     }
 
     private fun checkStepIdDb(step: Step) =
@@ -118,10 +118,10 @@ constructor(
                                         .filter { it.submissions?.isNotEmpty() ?: false }
                                         .subscribeOn(backgroundScheduler)
                                         .observeOn(mainScheduler)
-                                        .subscribe { response ->
+                                        .subscribe({ response ->
                                             submission = response.submissions?.first()
                                             onSubmissionLoaded(submission as Submission)
-                                        })
+                                        }, { onError() }))
                     }.toMaybe<Unit>()
 
     fun createNewAttempt(step: Step) {
@@ -156,31 +156,31 @@ constructor(
                 stepDao.updateStep(StepInfo(id, attempt, submission, false))
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe())
+                    .subscribe({}, {}))
 
     fun createSubmission(id: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
-        submission = Submission(reply, id)
+        submission = Submission(reply, id, null)
         disposable.add(stepicRestService.createSubmission(SubmissionRequest(submission))
                 .andThen(stepicRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe(this::onSubmissionLoaded, this::onError))
+                .subscribe  ({onSubmissionLoaded(it)},{onError()}))
     }
 
     private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {
         submission = submissionResponse.firstSubmission
-        submission?.let {
-            if (it.status == Submission.Status.EVALUATION) {
-                stepicRestService.getSubmissions(it.attempt, "desc")
+        submission?.let { s ->
+            if (s.status == Submission.Status.EVALUATION) {
+                stepicRestService.getSubmissions(s.attempt, "desc")
                         .delay(1, TimeUnit.SECONDS)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe(this::onSubmissionLoaded, this::onError)
+                        .subscribe({ onSubmissionLoaded(it) }, { onError() })
             } else {
                 updateStep(step?.id, attempt, submission)
                 view?.updateSubmission(shouldUpdate = true)
-                onSubmissionLoaded(it)
+                onSubmissionLoaded(s)
                 viewState = AttemptView.State.Success
             }
         }
@@ -206,7 +206,7 @@ constructor(
         }
     }
 
-    private fun onError(error: Throwable) {
+    private fun onError() {
         viewState = AttemptView.State.NetworkError
     }
 
