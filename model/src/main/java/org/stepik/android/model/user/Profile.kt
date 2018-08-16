@@ -2,7 +2,8 @@ package org.stepik.android.model.user
 
 import com.google.gson.annotations.SerializedName
 
-data class Profile(
+data class
+Profile(
         val id: Long = 0,
 
         @SerializedName("first_name")

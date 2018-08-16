@@ -37,7 +37,7 @@ class AttemptFragment :
     private var shouldUpdate = false
 
     companion object {
-        fun newInstance(step: Step?, id: String, lastPosition : Int): AttemptFragment {
+        fun newInstance(step: Step?, id: String, lastPosition: Int): AttemptFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("step", step)
@@ -214,9 +214,9 @@ class AttemptFragment :
     private fun onNext() {
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
-            // if (step?.is_last == true)
-            // navigatePresenter.navigateToLesson(step, id, move = true)
-            /* else*/ routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+             if (step?.position == lastPosition.toLong())
+             navigatePresenter.navigateToLesson(step, id, lastPosition, move = true)
+             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }
 

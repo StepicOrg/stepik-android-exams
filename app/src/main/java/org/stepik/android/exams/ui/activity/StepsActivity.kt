@@ -3,7 +3,6 @@ package org.stepik.android.exams.ui.activity
 import android.support.v4.app.Fragment
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.fragment.StepListFragment
-import org.stepik.android.model.Lesson
 
 class StepsActivity : SingleFragmentActivity() {
 

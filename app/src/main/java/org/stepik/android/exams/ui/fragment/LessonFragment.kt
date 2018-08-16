@@ -17,7 +17,6 @@ import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
-import org.stepik.android.model.Lesson
 import javax.inject.Inject
 import javax.inject.Provider
 

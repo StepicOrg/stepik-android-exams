@@ -165,7 +165,7 @@ constructor(
                 .andThen(stepicRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe  ({onSubmissionLoaded(it)},{onError()}))
+                .subscribe({ onSubmissionLoaded(it) }, { onError() }))
     }
 
     private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {

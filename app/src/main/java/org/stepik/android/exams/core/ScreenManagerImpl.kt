@@ -7,7 +7,6 @@ import android.content.Intent
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
-import org.stepik.android.model.Lesson
 import javax.inject.Inject
 
 @AppSingleton

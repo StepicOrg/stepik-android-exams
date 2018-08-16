@@ -24,7 +24,6 @@ import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
-import org.stepik.android.model.Lesson
 import org.stepik.android.model.Step
 import javax.inject.Inject
 import javax.inject.Provider
@@ -42,7 +41,7 @@ open class StepFragment :
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
     protected var id = ""
-    protected var lastPosition  = 0
+    protected var lastPosition = 0
 
     override fun getPresenterProvider() = stepPresenterProvider
 
@@ -104,7 +103,7 @@ open class StepFragment :
     override fun moveToLesson(id: String, lesson: LessonWrapper?) = screenManager.showStepsList(id, lesson!!, context)
 
     override fun hideNavigation() {
-        when (step?.position){
+        when (step?.position) {
             1L -> prevLesson.visibility = View.GONE
             lastPosition.toLong() -> nextLesson.visibility = View.GONE
             else -> return
@@ -113,7 +112,7 @@ open class StepFragment :
     }
 
     override fun showNavigation() {
-        when (step?.position){
+        when (step?.position) {
             1L -> prevLesson.visibility = View.VISIBLE
             lastPosition.toLong() -> nextLesson.visibility = View.VISIBLE
             else -> return
@@ -140,7 +139,7 @@ open class StepFragment :
     }
 
     companion object {
-        fun newInstance(step: Step?, id: String, lastPosition : Int): StepFragment {
+        fun newInstance(step: Step?, id: String, lastPosition: Int): StepFragment {
             val args = Bundle()
             args.putString("id", id)
             args.putParcelable("step", step)

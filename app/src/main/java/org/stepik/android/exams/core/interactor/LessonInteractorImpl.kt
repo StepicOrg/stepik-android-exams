@@ -187,7 +187,7 @@ constructor(
                     .subscribeOn(backgroundScheduler)
 
     private fun saveLessonsToDb(id: String, list: List<LessonWrapper>) =
-           Observable.fromCallable {
+            Observable.fromCallable {
                 val iterator = list.listIterator()
                 val listToSave = mutableListOf<LessonInfo>()
                 findLessonsInDb(list.first().lesson.id)

@@ -4,7 +4,6 @@ package org.stepik.android.exams.data.db.converters
 import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.model.Lesson
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 

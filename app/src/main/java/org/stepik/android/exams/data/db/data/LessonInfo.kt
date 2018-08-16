@@ -6,7 +6,6 @@ import android.arch.persistence.room.PrimaryKey
 import android.arch.persistence.room.TypeConverters
 import org.stepik.android.exams.data.db.converters.GsonConverter
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.model.Lesson
 
 @Entity(tableName = "LessonInfo")
 class LessonInfo(

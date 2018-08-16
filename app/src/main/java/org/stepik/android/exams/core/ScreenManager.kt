@@ -3,7 +3,6 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.model.Lesson
 
 interface ScreenManager {
     fun showOnboardingScreen()

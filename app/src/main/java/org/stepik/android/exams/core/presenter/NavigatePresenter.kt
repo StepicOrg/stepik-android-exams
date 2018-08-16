@@ -18,11 +18,11 @@ constructor(
         private val lessonNavigatorInteractor: LessonInteractor
 ) : PresenterBase<NavigateView>() {
 
-    fun navigateToLesson(step: Step?, id: String, lastPosition : Int, move: Boolean) {
+    fun navigateToLesson(step: Step?, id: String, lastPosition: Int, move: Boolean) {
         if (step?.position == 1L)
             navigateToPrev(step.lesson, id, move)
         if (step?.position == lastPosition.toLong())
-        navigateToNext(step.lesson, id, move)
+            navigateToNext(step.lesson, id, move)
     }
 
     private fun navigateToPrev(id: Long, topicId: String, move: Boolean) {

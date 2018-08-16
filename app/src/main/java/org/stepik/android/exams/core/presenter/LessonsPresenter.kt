@@ -38,7 +38,7 @@ constructor(
         }
     private var id: String = ""
     private var disposable = CompositeDisposable()
-    private var lessonsList : List<LessonWrapper>? = null
+    private var lessonsList: List<LessonWrapper>? = null
 
     init {
         viewState = LessonsView.State.FirstLoading

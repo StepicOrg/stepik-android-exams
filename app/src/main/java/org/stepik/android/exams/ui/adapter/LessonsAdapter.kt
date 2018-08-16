@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.model.Lesson
 
 class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
     private var lessons: List<LessonWrapper>? = listOf()

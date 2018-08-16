@@ -7,7 +7,6 @@ import android.arch.persistence.room.Query
 import io.reactivex.Maybe
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.model.Lesson
 
 @Dao
 interface LessonDao {

@@ -1,14 +1,13 @@
 package org.stepik.android.exams.jsonHelpers.adapters
 
 import com.google.gson.*
+import org.jetbrains.annotations.Contract
 import java.lang.reflect.Type
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import com.google.gson.JsonParseException
-import org.jetbrains.annotations.Contract
-import java.text.ParseException
 
-class UTCDateAdapter: JsonSerializer<Date>, JsonDeserializer<Date> {
+class UTCDateAdapter : JsonSerializer<Date>, JsonDeserializer<Date> {
     companion object {
         private const val UTC_ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         private const val UTC_ISO_FORMAT_SIMPLE = "yyyy-MM-dd'T'HH:mm:ss"
