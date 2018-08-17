@@ -49,7 +49,7 @@ interface StepicRestService {
     ): Observable<SubmissionResponse>
 
     @GET("api/progresses")
-    fun getProgresses(@Query(
-            "ids[]") progresses: Array<String>
+    fun getProgresses(
+            @Query("ids[]") progresses: Array<String>
     ): Single<ProgressesResponse>
 }

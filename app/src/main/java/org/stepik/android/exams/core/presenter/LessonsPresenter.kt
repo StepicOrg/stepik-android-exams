@@ -15,7 +15,7 @@ import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
-import org.stepik.android.exams.graph.model.Lesson
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.model.Step
 import javax.inject.Inject
 
@@ -44,49 +44,28 @@ constructor(
         viewState = LessonsView.State.FirstLoading
     }
 
-    private fun getLessonsById(id: String) = graph[id]?.lessons
+    private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
-    private fun parseLessons(id: String): Pair<List<Lesson>,
-            List<org.stepik.android.exams.graph.model.Lesson>> {
-        val lessons = getLessonsById(id)
-        val theory = mutableListOf<Lesson>()
-        val practice = mutableListOf<Lesson>()
-        if (lessons != null) {
-            for (lesson in lessons) {
-                when (lesson.type) {
-                    "theory" -> theory.add(lesson)
-                    else -> practice.add(lesson)
-                }
-            }
-        }
-        return Pair<List<Lesson>,
-                List<Lesson>>(theory, practice)
-    }
+    private fun parseLessons(id: String) =
+            getLessonsById(id)!!.filter { it.type == "theory" }
 
-    private fun getUniqueCourses(lessons: List<Lesson>): MutableList<Long> {
+    private fun getUniqueCourses(graphLessons: List<GraphLesson>): MutableList<Long> {
         val uniqueCourses = mutableListOf<Long>()
-        uniqueCourses.add(lessons.first { l -> l.course != 0L }.course)
+        uniqueCourses.add(graphLessons.first { l -> l.course != 0L }.course)
         return uniqueCourses
     }
 
-    private fun getIdFromTheory(id: String): LongArray {
-        val theoryLessons = parseLessons(id).first
-        val array = LongArray(theoryLessons.size)
-        for (lesson in theoryLessons)
-            array[theoryLessons.indexOf(lesson)] = lesson.id.toLong()
-        return array
-    }
+    private fun getIdFromTheory(id: String) =
+            parseLessons(id).map { it.id.toLong() }.toLongArray()
 
     fun tryJoinCourse(id: String) {
-        for (u in getUniqueCourses(parseLessons(id).first))
+        for (u in getUniqueCourses(parseLessons(id)))
             joinCourse(u)
     }
 
     fun tryLoadLessons(id: String) {
         this.id = id
-        Maybe.concat(loadTheoryLessonsLocal(), loadTheoryLessons()).take(1).subscribe({}, {
-            onError()
-        })
+        Maybe.concat(loadTheoryLessonsLocal(), loadTheoryLessons()).take(1).subscribe({}, {})
     }
 
     private fun findLessonsInDb(id: Long) =
@@ -144,7 +123,7 @@ constructor(
                 .doOnError { viewState = LessonsView.State.NetworkError }
                 .map { l ->
                     val lessons = mutableListOf<LessonWrapper>()
-                    parseLessons(id).first.forEach { theory ->
+                    parseLessons(id).forEach { theory ->
                         lessons.add(l.first { it.lesson.id == theory.id.toLong() })
                     }
                     lessonsList = lessons
@@ -183,8 +162,8 @@ constructor(
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        lessonsList.let {
-            if (it?.isNotEmpty() == true)
+        lessonsList?.let {
+            if (it.isNotEmpty())
                 view.showLessons(it)
         }
     }

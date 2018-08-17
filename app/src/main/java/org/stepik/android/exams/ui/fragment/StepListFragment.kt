@@ -15,6 +15,7 @@ import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.model.Step
 import javax.inject.Inject
@@ -22,8 +23,8 @@ import javax.inject.Provider
 
 
 class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
-    lateinit var adapter: StepPagerAdapter
-    lateinit var steps: List<Step>
+    private lateinit var adapter: StepPagerAdapter
+    private lateinit var steps: List<Step>
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
     @Inject
@@ -37,10 +38,10 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val lesson: LessonWrapper? = arguments.getParcelable("lesson")
-        val id: String = arguments.getString("id", "")
+        val lesson: LessonWrapper? = arguments.getParcelable(AppConstants.lesson)
+        val topicId: String = arguments.getString(AppConstants.topicId, "")
         steps = lesson?.stepsList!!
-        adapter = StepPagerAdapter(childFragmentManager, id, steps, stepTypeResolver)
+        adapter = StepPagerAdapter(childFragmentManager, topicId, steps, stepTypeResolver)
         pagers.adapter = adapter
         pageChangeListener = object : ViewPager.OnPageChangeListener {
 
@@ -98,10 +99,10 @@ class StepListFragment : BasePresenterFragment<ProgressPresenter, ProgressView>(
             inflater?.inflate(R.layout.fragment_steps, container, false)
 
     companion object {
-        fun newInstance(id: String, lesson: LessonWrapper): StepListFragment {
+        fun newInstance(topicId: String, lesson: LessonWrapper): StepListFragment {
             val args = Bundle()
-            args.putString("id", id)
-            args.putParcelable("lesson", lesson)
+            args.putString(AppConstants.topicId, topicId)
+            args.putParcelable(AppConstants.lesson, lesson)
             val fragment = StepListFragment()
             fragment.arguments = args
             return fragment

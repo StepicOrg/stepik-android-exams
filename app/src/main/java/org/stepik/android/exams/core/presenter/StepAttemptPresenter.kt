@@ -4,13 +4,13 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.exams.data.model.SubmissionResponse
+import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.ui.listeners.AnswerListener
@@ -31,7 +31,7 @@ constructor(
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
         private var backgroundScheduler: Scheduler,
-        private var api: Api,
+        private var sharedPreferenceHelper: SharedPreferenceHelper,
         private var stepDao: StepDao
 ) : PresenterBase<AttemptView>() {
     private var step: Step? = null
@@ -74,7 +74,8 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1).subscribe({}, { onError() })
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1).subscribe({
+        }, { onError() })
     }
 
     private fun checkStepIdDb(step: Step) =
@@ -97,7 +98,7 @@ constructor(
 
     private fun checkStepApi(step: Step) =
             stepicRestService
-                    .getExistingAttempts(step.id, api.getCurrentUserId() ?: 0)
+                    .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .onErrorReturnItem(AttemptResponse(listOf()))

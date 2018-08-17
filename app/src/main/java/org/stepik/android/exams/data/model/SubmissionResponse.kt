@@ -6,5 +6,5 @@ class SubmissionResponse {
     val submissions: List<Submission>? = null
 
     val firstSubmission: Submission?
-        get() = if (submissions != null && submissions.isNotEmpty()) submissions[0] else null
+        get() = submissions?.firstOrNull()
 }

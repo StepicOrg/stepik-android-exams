@@ -1,6 +1,5 @@
 package org.stepik.android.exams.ui.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View
@@ -16,32 +15,29 @@ import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
 
-class AttemptFragment :
-        StepFragment(),
-        AnswerListener,
-        AttemptView {
+class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
 
     private var attempt: Attempt? = null
     private var submissions: Submission? = null
     private var actionButton: Button? = null
     private lateinit var stepDelegate: StepDelegate
-    lateinit var context: Activity
     private lateinit var answerField: TextView
     private lateinit var routingViewListener: RoutingViewListener
     private var shouldUpdate = false
 
     companion object {
-        fun newInstance(step: Step?, id: String, lastPosition: Int): AttemptFragment {
+        fun newInstance(step: Step?, topicId: String, lastPosition: Int): AttemptFragment {
             val args = Bundle()
-            args.putString("id", id)
-            args.putParcelable("step", step)
-            args.putInt("last_position", lastPosition)
+            args.putString(AppConstants.topicId, topicId)
+            args.putParcelable(AppConstants.step, step)
+            args.putInt(AppConstants.lastPosition, lastPosition)
             val fragment = AttemptFragment()
             fragment.arguments = args
             return fragment
@@ -124,7 +120,6 @@ class AttemptFragment :
             } else makeSubmission()
         }
         nestedScrollView.isFillViewport = true
-        context = view?.context as Activity
     }
 
     override fun onStart() {
@@ -214,9 +209,9 @@ class AttemptFragment :
     private fun onNext() {
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
-             if (step?.position == lastPosition.toLong())
-             navigatePresenter.navigateToLesson(step, id, lastPosition, move = true)
-             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+            if (step?.position == lastPosition.toLong())
+                navigatePresenter.navigateToLesson(step, topicId, lastPosition, move = true)
+            else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }
 

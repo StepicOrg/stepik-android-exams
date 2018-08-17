@@ -62,7 +62,7 @@ dependencies {
     annotationProcessor libraries.roomCompiler
     implementation libraries.roomRx
     kapt libraries.roomCompiler
-    api "android.arch.lifecycle:extensions:1.1.1"
-    kapt "android.arch.lifecycle:compiler:1.1.1"
-    testImplementation "android.arch.core:core-testing:1.1.1"
+    api libraries.lifecycleExtensions
+    kapt libraries.lifecycleCompiler
+    testImplementation libraries.coreTesting
 }

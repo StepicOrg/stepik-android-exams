@@ -16,6 +16,7 @@ import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
@@ -29,12 +30,26 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var id: String
+    private lateinit var topicId: String
+
+    companion object {
+        fun newInstance(topicId: String): LessonFragment {
+            val args = Bundle()
+            args.putString(AppConstants.topicId, topicId)
+            val fragment = LessonFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun injectComponent() {
+        App.component().inject(this)
+    }
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
-            presenter?.tryJoinCourse(id) ?: Unit
-            presenter?.tryLoadLessons(id) ?: Unit
+            presenter?.tryJoinCourse(topicId) ?: Unit
+            presenter?.tryLoadLessons(topicId) ?: Unit
         }
 
 
@@ -80,25 +95,20 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         errorTextLesson.changeVisibillity(false)
     }
 
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater?.inflate(R.layout.fragment_study, container, false)
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lessonsAdapter = LessonsAdapter(context, screenManager)
+        topicId = arguments.getString(AppConstants.topicId, "")
+        lessonsAdapter = LessonsAdapter(context, screenManager, topicId)
         recyclerLesson.adapter = lessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(context)
-        id = arguments.getString("id", "")
-        lessonsAdapter.id = id
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.tryLoadLessons(id)
+            presenter?.tryLoadLessons(topicId)
         }
 
-    }
-
-    override fun injectComponent() {
-        App.component().inject(this)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_study, container, false)
     }
 
     override fun onStart() {
@@ -111,19 +121,9 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
         super.onStop()
     }
 
-    companion object {
-        fun newInstance(id: String): LessonFragment {
-            val args = Bundle()
-            args.putSerializable("id", id)
-            val fragment = LessonFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
     override fun getPresenterProvider() = lessonsPresenterProvider
 
-    override fun showLessons(lesson: List<LessonWrapper>?) {
+    override fun showLessons(lesson: List<LessonWrapper>) {
         lessonsAdapter.addLessons(lesson)
     }
 }

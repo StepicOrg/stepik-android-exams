@@ -1,6 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Maybe
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -44,7 +44,7 @@ constructor(
                                     step.isCustomPassed = isPassed
                                     updateProgress(step.id, true)
                                             .observeOn(mainScheduler)
-                                            .subscribe { _ ->
+                                            .subscribe {
                                                 view?.markedAsView(step)
                                             }
                                 }
@@ -74,13 +74,13 @@ constructor(
     }
 
     private fun resolveStepProgress(step: Step, progress: Progress): Observable<Step> =
-            fetchProgressFromDb(step.id).flatMap { info ->
-                val isPassed = info.isPassed || progress.isPassed
-                updateProgress(step.id, isPassed)
-                return@flatMap Single.just(isPassed)
-            }.flatMapObservable {
-                Observable.just(step.copy(isCustomPassed = it))
-            }
+            fetchProgressFromDb(step.id).map { info ->
+                info.isPassed || progress.isPassed
+            }.doOnSuccess {
+                updateProgress(step.id, it)
+            }.map {
+                step.copy(isCustomPassed = it)
+            }.toObservable()
 
     fun stepPassedLocal(step: Step?) {
         if (step?.block?.name == "text") {
@@ -94,13 +94,12 @@ constructor(
     }
 
     private fun fetchProgressFromDb(id: Long) =
-            Maybe.fromCallable { stepDao.findStepById(id) }
+            Single.fromCallable { stepDao.findStepById(id) }
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .toSingle()
 
     private fun updateProgress(id: Long, progress: Boolean) =
-            Maybe.fromCallable { stepDao.updateStepProgress(id, progress) }
+            Completable.fromCallable { stepDao.updateStepProgress(id, progress) }
                     .subscribeOn(backgroundScheduler)
 
     override fun destroy() {

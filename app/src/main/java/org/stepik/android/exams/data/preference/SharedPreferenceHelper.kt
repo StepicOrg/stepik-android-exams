@@ -114,6 +114,8 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         sharedPreferences.edit().remove(name).apply()
     }
 
+    fun getCurrentUserId() = profile?.id
+
     companion object {
         private const val OAUTH_RESPONSE = "oauth_response"
         private const val OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline"

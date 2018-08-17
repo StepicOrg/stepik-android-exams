@@ -31,8 +31,7 @@
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.LessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.StepsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:name=".ui.activity.StepsActivity"/>
     </application>
 
 </manifest>
