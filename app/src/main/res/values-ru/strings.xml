@@ -50,4 +50,6 @@
     <string name="table_quiz_beta">Табличная задача β</string>
     <string name="next">Дальше</string>
     <string name="open_web_to_solve">пройти задание в web-версии</string>
+    <string name="theory">Теория</string>
+    <string name="adaptive">Адаптивный режим</string>
 </resources>

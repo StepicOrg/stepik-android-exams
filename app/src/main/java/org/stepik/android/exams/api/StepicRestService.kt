@@ -52,4 +52,10 @@ interface StepicRestService {
     fun getProgresses(@Query(
             "ids[]") progresses: Array<String>
     ): Single<ProgressesResponse>
+
+    @GET("api/recommendations")
+    fun getNextRecommendations(
+            @Query("course") courseId: Long,
+            @Query("count") count: Int
+    ): Single<RecommendationsResponse>
 }

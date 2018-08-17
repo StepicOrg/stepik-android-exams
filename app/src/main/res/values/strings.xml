@@ -50,4 +50,6 @@
     <string name="table_quiz_beta">Table problem β</string>
     <string name="next">Next</string>
     <string name="open_web_to_solve">Open the web version to solve</string>
+    <string name="theory">Theory</string>
+    <string name="adaptive">Adaptive</string>
 </resources>

@@ -4,7 +4,9 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.support.v4.app.TaskStackBuilder
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
 import javax.inject.Inject
@@ -13,7 +15,8 @@ import javax.inject.Inject
 class ScreenManagerImpl
 @Inject
 constructor(
-        private val context: Context
+        private val context: Context,
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) : ScreenManager {
     override fun showStepsList(id: String, lesson: LessonWrapper, context: Context) {
         val intent = Intent(context, StepsActivity::class.java)
@@ -27,6 +30,17 @@ constructor(
         val intent = Intent(context, LessonsActivity::class.java)
         intent.putExtra("id", id)
         context.startActivity(intent)
+    }
+
+    override fun continueAdaptiveCourse(topicId : String, activity: Activity) {
+        val taskStackBuilder = TaskStackBuilder.create(activity)
+        val adaptiveCourseIntent = Intent(activity, AdaptiveCourseActivity::class.java)
+        adaptiveCourseIntent.putExtra("topicId", topicId)
+        taskStackBuilder.addNextIntent(adaptiveCourseIntent)
+        if (sharedPreferenceHelper.isFirstTimeAdaptive) {
+            taskStackBuilder.addNextIntent(Intent(activity, AdaptiveOnboardingActivity::class.java))
+        }
+        taskStackBuilder.startActivities()
     }
 
     override fun showTopicsList() {

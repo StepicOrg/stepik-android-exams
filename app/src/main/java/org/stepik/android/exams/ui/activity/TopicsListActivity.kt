@@ -26,9 +26,13 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
 
     private lateinit var topicsAdapter: TopicsAdapter
 
+    private var type : TYPE = TYPE.THEORY
+
     override fun injectComponent() {
         App.component().inject(this)
     }
+
+    enum class TYPE{THEORY, ADAPTIVE}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,16 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         recycler.layoutManager = LinearLayoutManager(this)
         swipeRefresh.setOnRefreshListener {
             presenter?.getGraphData()
+        }
+        theory.isChecked = true
+        topicsAdapter.updateType(type)
+        theory.setOnClickListener {
+            type = TYPE.THEORY
+            topicsAdapter.updateType(type)
+        }
+        adaptive.setOnClickListener {
+            type = TYPE.ADAPTIVE
+            topicsAdapter.updateType(type)
         }
     }
 
