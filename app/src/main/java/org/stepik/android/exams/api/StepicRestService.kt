@@ -58,4 +58,9 @@ interface StepicRestService {
             @Query("course") courseId: Long,
             @Query("count") count: Int
     ): Single<RecommendationsResponse>
+
+    @POST("api/recommendation-reactions")
+    fun createRecommendationReaction(
+            @Body reactionsRequest: RecommendationReactionsRequest
+    ): Completable
 }

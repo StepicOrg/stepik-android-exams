@@ -52,4 +52,28 @@
     <string name="open_web_to_solve">пройти задание в web-версии</string>
     <string name="theory">Теория</string>
     <string name="adaptive">Адаптивный режим</string>
+    <string name="adaptive_onboarding_card_title_1">Добро пожаловать</string>
+    <string name="adaptive_onboarding_card_question_1"><![CDATA[
+        <p>Добро пожаловать на адаптивный курс. В этом курсе вопросы подбираются автоматически, адаптируясь к вашим ответам и реакциям. Давайте посмотрим как это работает.</p>
+    ]]></string>
+    <string name="adaptive_onboarding_card_title_2">Сложный вопрос</string>
+    <string name="adaptive_onboarding_card_question_2"><![CDATA[
+        <p>Представьте, что это сложный вопрос, на который вы не знаете ответа или не хотите сейчас отвечать. Вы можете отложить его, смахнув карточку с вопросом <b>вправо</b>.</p>
+        <p>Попробуйте сделать так с этой карточкой.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="adaptive_onboarding_card_title_3">Простой вопрос</string>
+    <string name="adaptive_onboarding_card_question_3"><![CDATA[
+        <p>Теперь представьте, что это, наоборот, слишком простой вопрос, на который вам уже лень отвечать. Вы можете пропустить его, смахнув карточку <b>влево</b>. Больше вы <b>никогда</b> не увидите этот вопрос.</p>
+        <p>Попробуйте смахнуть эту карточку <b>влево</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
+            </div>
+        </div>
+    ]]></string>
 </resources>

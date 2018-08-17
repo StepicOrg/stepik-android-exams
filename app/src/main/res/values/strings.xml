@@ -52,4 +52,28 @@
     <string name="open_web_to_solve">Open the web version to solve</string>
     <string name="theory">Theory</string>
     <string name="adaptive">Adaptive</string>
+    <string name="adaptive_onboarding_card_title_1">Welcome</string>
+    <string name="adaptive_onboarding_card_question_1"><![CDATA[
+        <p>Welcome to adaptive course. During this course you\'ll receive tasks depending on your answers and reactions. Let\'s look how is it work.</p>
+    ]]></string>
+    <string name="adaptive_onboarding_card_title_2">Hard question</string>
+    <string name="adaptive_onboarding_card_question_2"><![CDATA[
+        <p>Imagine that this card contains some hard question and you don\'t know answer. You can postpone hard question by swiping card to <b>right</b>.</p>
+        <p>Try to swipe this card to <b>right</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="file:///android_asset/web/images/arrow_right.svg" />
+            </div>
+        </div>
+    ]]></string>
+    <string name="adaptive_onboarding_card_title_3">Easy question</string>
+    <string name="adaptive_onboarding_card_question_3"><![CDATA[
+        <p>Now imagine that this card contains very easy question. You can skip it by swiping card to <b>left</b>. You\'ll <b>never</b> see it again.</p>
+        <p>Try to swipe this card to <b>left</b>.</p>
+        <div class="center">
+            <div class="padding-box">
+                <img src="file:///android_asset/web/images/arrow_left.svg" />
+            </div>
+        </div>
+    ]]></string>
 </resources>

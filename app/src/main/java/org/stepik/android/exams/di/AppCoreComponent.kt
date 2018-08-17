@@ -30,6 +30,8 @@ interface AppCoreComponent {
 
     fun stepComponentBuilder(): StepComponent.Builder
 
+    fun adaptiveComponentBuilder(): AdaptiveComponent.Builder
+
     fun inject(activity: SplashActivity)
 
     fun inject(fragment: OnboardingFragment)
