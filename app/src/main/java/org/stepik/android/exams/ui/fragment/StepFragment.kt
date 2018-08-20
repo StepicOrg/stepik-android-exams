@@ -65,12 +65,12 @@ open class StepFragment :
     }
 
     override fun markedAsView(step: Step) {
-        val fragment = parentFragment as ProgressView
+        val fragment = activity as ProgressView
         fragment.markedAsView(step)
     }
 
     override fun markedAsView(steps: List<Step>) {
-        val fragment = parentFragment as ProgressView
+        val fragment = activity as ProgressView
         fragment.markedAsView(steps)
     }
 

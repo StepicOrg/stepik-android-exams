@@ -195,7 +195,7 @@ class AttemptFragment : StepFragment(), AttemptView {
     }
 
     private fun onNext() {
-        routingViewListener = parentFragment as RoutingViewListener
+        routingViewListener = activity as RoutingViewListener
         actionButton?.setOnClickListener {
             if (step?.position == lastPosition.toLong())
                 navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)

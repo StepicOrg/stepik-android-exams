@@ -8,9 +8,9 @@ import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.di.network.RoomModule
 import org.stepik.android.exams.di.network.StepsModule
+import org.stepik.android.exams.ui.activity.LessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
-import org.stepik.android.exams.ui.fragment.LessonFragment
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton
@@ -38,5 +38,5 @@ interface AppCoreComponent {
 
     fun inject(activityTopics: TopicsListActivity)
 
-    fun inject(lessonsFragment: LessonFragment)
+    fun inject(lessonsActivity: LessonsActivity)
 }

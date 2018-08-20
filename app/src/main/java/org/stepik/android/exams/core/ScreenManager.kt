@@ -11,6 +11,6 @@ interface ScreenManager {
     fun showEmptyAuthScreen(context: Context)
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
-    fun showLessons(lessonId: String, context: Context)
+    fun showLessons(topicId: String, context: Context)
     fun openImage(context: Context, path: String)
 }

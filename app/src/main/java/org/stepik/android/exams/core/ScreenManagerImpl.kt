@@ -17,16 +17,16 @@ constructor(
         private val context: Context
 ) : ScreenManager {
     override fun showStepsList(topicId: String, lesson: LessonWrapper, context: Context) {
-        val intent = Intent(context, StepsActivity::class.java)
+        val intent = Intent(context, StepsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(AppConstants.lesson, lesson)
         intent.putExtra(AppConstants.topicId, topicId)
         context.startActivity(intent)
     }
 
-    override fun showLessons(lessonId: String, context: Context) {
+    override fun showLessons(topicId: String, context: Context) {
         val intent = Intent(context, LessonsActivity::class.java)
-        intent.putExtra(AppConstants.lessonId, lessonId)
+        intent.putExtra(AppConstants.topicId, topicId)
         context.startActivity(intent)
     }
 

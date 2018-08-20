@@ -31,7 +31,7 @@
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.LessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.StepsActivity"/>
+            android:name=".ui.activity.StepsListActivity"/>
     </application>
 
 </manifest>
