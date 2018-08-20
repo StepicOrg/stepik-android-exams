@@ -1,9 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Scheduler
+import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
@@ -15,7 +12,6 @@ import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.web.AttemptRequest
-import org.stepik.android.exams.web.AttemptResponse
 import org.stepik.android.model.Reply
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
@@ -76,10 +72,10 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        Observable.concat(checkStepIdDb(step), checkStepApi(step))
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe { stepInfo: Any ->
+                .subscribe { stepInfo ->
                     if (stepInfo is StepInfo) {
                         stepInfo.attempt?.let { attempts ->
                             this.step = step
@@ -95,40 +91,47 @@ constructor(
 
     private fun checkStepIdDb(step: Step) =
             Maybe.fromCallable { stepDao.findStepById(step.id) }
-                    .filter { return@filter (it.attempt != null || it.submission != null) }
-                    .toObservable()
+                    .filter { (it.attempt != null || it.submission != null) }
 
     private fun checkStepApi(step: Step) =
-            Observable.fromCallable {
-                Observable.concat(checkAttempts(step).toObservable(), getSubmissions())
-                        .map {
-                            if (it is AttemptResponse && it.attempts.isEmpty())
-                                createNewAttempt(step)
-                        }
+            Maybe.fromCallable {
+                checkAttempts(step)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe { it: Any ->
-                            if (it is AttemptResponse) {
-                                attemptLoaded(it.attempts.firstOrNull())
-                                updateStepAttempt(step)
-                            }
-                            if (it is SubmissionResponse) {
-                                submission = it.submissions?.first()
-                                onSubmissionLoaded(submission as Submission)
-                            }
+                        .doOnSuccess {
+                            attempt = it.first?.attempts?.firstOrNull()
+                            submission = it.second
+                            updateStepAttempt(step, attempt, submission)
+                        }
+                        .subscribe { it ->
+                            attemptLoaded(it.first?.attempts?.firstOrNull())
+                            onSubmissionLoaded(it.second as Submission)
                         }
             }
+
 
     private fun checkAttempts(step: Step) =
             stepicRestService
                     .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
-                    .onErrorReturnItem(AttemptResponse(listOf()))
+                    .doOnSuccess { attempt ->
+                        if (attempt.attempts.isEmpty()) {
+                            createNewAttempt(step)
+                        }
+                    }
+                    .flatMap { att ->
+                        if (att.attempts.isNotEmpty()) {
+                            getSubmissions(att.attempts.firstOrNull()).map { s ->
+                                Pair(att, s)
+                            }
+                        } else Single.just(Pair(null, null))
+                    }
 
-    private fun getSubmissions(): Observable<SubmissionResponse> {
-        if (attempt == null) return Observable.empty()
-        return stepicRestService.getSubmissions(attempt?.id ?: 0, "desc")
-                .filter { it.submissions?.isNotEmpty() ?: false }
-    }
+    private fun getSubmissions(attempt: Attempt?) =
+            stepicRestService.getSubmissions(attempt?.id ?: 0, "desc")
+                    .map {
+                        if (it.submissions?.isEmpty() == true) Submission()
+                        else it.firstSubmission
+                    }
 
 
     fun createNewAttempt(step: Step) {
@@ -143,7 +146,7 @@ constructor(
                         .subscribe {
                             shouldUpdate = false
                             attemptLoaded(it)
-                            updateStepAttempt(step)
+                            updateStepAttempt(step, it, null)
                         })
     }
 
@@ -155,8 +158,8 @@ constructor(
         }
     }
 
-    private fun updateStepAttempt(step: Step) =
-            updateStep(step.id, attempt, null)
+    private fun updateStepAttempt(step: Step, attempt: Attempt?, submission: Submission?) =
+            updateStep(step.id, attempt, submission)
 
     private fun updateStep(id: Long?, attempt: Attempt?, submission: Submission?) =
             disposable.add(Completable.fromCallable {
