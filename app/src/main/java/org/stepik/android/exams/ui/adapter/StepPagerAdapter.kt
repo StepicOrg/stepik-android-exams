@@ -26,7 +26,7 @@ class StepPagerAdapter(
 
     fun updateSteps(steps: List<Step>?) {
         steps?.let {
-            this.steps = steps as MutableList<Step>
+            this.steps = steps.toMutableList()
             notifyDataSetChanged()
         }
     }
