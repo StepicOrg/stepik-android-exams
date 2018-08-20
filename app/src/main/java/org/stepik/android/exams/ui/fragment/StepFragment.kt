@@ -13,7 +13,7 @@ import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
-import org.stepik.android.exams.core.presenter.NavigatePresenter
+import org.stepik.android.exams.core.presenter.NavigationPresenter
 import org.stepik.android.exams.core.presenter.ProgressPresenter
 import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
@@ -34,7 +34,7 @@ open class StepFragment :
     @Inject
     lateinit var stepPresenterProvider: Provider<StepAttemptPresenter>
     @Inject
-    lateinit var navigatePresenter: NavigatePresenter
+    lateinit var navigationPresenter: NavigationPresenter
     @Inject
     lateinit var screenManager: ScreenManager
     @Inject
@@ -88,46 +88,48 @@ open class StepFragment :
 
     override fun onStart() {
         super.onStart()
-        navigatePresenter.attachView(this)
+        navigationPresenter.attachView(this)
         progressPresenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
-        navigatePresenter.detachView(this)
+        navigationPresenter.detachView(this)
         progressPresenter.detachView(this)
     }
 
     override fun moveToLesson(id: String, lesson: LessonWrapper?) = screenManager.showStepsList(id, lesson!!, context)
 
-    override fun hideNavigation() {
-        when (step?.position) {
-            1L -> prevLesson.visibility = View.GONE
-            lastPosition.toLong() -> nextLesson.visibility = View.GONE
-            else -> return
+    override fun showNextButton() {
+        prevLesson.visibility = View.VISIBLE
+        prevLesson.setOnClickListener { _ ->
+            navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
+        route_lesson_root.visibility = View.VISIBLE
+    }
+
+    override fun hideNextButton() {
+        nextLesson.visibility = View.GONE
         route_lesson_root.visibility = View.GONE
     }
 
-    override fun showNavigation() {
-        when (step?.position) {
-            1L -> prevLesson.visibility = View.VISIBLE
-            lastPosition.toLong() -> nextLesson.visibility = View.VISIBLE
-            else -> return
+    override fun showPrevButton() {
+        nextLesson.visibility = View.VISIBLE
+        nextLesson.setOnClickListener { _ ->
+            navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
         route_lesson_root.visibility = View.VISIBLE
+    }
+
+    override fun hidePrevButton() {
+        prevLesson.visibility = View.GONE
+        route_lesson_root.visibility = View.GONE
     }
 
     private fun loadNavigation() {
         nextLesson = next_lesson_view
         prevLesson = previous_lesson_view
-        navigatePresenter.navigateToLesson(step, topicId, lastPosition, move = false)
-        nextLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, topicId, lastPosition, move = true)
-        }
-        prevLesson.setOnClickListener { _ ->
-            navigatePresenter.navigateToLesson(step, topicId, lastPosition, move = true)
-        }
+        navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = false)
     }
 
     private fun showHeader() {

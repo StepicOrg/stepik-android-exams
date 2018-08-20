@@ -48,7 +48,6 @@ class LessonFragment : BasePresenterFragment<LessonsPresenter, LessonsView>(), L
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
-            presenter?.tryJoinCourse(topicId) ?: Unit
             presenter?.tryLoadLessons(topicId) ?: Unit
         }
 

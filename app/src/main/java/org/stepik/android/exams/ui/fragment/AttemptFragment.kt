@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.step_delegate.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
@@ -22,7 +21,7 @@ import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
 
-class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
+class AttemptFragment : StepFragment(), AttemptView {
 
     private var attempt: Attempt? = null
     private var submissions: Submission? = null
@@ -30,7 +29,6 @@ class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     private lateinit var stepDelegate: StepDelegate
     private lateinit var answerField: TextView
     private lateinit var routingViewListener: RoutingViewListener
-    private var shouldUpdate = false
 
     companion object {
         fun newInstance(step: Step?, topicId: String, lastPosition: Int): AttemptFragment {
@@ -132,16 +130,9 @@ class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         super.onStop()
     }
 
-    override fun updateSubmission(shouldUpdate: Boolean) {
-        this.shouldUpdate = shouldUpdate
-    }
-
     override fun onDestroyView() {
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        val stepExist = presenter?.checkStepExistence() ?: false
-        if (stepExist && !shouldUpdate)
-            submissions = Submission(reply, attempt?.id ?: 0, null)
-        presenter?.updateStepInDb(step?.id, attempt, submissions)
+        presenter?.checkStepExistence(reply, submissions)
         super.onDestroyView()
     }
 
@@ -153,7 +144,6 @@ class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
     }
 
     private fun tryAgain() {
-        shouldUpdate = false
         submissions = null
         presenter?.createNewAttempt(step as Step)
     }
@@ -174,17 +164,15 @@ class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         submissions = submission
         (stepDelegate as AttemptDelegate).setSubmission(submission)
         submission?.let {
-            progressPresenter.isStepPassed(step)
+            progressPresenter.isStepPassed(step as Step)
         }
     }
 
     private fun makeSubmission() {
-        shouldUpdate = true
         if (attempt == null || attempt?.id ?: 0 <= 0 && step?.isCustomPassed != true) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        presenter?.answerListener = this
         presenter?.createSubmission(attemptId, reply)
     }
 
@@ -210,7 +198,7 @@ class AttemptFragment : StepFragment(), AnswerListener, AttemptView {
         routingViewListener = parentFragment as RoutingViewListener
         actionButton?.setOnClickListener {
             if (step?.position == lastPosition.toLong())
-                navigatePresenter.navigateToLesson(step, topicId, lastPosition, move = true)
+                navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }

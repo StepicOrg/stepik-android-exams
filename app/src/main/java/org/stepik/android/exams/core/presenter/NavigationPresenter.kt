@@ -1,56 +1,55 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
-import org.stepik.android.exams.core.interactor.contacts.LessonInteractor
+import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.model.Step
 import javax.inject.Inject
 
-class NavigatePresenter
+class NavigationPresenter
 @Inject
 constructor(
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val lessonNavigatorInteractor: LessonInteractor
+        private val navigationNavigatorInteractor: NavigationInteractor
 ) : PresenterBase<NavigateView>() {
 
     fun navigateToLesson(step: Step?, id: String, lastPosition: Int, move: Boolean) {
         if (step?.position == 1L)
-            navigateToPrev(step.lesson, id, move)
+            navigateToPrev(step.lesson.toInt(), id, move)
         if (step?.position == lastPosition.toLong())
-            navigateToNext(step.lesson, id, move)
+            navigateToNext(step.lesson.toInt(), id, move)
     }
 
-    private fun navigateToPrev(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractor.resolvePrevLesson(topicId, id, move)
+    private fun navigateToPrev(id: Int, topicId: String, move: Boolean) {
+        navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
-                    view?.showNavigation()
-                    if (move)
-                        view?.moveToLesson(l.theoryId, l.lesson)
+                    val lesson = l.last()
+                    view?.showNextButton()
+                    if (move) view?.moveToLesson(lesson.theoryId, lesson.lesson)
                 }, {
-                    view?.hideNavigation()
+                    view?.hideNextButton()
                 })
     }
 
-    private fun navigateToNext(id: Long, topicId: String, move: Boolean) {
-        lessonNavigatorInteractor.resolveNextLesson(topicId, id, move)
+    private fun navigateToNext(id: Int, topicId: String, move: Boolean) {
+        navigationNavigatorInteractor.resolveNextLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
-                    view?.showNavigation()
-                    if (move)
-                        view?.moveToLesson(l.theoryId, l.lesson)
+                    val lesson = l.first()
+                    view?.showPrevButton()
+                    if (move) view?.moveToLesson(lesson.theoryId, lesson.lesson)
                 }, {
-                    view?.hideNavigation()
+                    view?.hidePrevButton()
                 })
     }
-
 
     override fun destroy() {
     }

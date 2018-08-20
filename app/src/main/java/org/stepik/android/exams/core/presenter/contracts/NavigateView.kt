@@ -4,6 +4,8 @@ import org.stepik.android.exams.data.model.LessonWrapper
 
 interface NavigateView {
     fun moveToLesson(id: String, lesson: LessonWrapper?)
-    fun showNavigation()
-    fun hideNavigation()
+    fun showNextButton()
+    fun hideNextButton()
+    fun showPrevButton()
+    fun hidePrevButton()
 }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ProgressPresenter
 @Inject
 constructor(
-        val service: StepicRestService,
+        private val service: StepicRestService,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
@@ -30,26 +30,19 @@ constructor(
 
     private val disposable = CompositeDisposable()
 
-    fun isStepPassed(step: Step?) {
-        fetchProgressFromDb(step?.id!!)
-                .subscribe { stepInfo ->
-                    if (!stepInfo.isPassed) {
-                        val progress = step.progress ?: ""
-                        disposable.add(service.getProgresses(arrayOf(progress))
-                                .delay(400, TimeUnit.MILLISECONDS)
-                                .subscribeOn(backgroundScheduler)
-                                .observeOn(mainScheduler)
-                                .doOnSuccess {
-                                    val isPassed = it.progresses.first().isPassed
-                                    step.isCustomPassed = isPassed
-                                    updateProgress(step.id, true)
-                                            .observeOn(mainScheduler)
-                                            .subscribe {
-                                                view?.markedAsView(step)
-                                            }
-                                }
-                                .subscribe())
-                    }
+    fun isStepPassed(step: Step) {
+        val progress = step.progress ?: ""
+        service.getProgresses(arrayOf(progress))
+                .delay(400, TimeUnit.MILLISECONDS)
+                .map {
+                    val isPassed = it.progresses.first().isPassed
+                    step.isCustomPassed = isPassed
+                    updateProgress(step.id, true)
+                }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { _ ->
+                    view?.markedAsView(step)
                 }
     }
 
@@ -86,6 +79,7 @@ constructor(
         if (step?.block?.name == "text") {
             step.isCustomPassed = true
             updateProgress(step.id, true)
+                    .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe {
                         view?.markedAsView(step)
@@ -95,12 +89,9 @@ constructor(
 
     private fun fetchProgressFromDb(id: Long) =
             Single.fromCallable { stepDao.findStepById(id) }
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
 
     private fun updateProgress(id: Long, progress: Boolean) =
             Completable.fromCallable { stepDao.updateStepProgress(id, progress) }
-                    .subscribeOn(backgroundScheduler)
 
     override fun destroy() {
         disposable.clear()

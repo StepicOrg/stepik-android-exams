@@ -1,7 +1,7 @@
 package org.stepik.android.exams.di
 
 import dagger.Subcomponent
-import org.stepik.android.exams.core.interactor.LessonInteractorImpl
+import org.stepik.android.exams.core.interactor.NavigationInteractorImpl
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.adapter.StepikRadioGroupAdapter
 import org.stepik.android.exams.ui.custom.LatexSupportableEnhancedFrameLayout
@@ -24,5 +24,5 @@ interface StepComponent {
     fun inject(attemptFragment: AttemptFragment)
     fun inject(stepFragment: StepFragment)
     fun inject(stepListFragment: StepListFragment)
-    fun inject(lessonInteractorImpl: LessonInteractorImpl)
+    fun inject(navigationInteractorImpl: NavigationInteractorImpl)
 }
