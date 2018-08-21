@@ -1,7 +1,6 @@
 package org.stepik.android.exams.api
 
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
 import org.stepik.android.exams.data.model.*
 import org.stepik.android.exams.web.AttemptRequest
@@ -46,11 +45,11 @@ interface StepicRestService {
     fun getSubmissions(
             @Query("attempt") attempt_id: Long,
             @Query("order") desc: String
-    ): Observable<SubmissionResponse>
+    ): Single<SubmissionResponse>
 
     @GET("api/progresses")
-    fun getProgresses(@Query(
-            "ids[]") progresses: Array<String>
+    fun getProgresses(
+            @Query("ids[]") progresses: Array<String>
     ): Single<ProgressesResponse>
 
     @GET("api/recommendations")

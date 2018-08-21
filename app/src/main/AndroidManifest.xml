@@ -31,12 +31,7 @@
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.LessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.StepsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.AdaptiveOnboardingActivity" />
-        <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.AdaptiveCourseActivity" />
+            android:name=".ui.activity.StepsListActivity"/>
     </application>
 
 </manifest>

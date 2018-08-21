@@ -99,6 +99,4 @@ constructor(
     fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =
             stepicService.getLessons(lesson)
 
-    fun getCurrentUserId() = sharedPreference.profile?.id
-
 }

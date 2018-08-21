@@ -1,6 +1,5 @@
 package org.stepik.android.exams.ui.fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View
@@ -12,36 +11,31 @@ import kotlinx.android.synthetic.main.step_delegate.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.ui.listeners.AnswerListener
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
 
-class AttemptFragment :
-        StepFragment(),
-        AnswerListener,
-        AttemptView {
+class AttemptFragment : StepFragment(), AttemptView {
 
     private var attempt: Attempt? = null
     private var submissions: Submission? = null
     private var actionButton: Button? = null
     private lateinit var stepDelegate: StepDelegate
-    lateinit var context: Activity
     private lateinit var answerField: TextView
     private lateinit var routingViewListener: RoutingViewListener
-    private var shouldUpdate = false
 
     companion object {
-        fun newInstance(step: Step?, id: String, lastPosition: Int): AttemptFragment {
+        fun newInstance(step: Step?, topicId: String, lastPosition: Int): AttemptFragment {
             val args = Bundle()
-            args.putString("id", id)
-            args.putParcelable("step", step)
-            args.putInt("last_position", lastPosition)
+            args.putString(AppConstants.topicId, topicId)
+            args.putParcelable(AppConstants.step, step)
+            args.putInt(AppConstants.lastPosition, lastPosition)
             val fragment = AttemptFragment()
             fragment.arguments = args
             return fragment
@@ -124,7 +118,6 @@ class AttemptFragment :
             } else makeSubmission()
         }
         nestedScrollView.isFillViewport = true
-        context = view?.context as Activity
     }
 
     override fun onStart() {
@@ -137,16 +130,9 @@ class AttemptFragment :
         super.onStop()
     }
 
-    override fun updateSubmission(shouldUpdate: Boolean) {
-        this.shouldUpdate = shouldUpdate
-    }
-
     override fun onDestroyView() {
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        val stepExist = presenter?.checkStepExistence() ?: false
-        if (stepExist && !shouldUpdate)
-            submissions = Submission(reply, attempt?.id ?: 0, null)
-        presenter?.updateStepInDb(step?.id, attempt, submissions)
+        presenter?.checkStepExistence(reply, submissions)
         super.onDestroyView()
     }
 
@@ -158,7 +144,6 @@ class AttemptFragment :
     }
 
     private fun tryAgain() {
-        shouldUpdate = false
         submissions = null
         presenter?.createNewAttempt(step as Step)
     }
@@ -179,17 +164,15 @@ class AttemptFragment :
         submissions = submission
         (stepDelegate as AttemptDelegate).setSubmission(submission)
         submission?.let {
-            progressPresenter.isStepPassed(step)
+            progressPresenter.isStepPassed(step as Step)
         }
     }
 
     private fun makeSubmission() {
-        shouldUpdate = true
         if (attempt == null || attempt?.id ?: 0 <= 0 && step?.isCustomPassed != true) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        presenter?.answerListener = this
         presenter?.createSubmission(attemptId, reply)
     }
 
@@ -212,11 +195,11 @@ class AttemptFragment :
     }
 
     private fun onNext() {
-        routingViewListener = parentFragment as RoutingViewListener
+        routingViewListener = activity as RoutingViewListener
         actionButton?.setOnClickListener {
-             if (step?.position == lastPosition.toLong())
-             navigatePresenter.navigateToLesson(step, id, lastPosition, move = true)
-             else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+            if (step?.position == lastPosition.toLong())
+                navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
+            else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
         }
     }
 

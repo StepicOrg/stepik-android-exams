@@ -11,22 +11,25 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonWrapper
 
-class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
-    private var lessons: List<LessonWrapper>? = listOf()
-    var id: String = ""
+class LessonsAdapter(
+        private val context: Context,
+        val screenManager: ScreenManager,
+        val id: String
+) : RecyclerView.Adapter<LessonsAdapter.StudyViewHolder>() {
+    private var lessons: List<LessonWrapper> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
             StudyViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
 
 
-    override fun getItemCount() = lessons!!.size
+    override fun getItemCount() = lessons.size
 
 
     override fun onBindViewHolder(holder: StudyViewHolder?, position: Int) {
-        holder?.bind(lessons?.get(position))
+        holder?.bind(lessons.get(position))
     }
 
-    fun addLessons(lessons: List<LessonWrapper>?) {
+    fun addLessons(lessons: List<LessonWrapper>) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -36,7 +39,7 @@ class LessonsAdapter(var context: Context, var screenManager: ScreenManager) : R
 
         init {
             titleText.setOnClickListener {
-                screenManager.showStepsList(id, lessons?.get(adapterPosition)!!, context)
+                screenManager.showStepsList(id, lessons[adapterPosition], context)
             }
         }
 

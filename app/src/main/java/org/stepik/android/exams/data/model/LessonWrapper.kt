@@ -21,13 +21,12 @@ class LessonWrapper(val lesson: Lesson, var stepsList: List<Step>) : Parcelable 
     }
 
     companion object CREATOR : Parcelable.Creator<LessonWrapper> {
-        override fun createFromParcel(parcel: Parcel): LessonWrapper {
-            return LessonWrapper(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): LessonWrapper =
+                LessonWrapper(parcel)
 
-        override fun newArray(size: Int): Array<LessonWrapper?> {
-            return arrayOfNulls(size)
-        }
+
+        override fun newArray(size: Int): Array<LessonWrapper?> =
+                arrayOfNulls(size)
     }
 
 }

@@ -8,7 +8,6 @@ interface AttemptView {
     fun setSubmission(submission: Submission?)
     fun onCorrectAnswer()
     fun onWrongAnswer()
-    fun updateSubmission(shouldUpdate: Boolean)
     fun setState(state: AttemptView.State)
     sealed class State {
         object FirstLoading : State()
