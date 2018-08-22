@@ -67,7 +67,6 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         }
 
     var isNotFirstTime: Boolean by preference(NOT_FIRST_TIME)
-    var isFirstTimeAdaptive: Boolean by preference(FIRST_TIME_ADAPTIVE)
 
     fun removeProfile() {
         remove(PROFILE)

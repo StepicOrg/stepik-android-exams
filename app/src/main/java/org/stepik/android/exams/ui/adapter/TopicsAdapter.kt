@@ -14,7 +14,7 @@ import org.stepik.android.exams.ui.activity.TopicsListActivity
 
 class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     private var topics: List<Topic> = listOf()
-    private lateinit var type : TopicsListActivity.TYPE
+    private lateinit var type: TopicsListActivity.TYPE
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
             TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
@@ -31,7 +31,8 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
         this.topics = topics
         notifyDataSetChanged()
     }
-    fun updateType(type : TopicsListActivity.TYPE){
+
+    fun updateType(type: TopicsListActivity.TYPE) {
         this.type = type
     }
 

@@ -1,5 +1,6 @@
-package org.stepik.android.exams.core.presenter.contracts
+package org.stepik.android.exams.adaptive.core.contracts
 
+import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 
 
 interface RecommendationsView {

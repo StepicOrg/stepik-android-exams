@@ -151,11 +151,6 @@ public final class SwipeableLayout extends FrameLayout {
         }
     }
 
-    private float getTargetY(final float targetX) {
-        final LinearRegression regression = new LinearRegression(new double[]{0, elemX}, new double[]{0, elemY});
-        return (float) regression.predict(targetX);
-    }
-
     private void onMotionEnd(final float vx, final float vy) {
         if (Math.abs(elemX) > MIN_FLING_TRANSLATION) {
             if (elemX > 0) {
@@ -167,19 +162,6 @@ public final class SwipeableLayout extends FrameLayout {
                     l.onSwipeLeft();
                 }
             }
-            final float targetX = Math.signum(elemX) * screenWidth;
-            final float targetY = getTargetY(targetX);
-            CardAnimations.createTransitionAnimation(this, targetX, targetY)
-                    .rotation(0)
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (SwipeListener l : listeners) {
-                                l.onSwiped();
-                            }
-                        }
-                    })
-                    .start();
         } else {
             if (Math.abs(vy) > MIN_FLING_VELOCITY) {
                 for (SwipeListener l : listeners) {
@@ -190,7 +172,6 @@ public final class SwipeableLayout extends FrameLayout {
             for (SwipeListener l : listeners) {
                 l.onScroll(0);
             }
-            CardAnimations.playRollBackAnimation(this);
         }
     }
 
@@ -199,19 +180,6 @@ public final class SwipeableLayout extends FrameLayout {
         for (SwipeListener l : listeners) {
             l.onSwipeDown();
         }
-
-        CardAnimations.createTransitionAnimation(this, 0, screenHeight)
-                .rotation(0)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (SwipeListener l : listeners) {
-                            l.onSwiped();
-                        }
-                    }
-                })
-                .start();
     }
 
     public void setSwipeListener(@NonNull final SwipeListener listener) {

@@ -1,22 +1,20 @@
-package org.stepic.droid.core.presenters
+package org.stepik.android.exams.adaptive.core.presenter
 
-import android.os.Bundle
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
-import org.stepic.droid.adaptive.listeners.AdaptiveReactionListener
-import org.stepic.droid.adaptive.listeners.AnswerListener
-import org.stepic.droid.model.Submission
-import org.stepic.droid.adaptive.model.Card
-import org.stepic.droid.adaptive.model.Reaction
-import org.stepic.droid.analytic.AmplitudeAnalytic
-import org.stepic.droid.analytic.Analytic
-import org.stepic.droid.base.App
-import org.stepic.droid.core.presenters.contracts.CardView
-import org.stepic.droid.di.qualifiers.BackgroundScheduler
-import org.stepic.droid.di.qualifiers.MainScheduler
-import org.stepic.droid.util.getStepType
-import org.stepic.droid.web.Api
-import org.stepic.droid.web.SubmissionResponse
+import org.stepik.android.exams.App
+import org.stepik.android.exams.adaptive.core.contracts.CardView
+import org.stepik.android.exams.adaptive.listeners.AdaptiveReactionListener
+import org.stepik.android.exams.adaptive.listeners.AnswerListener
+import org.stepik.android.exams.adaptive.model.Card
+import org.stepik.android.exams.api.StepicRestService
+import org.stepik.android.exams.core.presenter.PresenterBase
+import org.stepik.android.exams.data.model.SubmissionRequest
+import org.stepik.android.exams.data.model.SubmissionResponse
+import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
+import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.model.Submission
+import org.stepik.android.model.adaptive.Reaction
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -27,7 +25,7 @@ class CardPresenter(
         private val answerListener: AnswerListener?
 ) : PresenterBase<CardView>() {
     @Inject
-    lateinit var api: Api
+    lateinit var stepicRestService: StepicRestService
 
     @Inject
     @field:MainScheduler
@@ -36,9 +34,6 @@ class CardPresenter(
     @Inject
     @field:BackgroundScheduler
     lateinit var backgroundScheduler: Scheduler
-
-    @Inject
-    lateinit var analytic: Analytic
 
     private var submission: Submission? = null
     private var error: Throwable? = null
@@ -49,8 +44,8 @@ class CardPresenter(
         private set
 
     init {
-        App.componentManager()
-                .adaptiveCourseComponent(card.courseId)
+        App.component().adaptiveComponentBuilder().courseId(card.courseId)
+                .build()
                 .inject(this)
     }
 
@@ -75,30 +70,13 @@ class CardPresenter(
         }
     }
 
-    fun destroy() {
-        App.componentManager()
-                .releaseAdaptiveCourseComponent(card.courseId)
+    override fun destroy() {
         card.recycle()
         disposable?.dispose()
     }
 
     fun createReaction(reaction: Reaction) {
         val lesson = card.lessonId
-        when(reaction) {
-            Reaction.NEVER_AGAIN -> {
-                if (card.correct) {
-                    analytic.reportEventValue(Analytic.Adaptive.REACTION_EASY_AFTER_CORRECT, lesson)
-                }
-                analytic.reportEventValue(Analytic.Adaptive.REACTION_EASY, lesson)
-            }
-
-            Reaction.MAYBE_LATER -> {
-                if (card.correct) {
-                    analytic.reportEventValue(Analytic.Adaptive.REACTION_HARD_AFTER_CORRECT, lesson)
-                }
-                analytic.reportEventValue(Analytic.Adaptive.REACTION_HARD, lesson)
-            }
-        }
         listener?.createReaction(lesson, reaction)
     }
 
@@ -108,17 +86,13 @@ class CardPresenter(
             isLoading = true
             error = null
 
-            val submission = Submission(view?.getQuizViewDelegate()?.createReply(), card.attempt?.id ?: 0)
-            disposable = api.createNewSubmissionReactive(submission)
-                    .andThen(api.getSubmissionsReactive(submission.attempt))
+            val submission = Submission(reply = view?.getQuizViewDelegate()?.createReply(), attempt = card.attempt?.id
+                    ?: 0)
+            disposable = stepicRestService.createSubmission(SubmissionRequest(submission))
+                    .andThen(stepicRestService.getSubmissions(submission.attempt, "desc"))
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribe(this::onSubmissionLoaded, this::onError)
-
-            val bundle = Bundle()
-            bundle.putString(Analytic.Steps.STEP_TYPE_KEY, card.step.getStepType())
-            analytic.reportEvent(Analytic.Steps.SUBMISSION_CREATED, bundle)
-            analytic.reportEvent(Analytic.Adaptive.ADAPTIVE_SUBMISSION_CREATED)
+                    .subscribe({ onSubmissionLoaded(it) }, { onError(it) })
         }
     }
 
@@ -127,10 +101,10 @@ class CardPresenter(
     }
 
     private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {
-        submission = submissionResponse.submissions.firstOrNull()
+        submission = submissionResponse.submissions?.firstOrNull()
         submission?.let {
             if (it.status == Submission.Status.EVALUATION) {
-                disposable =  api.getSubmissionsReactive(it.attempt)
+                disposable = stepicRestService.getSubmissions(it.attempt, "desc")
                         .delay(1, TimeUnit.SECONDS)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
@@ -139,20 +113,13 @@ class CardPresenter(
                 isLoading = false
 
                 if (it.status == Submission.Status.CORRECT) {
-                    analytic.reportEvent(Analytic.Steps.CORRECT_SUBMISSION_FILL, (card.step?.id ?: 0).toString())
                     listener?.createReaction(card.lessonId, Reaction.SOLVED)
                     answerListener?.onCorrectAnswer(it.id)
                     card.onCorrect()
                 }
                 if (it.status == Submission.Status.WRONG) {
-                    analytic.reportEvent(Analytic.Steps.WRONG_SUBMISSION_FILL, (card.step?.id ?: 0).toString())
                     answerListener?.onWrongAnswer(it.id)
                 }
-
-                analytic.reportAmplitudeEvent(AmplitudeAnalytic.Steps.SUBMISSION_MADE, mapOf(
-                        AmplitudeAnalytic.Steps.Params.TYPE to card.step.getStepType(),
-                        AmplitudeAnalytic.Steps.Params.STEP to (card.step?.id?.toString() ?: "0")
-                ))
 
                 view?.setSubmission(it, true)
             }

@@ -15,7 +15,6 @@
         android:id="@+id/placeholderIcon"
         android:layout_width="@dimen/placeholders_image_width"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_no_wifi"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toTopOf="@+id/errorMessage"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,245 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.stepic.droid.adaptive.ui.custom.SwipeableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_margin="8dp"
-    android:layerType="hardware"
-    android:id="@+id/container">
+    android:layerType="hardware">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardUseCompatPadding="true"
-        android:layout_gravity="bottom"
-        android:id="@+id/card">
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_adaptive"
+                fontPath="fonts/Roboto-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="start"
+                android:paddingBottom="12dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="12dp"
+                android:textSize="18sp"
+                tools:ignore="MissingPrefix" />
+        </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/supplemental_actions"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:background="@color/white">
+
+            <Button
+                android:id="@+id/solve"
+                style="@style/Adaptive.BorderlessButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="@string/adaptive_attempt_button"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/submit"
+                style="@style/Adaptive.BorderlessButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="start|center_vertical"
+                android:text="@string/submit"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/next"
+                style="@style/Adaptive.BorderlessButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/next"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/wrongRetry"
+                style="@style/Adaptive.BorderlessButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/adaptive_retry"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:id="@+id/title_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:orientation="vertical">
+                android:id="@+id/correct"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
+                    android:tint="@color/adaptive_color_correct"
+                    app:srcCompat="@drawable/ic_adaptive_correct" />
+
                 <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/adaptive_color_title"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:textSize="18sp"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:gravity="start"
-                    tools:ignore="MissingPrefix" />
-                <include layout="@layout/view_stroke" />
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/adaptive_correct"
+                    android:textColor="@color/adaptive_color_correct" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:id="@+id/supplemental_actions">
-                <Button
+            <LinearLayout
+                android:id="@+id/wrong"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
+                    android:tint="@color/adaptive_color_wrong"
+                    app:srcCompat="@drawable/ic_adaptive_wrong" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:text="@string/adaptive_attempt_button"
-                    android:id="@+id/solve"
-                    android:visibility="gone"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:text="@string/submit"
-                    android:gravity="start|center_vertical"
-                    android:id="@+id/submit"
-                    android:visibility="gone"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:text="@string/next"
-                    android:id="@+id/next"
-                    android:visibility="gone"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:text="@string/adaptive_retry"
-                    android:id="@+id/wrongRetry"
-                    android:visibility="gone"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
-
-                <LinearLayout
-                    android:id="@+id/correct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:gravity="start"
-                    android:visibility="gone"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" >
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:srcCompat="@drawable/ic_adaptive_correct"
-                        android:tint="@color/adaptive_color_correct"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginEnd="6dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/adaptive_color_correct"
-                        android:text="@string/adaptive_correct" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/wrong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal"
-                    android:gravity="start"
-                    android:visibility="gone"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        app:srcCompat="@drawable/ic_adaptive_wrong"
-                        android:tint="@color/adaptive_color_wrong"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="6dp"
-                        android:layout_marginEnd="6dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/adaptive_color_wrong"
-                        android:text="@string/adaptive_wrong" />
-                </LinearLayout>
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_above="@id/supplemental_actions"
-                android:background="@color/color_stroke"
-                android:id="@+id/bottom_divider"/>
-
-            <org.stepic.droid.adaptive.ui.custom.CardScrollView
-                android:background="@android:color/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/scroll"
-                android:layout_below="@id/title_container"
-                android:layout_above="@id/bottom_divider">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <org.stepic.droid.ui.custom.LatexSupportableWebView
-                        android:id="@+id/question"
-                        android:layout_margin="16dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <View
-                        android:id="@+id/separatorAnswers"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/color_stroke"/>
-
-                    <FrameLayout
-                        android:id="@+id/quizViewContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/hint"
-                        android:visibility="gone"
-                        android:padding="16dp" />
-
-                    <ProgressBar
-                        android:visibility="gone"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_margin="16dp"
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/answersProgress" />
-
-                </LinearLayout>
-            </org.stepic.droid.adaptive.ui.custom.CardScrollView>
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/adaptive_wrong"
+                    android:textColor="@color/adaptive_color_wrong" />
+            </LinearLayout>
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:textColor="@color/adaptive_color_hard"
-            android:text="@string/adaptive_reaction_hard"
-            android:background="@drawable/adaptive_stamp_hard_bg"
-            android:rotation="-30"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="36dp"
-            android:alpha="0"
-            style="@style/Adaptive.ReactionStamp"
-            android:id="@+id/reaction_hard" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:textColor="@color/adaptive_color_easy"
-            android:text="@string/adaptive_reaction_easy"
-            android:background="@drawable/adaptive_stamp_easy_bg"
-            android:rotation="30"
-            android:layout_marginRight="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="36dp"
-            android:alpha="0"
-            style="@style/Adaptive.ReactionStamp"
-            android:id="@+id/reaction_easy" />
-
-        <FrameLayout
-            android:id="@+id/curtain"
-            android:background="@android:color/white"
+        <View
+            android:id="@+id/bottom_divider"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ProgressBar
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center" />
-        </FrameLayout>
-    </android.support.v7.widget.CardView>
-</org.stepic.droid.adaptive.ui.custom.SwipeableLayout>
+            android:layout_height="1dp"
+            android:layout_above="@id/supplemental_actions"
+            android:background="@color/color_stroke" />
+
+        <org.stepik.android.exams.adaptive.ui.custom.CardScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_divider"
+            android:layout_below="@id/title_container"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <org.stepik.android.exams.ui.custom.LatexSupportableWebView
+                    android:id="@+id/question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp" />
+
+                <View
+                    android:id="@+id/separatorAnswers"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_stroke" />
+
+                <FrameLayout
+                    android:id="@+id/quizViewContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/answersProgress"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="16dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </org.stepik.android.exams.adaptive.ui.custom.CardScrollView>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/reaction_hard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="36dp"
+        android:alpha="0"
+        android:background="@color/adaptive_color_hard"
+        android:rotation="-30"
+        android:text="@string/adaptive_reaction_hard" />
+
+    <TextView
+        android:id="@+id/reaction_easy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="36dp"
+        android:alpha="0"
+        android:background="@color/adaptive_color_easy"
+        android:rotation="30"
+        android:text="@string/adaptive_reaction_easy" />
+
+    <RelativeLayout
+        android:id="@+id/curtain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ProgressBar
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center" />
+    </RelativeLayout>
+</org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout>

@@ -1,38 +1,39 @@
-package org.stepic.droid.adaptive.ui.adapters
+package org.stepik.android.exams.adaptive.ui.adapter
 
-import android.graphics.Color
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
+import android.support.v4.widget.NestedScrollView
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import android.widget.ScrollView
 import kotlinx.android.synthetic.main.adaptive_quiz_card_view.view.*
-import org.stepic.droid.R
-import org.stepic.droid.adaptive.model.Reaction
-import org.stepic.droid.adaptive.ui.animations.CardAnimations
-import org.stepic.droid.adaptive.ui.custom.CardScrollView
-import org.stepic.droid.adaptive.ui.custom.SwipeableLayout
-import org.stepic.droid.adaptive.ui.custom.container.ContainerView
-import org.stepic.droid.base.App
-import org.stepic.droid.core.ScreenManager
-import org.stepic.droid.core.presenters.CardPresenter
-import org.stepic.droid.core.presenters.contracts.CardView
-import org.stepic.droid.model.Step
-import org.stepic.droid.model.Submission
-import org.stepic.droid.ui.custom.LatexSupportableWebView
-import org.stepic.droid.ui.quiz.QuizDelegate
-import org.stepic.droid.util.compatibilityModeForSDK15
-import org.stepic.droid.util.resolvers.StepTypeResolver
+import org.stepik.android.exams.App
+import org.stepik.android.exams.R
+import org.stepik.android.exams.adaptive.core.contracts.CardView
+import org.stepik.android.exams.adaptive.core.presenter.CardPresenter
+import org.stepik.android.exams.adaptive.ui.custom.CardScrollView
+import org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout
+import org.stepik.android.exams.adaptive.ui.custom.container.ContainerView
+import org.stepik.android.exams.core.ScreenManager
+import org.stepik.android.exams.ui.custom.LatexSupportableWebView
+import org.stepik.android.exams.ui.steps.AttemptDelegate
+import org.stepik.android.exams.util.resolvers.StepTypeResolver
+import org.stepik.android.model.Step
+import org.stepik.android.model.Submission
+import org.stepik.android.model.adaptive.Reaction
 import javax.inject.Inject
 
 class QuizCardViewHolder(
         private val root: View
-): ContainerView.ViewHolder(root), CardView {
+) : ContainerView.ViewHolder(root), CardView {
     private val curtain = root.curtain
     private val answersProgress = root.answersProgress
-    private val titleView = root.title
+    private val titleView = root.title_adaptive
     val question: LatexSupportableWebView = root.question
     val quizViewContainer: ViewGroup = root.quizViewContainer
     val separatorAnswers: View = root.separatorAnswers
@@ -50,9 +51,7 @@ class QuizCardViewHolder(
     private val hardReaction = root.reaction_hard
     private val easyReaction = root.reaction_easy
 
-    val cardView: android.support.v7.widget.CardView = root.card
-
-    private lateinit var quizDelegate: QuizDelegate
+    private lateinit var quizDelegate: AttemptDelegate
 
     @Inject
     lateinit var screenManager: ScreenManager
@@ -69,11 +68,9 @@ class QuizCardViewHolder(
         question.setOnWebViewClickListener { screenManager.openImage(root.context, it) }
         question.setLayerType(View.LAYER_TYPE_NONE, null)
 
-        compatibilityModeForSDK15 {
-            question.setBackgroundColor(Color.WHITE)
+        nextButton.setOnClickListener {
+            container.swipeDown()
         }
-
-        nextButton.setOnClickListener { container.swipeDown() }
         actionButton.setOnClickListener { presenter?.createSubmission() }
         wrongButton.setOnClickListener {
             presenter?.let {
@@ -82,7 +79,7 @@ class QuizCardViewHolder(
                 resetSupplementalActions()
             }
         }
-        container.setNestedScroll(scrollContainer)
+        container.setNestedScroll(scrollContainer as CardScrollView?)
     }
 
     private var hasSubmission = false
@@ -128,7 +125,7 @@ class QuizCardViewHolder(
 
     override fun setStep(step: Step?) {
         quizViewContainer.removeAllViews()
-        quizDelegate = stepTypeResolver.getQuizDelegate(step)
+        quizDelegate = stepTypeResolver.getStepDelegate(step) as AttemptDelegate
 
         quizViewContainer.addView(quizDelegate.createView(quizViewContainer))
         quizDelegate.actionButton = actionButton
@@ -142,10 +139,11 @@ class QuizCardViewHolder(
         html?.let { question.setText(it) }
     }
 
+
     override fun setSubmission(submission: Submission, animate: Boolean) {
         resetSupplementalActions()
         quizDelegate.setSubmission(submission)
-        when(submission.status) {
+        when (submission.status) {
             Submission.Status.CORRECT -> {
                 quizDelegate.isEnabled = false
                 actionButton.visibility = View.GONE
@@ -155,7 +153,7 @@ class QuizCardViewHolder(
                 nextButton.visibility = View.VISIBLE
                 container.isEnabled = true
 
-                if (submission.hint.isNotBlank()) {
+                if (submission.hint?.isNotBlank() == true) {
                     hint.text = submission.hint
                     hint.visibility = View.VISIBLE
                 }
@@ -174,10 +172,6 @@ class QuizCardViewHolder(
                 actionButton.visibility = View.GONE
 
                 container.isEnabled = true
-
-                if (animate) {
-                    CardAnimations.playWiggleAnimation(container)
-                }
             }
         }
     }

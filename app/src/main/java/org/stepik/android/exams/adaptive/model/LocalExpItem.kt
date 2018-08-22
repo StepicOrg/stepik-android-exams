@@ -1,6 +1,6 @@
-package org.stepic.droid.adaptive.model
+package org.stepik.android.exams.adaptive.model
 
-class LocalExpItem (
+class LocalExpItem(
         val exp: Long,
         val submissionId: Long,
         val courseId: Long

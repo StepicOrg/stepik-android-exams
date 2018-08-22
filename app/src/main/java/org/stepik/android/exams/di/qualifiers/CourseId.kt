@@ -1,4 +1,4 @@
-package org.stepic.droid.di.qualifiers
+package org.stepik.android.exams.di.qualifiers
 
 import javax.inject.Qualifier
 

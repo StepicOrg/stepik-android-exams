@@ -1,178 +1,55 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+<FrameLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rootView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:id="@+id/progress">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:title=""
-                android:background="?attr/selectableItemBackground"
-
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/expLevel"
-                    android:text="@string/adaptive_exp_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
-                <TextView
-                    android:id="@+id/expLevelNext"
-                    android:text="@string/adaptive_exp_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-
-            <FrameLayout
-                android:id="@+id/expBubble"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="@dimen/adaptive_exp_bubble_margin"
-                android:layout_marginRight="@dimen/adaptive_exp_bubble_margin">
-                <TextView
-                    android:id="@+id/expCounter"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:background="@drawable/gray_circle"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:gravity="center"
-                    tools:ignore="MissingPrefix" />
-                <TextView
-                    android:id="@+id/expInc"
-                    android:text="@string/adaptive_exp_inc"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:background="@drawable/green_circle"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:textColor="@android:color/white"
-                    android:alpha="0"
-                    android:gravity="center"
-                    tools:ignore="MissingPrefix" />
-            </FrameLayout>
-
-            <org.stepic.droid.adaptive.ui.custom.morphing.MorphingView
-                android:id="@+id/streakSuccessContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:layout_gravity="end|center_vertical">
-                <TextView
-                    android:id="@+id/streakSuccess"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@android:color/white"
-                    fontPath="fonts/Roboto-Bold.ttf"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    tools:ignore="MissingPrefix" />
-            </org.stepic.droid.adaptive.ui.custom.morphing.MorphingView>
-
-            <TextView
-                android:id="@+id/streakFailed"
-                android:alpha="0"
-                android:text="@string/adaptive_streak_failed"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/adaptive_color_wrong"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center"
-                fontPath="fonts/Roboto-Bold.ttf"
-                android:gravity="center"
-                tools:ignore="MissingPrefix" />
-        </FrameLayout>
-
-
-        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:id="@+id/expProgress"
-            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:tint="@color/adaptive_color_correct"
-            app:mpb_progressStyle="horizontal"
-            app:mpb_useIntrinsicPadding="false" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:id="@+id/progress">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:id="@+id/loadingPlaceholder"/>
-            </LinearLayout>
-
-            <org.stepic.droid.adaptive.ui.custom.QuizCardsContainer
-                android:id="@+id/cardsContainer"
-                android:layout_gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:id="@+id/courseState">
-
-                <!--<ImageView-->
-                    <!--android:layout_width="125dp"-->
-                    <!--android:layout_height="125dp"-->
-                    <!--android:src="@drawable/course_passed" />-->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxWidth="256dp"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/adaptive_course_completed"
-                    android:id="@+id/courseStateText"/>
-
-            </LinearLayout>
-
-            <include layout="@layout/error_no_connection_with_button" />
-        </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingPlaceholder"/>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+
+    <org.stepik.android.exams.adaptive.ui.custom.QuizCardsContainer
+        android:id="@+id/cardsContainer"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:id="@+id/courseState">
+
+        <!--<ImageView-->
+        <!--android:layout_width="125dp"-->
+        <!--android:layout_height="125dp"-->
+        <!--android:src="@drawable/course_passed" />-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="256dp"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="@string/adaptive_course_completed"
+            android:id="@+id/courseStateText"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/error_no_connection_with_button" />
+</FrameLayout>

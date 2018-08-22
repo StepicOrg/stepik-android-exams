@@ -31,6 +31,11 @@ interface StepicRestService {
             @Query("user") userId: Long
     ): Single<AttemptResponse>
 
+    @GET("api/steps")
+    fun getStepsByLessonId(
+            @Query("lesson") lessonId: Long
+    ): Single<StepResponse>
+
     @POST("api/attempts")
     fun createNewAttempt(
             @Body attemptRequest: AttemptRequest

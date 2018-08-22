@@ -32,6 +32,8 @@
             android:name=".ui.activity.LessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.StepsListActivity"/>
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
     </application>
 
 </manifest>

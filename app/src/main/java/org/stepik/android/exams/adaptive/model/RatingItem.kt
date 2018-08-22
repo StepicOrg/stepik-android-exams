@@ -1,4 +1,4 @@
-package org.stepic.droid.adaptive.model
+package org.stepik.android.exams.adaptive.model
 
 import com.google.gson.annotations.SerializedName
 

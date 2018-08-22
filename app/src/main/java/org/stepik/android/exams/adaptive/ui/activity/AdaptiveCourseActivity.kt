@@ -1,58 +1,40 @@
-package org.stepik.android.exams.ui.activity
+package org.stepik.android.exams.adaptive.ui.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.widget.PopupWindow
+import android.view.View
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
+import kotlinx.android.synthetic.main.fragment_recommendations.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
-import org.stepik.android.exams.core.presenter.BasePresenterActivity
-import org.stepik.android.exams.core.presenter.RecommendationsPresenter
-import org.stepik.android.exams.core.presenter.contracts.RecommendationsView
-import org.stepik.android.model.Course
+import org.stepik.android.exams.adaptive.core.contracts.RecommendationsView
+import org.stepik.android.exams.adaptive.core.presenter.RecommendationsPresenter
+import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
+import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
-import javax.inject.Provider
 
-class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
-    @Inject
-    lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
-
-    override fun getPresenterProvider() = recommendationsPresenterProvider
+class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
     @Inject
     lateinit var recommendationsPresenter: RecommendationsPresenter
 
-    private var course: Course? = null
+    private var course: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        course = intent.getLongExtra(AppConstants.topicId, 8290)
+        inject()
         setContentView(R.layout.fragment_recommendations)
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
         tryAgain.setOnClickListener {
             recommendationsPresenter.retry()
         }
-
-        //course = arguments.getParcelable(AppConstants.KEY_COURSE_BUNDLE)
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-    }
-
-    override fun injectComponent() {
-        App.componentManager().adaptiveComponent.inject(this)
-        /* App.componentManager()
-                 .adaptiveCourseComponent(course?.courseId ?: 0)
-                 .inject(this)*/
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        streakSuccessContainer.nestedTextView = streakSuccess
-        streakSuccessContainer.setGradientDrawableParams(ContextCompat.getColor(context, R.color.adaptive_color_correct), 0f)
+    private fun inject() {
+        App.component().adaptiveComponentBuilder().courseId(course).build()
+                .inject(this)
     }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) {
@@ -62,7 +44,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
     override fun onLoading() {
         progress.visibility = View.VISIBLE
         error.visibility = View.GONE
-        loadingPlaceholder.text = loadingPlaceholders[MathUtli.randomBetween(0, loadingPlaceholders.size - 1)]
+        //loadingPlaceholder.text = loadingPlaceholders[MathUtli.randomBetween(0, loadingPlaceholders.size - 1)]
     }
 
     override fun onCardLoaded() {

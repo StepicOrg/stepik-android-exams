@@ -26,13 +26,13 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
 
     private lateinit var topicsAdapter: TopicsAdapter
 
-    private var type : TYPE = TYPE.THEORY
+    private var type: TYPE = TYPE.THEORY
 
     override fun injectComponent() {
         App.component().inject(this)
     }
 
-    enum class TYPE{THEORY, ADAPTIVE}
+    enum class TYPE { THEORY, ADAPTIVE }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

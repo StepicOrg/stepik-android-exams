@@ -27,6 +27,13 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#000000</color>
     <color name="new_accent_color">#535366</color>
+    <color name="disabled_button_color">#D3D7D7</color>
+    <color name="adaptive_color_easy">#227300</color>
+    <color name="adaptive_color_hard">@color/new_red_color</color>
+    <color name="adaptive_color_wrong">@color/adaptive_color_hard</color>
+    <color name="adaptive_color_correct">#75B875</color>
+    <color name="new_red_color">#C82850</color>
+    <color name="color_stroke">#E4E4E4</color>
     <color name="unviewed_step">@color/new_accent_color</color>
     <color name="viewed_step">@color/new_accent_color_alpha_40</color>
     <color name="launchTextColor">#757575</color>
@@ -37,4 +44,6 @@
     <color name="table_even_row">#F6F9FC</color>
     <color name="white">#FFFFFF</color>
     <color name="table_header">#F0F0F0</color>
+    <color name="new_cover">@color/white</color>
+    <color name="stepic_weak_text">#A5A5A5</color>
 </resources>

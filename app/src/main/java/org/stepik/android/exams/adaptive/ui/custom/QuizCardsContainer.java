@@ -1,4 +1,4 @@
-package org.stepik.android.exams.adaptive.ui.activity.custom;
+package org.stepik.android.exams.adaptive.ui.custom;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,10 +10,11 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 
 import org.jetbrains.annotations.NotNull;
-import org.stepik.android.exams.adaptive.ui.activity.custom.container.ContainerAdapter;
-import org.stepik.android.exams.adaptive.ui.activity.custom.container.ContainerView;
+import org.stepik.android.exams.adaptive.ui.custom.container.ContainerAdapter;
+import org.stepik.android.exams.adaptive.ui.custom.container.ContainerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
     private float m = 0.0f;
 
-    private final SwipeableLayout.SwipeListener swipeListener = new SwipeableLayout.SwipeListener() {
+/*    private final SwipeableLayout.SwipeListener swipeListener = new SwipeableLayout.SwipeListener() {
         @Override
         public void onScroll(float scrollProgress) {
             final int size = getVisibleItemCount();
@@ -80,7 +81,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
             m = 0;
             poll();
         }
-    };
+    };*/
 
     private List<ContainerView.ViewHolder> cardHolders = new ArrayList<>();
 
@@ -180,16 +181,17 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
             if (i == 0) {
                 if (view instanceof SwipeableLayout) {
-                    ((SwipeableLayout) view).setSwipeListener(swipeListener);
+                    adapter.onBindTopCard(holder, 0);
                 }
-                adapter.onBindTopCard(holder, 0);
             }
         }
     }
 
     public static abstract class CardsAdapter<VH extends ContainerView.ViewHolder> extends ContainerAdapter<VH> {
         protected abstract void poll();
+
         protected abstract void onPositionChanged(VH holder, int pos);
+
         protected abstract void onBindTopCard(VH holder, int pos);
     }
 }

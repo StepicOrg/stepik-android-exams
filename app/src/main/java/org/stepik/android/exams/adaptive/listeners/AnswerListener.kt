@@ -1,4 +1,4 @@
-package org.stepic.droid.adaptive.listeners
+package org.stepik.android.exams.adaptive.listeners
 
 interface AnswerListener {
     fun onCorrectAnswer(submissionId: Long)

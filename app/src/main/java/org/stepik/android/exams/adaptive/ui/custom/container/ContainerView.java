@@ -1,4 +1,4 @@
-package org.stepic.droid.adaptive.ui.custom.container;
+package org.stepik.android.exams.adaptive.ui.custom.container;
 
 import android.view.View;
 
@@ -6,8 +6,11 @@ public interface ContainerView {
     void setAdapter(ContainerAdapter adapter);
 
     void onDataSetChanged();
+
     void onDataAdded();
+
     void onRebind();
+
     void onRebind(int pos);
 
     abstract class ViewHolder {

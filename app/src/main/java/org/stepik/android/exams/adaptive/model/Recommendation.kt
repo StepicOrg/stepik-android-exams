@@ -1,4 +1,4 @@
-package org.stepic.droid.adaptive.model
+package org.stepik.android.exams.adaptive.model
 
 class Recommendation(
         val id: Long,
