@@ -1,7 +1,9 @@
 package org.stepik.android.exams.adaptive.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import org.stepik.android.exams.R
 import org.stepik.android.exams.adaptive.core.presenter.CardPresenter
 import org.stepik.android.exams.adaptive.listeners.AdaptiveReactionListener
@@ -55,7 +57,7 @@ open class QuizCardsAdapter(
             holder.onTopCard()
 
     override fun onPositionChanged(holder: QuizCardViewHolder, pos: Int) {
-/*        val p = holder.cardView.layoutParams as FrameLayout.LayoutParams
+        val p = holder.cardView.layoutParams as FrameLayout.LayoutParams
         if (pos > 1) {
             p.height = QuizCardsContainer.CARD_OFFSET * 2
             changeVisibilityOfAllChildrenTo(holder.cardView, View.GONE, listOf(R.id.curtain))
@@ -63,7 +65,7 @@ open class QuizCardsAdapter(
             p.height = FrameLayout.LayoutParams.MATCH_PARENT
             changeVisibilityOfAllChildrenTo(holder.cardView, View.VISIBLE, listOf(R.id.curtain))
         }
-        holder.cardView.layoutParams = p*/
+        holder.cardView.layoutParams = p
     }
 
     fun add(card: Card) {

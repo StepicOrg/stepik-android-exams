@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import org.stepik.android.exams.adaptive.ui.adapter.QuizCardViewHolder;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,9 +61,9 @@ public final class SwipeableLayout extends FrameLayout {
         MIN_FLING_TRANSLATION = this.screenWidth / 4;
     }
 
-    private CardScrollView nestedScroll;
+    private FrameLayout nestedScroll;
 
-    public void setNestedScroll(CardScrollView nestedScroll) {
+    public void setNestedScroll(FrameLayout nestedScroll) {
         this.nestedScroll = nestedScroll;
     }
 
@@ -112,7 +114,7 @@ public final class SwipeableLayout extends FrameLayout {
                 intercepted =
                         intercepted ||
                                 isOwnEvent ||
-                                nestedScroll != null && !nestedScroll.canScrollVertically() && (ady > MIN_DELTA || adx > MIN_DELTA) ||
+                                nestedScroll != null && !nestedScroll.canScrollVertically(1) && (ady > MIN_DELTA || adx > MIN_DELTA) ||
                                 adx > MIN_DELTA && adx > ady;// || Math.abs(dy) > MIN_DELTA;
 
                 if (intercepted) {
@@ -178,7 +180,7 @@ public final class SwipeableLayout extends FrameLayout {
     public void swipeDown() {
         setEnabled(false);
         for (SwipeListener l : listeners) {
-            l.onSwipeDown();
+            l.onSwiped();
         }
     }
 

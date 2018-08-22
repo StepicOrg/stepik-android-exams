@@ -27,6 +27,8 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="black">#000000</color>
     <color name="new_accent_color">#535366</color>
+    <color name="new_primary_color">#F6F6F6</color>
+    <color name="windowBackground">#eeeeee</color>
     <color name="disabled_button_color">#D3D7D7</color>
     <color name="adaptive_color_easy">#227300</color>
     <color name="adaptive_color_hard">@color/new_red_color</color>

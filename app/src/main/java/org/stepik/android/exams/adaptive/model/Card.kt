@@ -12,6 +12,7 @@ import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.web.AttemptRequest
+import org.stepik.android.model.EnrollmentWrapper
 import org.stepik.android.model.Lesson
 import org.stepik.android.model.Step
 import org.stepik.android.model.attempts.Attempt
@@ -39,7 +40,7 @@ class Card(
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     init {
-        App.component().adaptiveComponentBuilder().courseId(courseId).build()
+        App.componentManager().adaptiveComponent
                 .inject(this)
     }
 

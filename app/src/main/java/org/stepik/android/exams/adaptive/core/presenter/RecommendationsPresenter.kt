@@ -16,10 +16,14 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.PresenterBase
 import org.stepik.android.exams.data.model.RecommendationReactionsRequest
 import org.stepik.android.exams.data.model.RecommendationsResponse
+import org.stepik.android.exams.data.model.ViewAssignment
+import org.stepik.android.exams.data.model.ViewAssignmentWrapper
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.CourseId
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.Graph
+import org.stepik.android.model.EnrollmentWrapper
 import org.stepik.android.model.adaptive.Reaction
 import org.stepik.android.model.adaptive.RecommendationReaction
 import retrofit2.HttpException
@@ -29,16 +33,13 @@ import javax.inject.Inject
 class RecommendationsPresenter
 @Inject
 constructor(
-        @CourseId
-        private val courseId: Long,
+        private val graph: Graph<String>,
         private val stepicRestService: StepicRestService,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val sharedPreferenceHelper: SharedPreferenceHelper,
-        //private val databaseFacade: DatabaseFacade,
-        private val screenManager: ScreenManager//
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) : PresenterBase<RecommendationsView>(), AdaptiveReactionListener, AnswerListener {
 
     companion object {
@@ -59,9 +60,24 @@ constructor(
 
     private var isCourseCompleted = false
 
-    init {
+    private var courseId : Long = 0
+
+    fun initPresenter(courseId: String){
+        this.courseId = parseLessons(courseId).first().course
+        compositeDisposable.add(tryJoinCourse())
         createReaction(0, Reaction.INTERESTING)
     }
+
+    private fun getLessonsById(id: String) = graph[id]?.graphLessons
+
+    private fun parseLessons(id: String) =
+            getLessonsById(id)!!.filter { it.type == "practice" }
+
+    private fun tryJoinCourse() =
+        stepicRestService.joinCourse(EnrollmentWrapper(courseId))
+                .subscribeOn(backgroundScheduler)
+                .subscribe({}, {onError(it)})
+
 
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
@@ -137,7 +153,7 @@ constructor(
     }
 
     private fun onCardDataLoaded(card: Card) {
-        //reportView(card)
+        reportView(card)
         adapter.add(card)
         view?.onCardLoaded()
         cards.poll()
@@ -175,17 +191,23 @@ constructor(
         return responseObservable
     }
 
-/*    private fun reportView(card: Card) {
-        compositeDisposable.add(api.getUnits(courseId, card.lessonId)
+    private fun sendViewAssigment(viewAssignment: ViewAssignment){
+        compositeDisposable.add(stepicRestService.postViewed(ViewAssignmentWrapper(viewAssignment.assignment, viewAssignment.step))
                 .subscribeOn(backgroundScheduler)
-                .observeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({}, {onError(it)}))
+    }
+
+    private fun reportView(card: Card) {
+        compositeDisposable.add(stepicRestService.getUnits(courseId, card.lessonId)
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({ response ->
                     val unit = response.units?.firstOrNull()
                     val stepId = card.step?.id ?: 0
                     unit?.assignments?.firstOrNull()?.let { assignmentId ->
-                        screenManager.pushToViewedQueue(ViewAssignment(assignmentId, stepId))
-                        databaseFacade.updateLastStep(PersistentLastStep(courseId, stepId, unit.id))
+                        sendViewAssigment(ViewAssignment(assignmentId, stepId))
                     }
                 }, {}))
-    }*/
+    }
 }

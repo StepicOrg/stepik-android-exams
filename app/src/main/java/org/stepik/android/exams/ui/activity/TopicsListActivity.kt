@@ -12,6 +12,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
@@ -30,6 +31,10 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
 
     override fun injectComponent() {
         App.component().inject(this)
+    }
+
+    override fun getParsedLessons(list: List<GraphLesson>) {
+
     }
 
     enum class TYPE { THEORY, ADAPTIVE }
@@ -56,7 +61,7 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
     }
 
     override fun showGraphData(graphData: GraphData) {
-        topicsAdapter.updateTopics(graphData.topics)
+        topicsAdapter.updateData(graphData.topics)
     }
 
     override fun getPresenterProvider(): Provider<TopicsListPresenter> = topicsListPresenterProvider

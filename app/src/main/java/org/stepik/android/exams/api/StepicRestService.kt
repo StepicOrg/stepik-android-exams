@@ -67,4 +67,16 @@ interface StepicRestService {
     fun createRecommendationReaction(
             @Body reactionsRequest: RecommendationReactionsRequest
     ): Completable
+
+    @GET("api/units")
+    fun getUnits(
+            @Query("course") courseId: Long,
+            @Query("lesson") lessonId: Long
+    ): Single<UnitMetaResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST("api/views")
+    fun postViewed(
+            @Body stepAssignment: ViewAssignmentWrapper
+    ): Completable
 }

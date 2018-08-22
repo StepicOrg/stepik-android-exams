@@ -32,7 +32,6 @@ class StepsRepository
     private fun joinCourse(id: Long) =
             api.joinCourse(id)
 
-
     private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
     fun parseLessons(id: String) =

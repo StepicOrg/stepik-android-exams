@@ -44,8 +44,7 @@ class CardPresenter(
         private set
 
     init {
-        App.component().adaptiveComponentBuilder().courseId(card.courseId)
-                .build()
+        App.componentManager().adaptiveComponent
                 .inject(this)
     }
 

@@ -56,7 +56,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
 
     private float m = 0.0f;
 
-/*    private final SwipeableLayout.SwipeListener swipeListener = new SwipeableLayout.SwipeListener() {
+    private final SwipeableLayout.SwipeListener swipeListener = new SwipeableLayout.SwipeListener() {
         @Override
         public void onScroll(float scrollProgress) {
             final int size = getVisibleItemCount();
@@ -81,7 +81,7 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
             m = 0;
             poll();
         }
-    };*/
+    };
 
     private List<ContainerView.ViewHolder> cardHolders = new ArrayList<>();
 
@@ -179,11 +179,10 @@ public class QuizCardsContainer extends FrameLayout implements ContainerView {
             adapter.onPositionChanged(holder, i);
             setViewState(view, i - m, true);
 
-            if (i == 0) {
-                if (view instanceof SwipeableLayout) {
-                    adapter.onBindTopCard(holder, 0);
-                }
+            if (view instanceof SwipeableLayout) {
+                ((SwipeableLayout) view).setSwipeListener(swipeListener);
             }
+            adapter.onBindTopCard(holder, 0);
         }
     }
 

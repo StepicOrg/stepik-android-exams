@@ -45,14 +45,14 @@ class QuizCardViewHolder(
     private val wrongButton = root.wrongRetry
     private val hint = root.hint
 
-    val scrollContainer: CardScrollView = root.scroll
+    val scrollContainer: ScrollView = root.scroll
     val container: SwipeableLayout = root.container
 
     private val hardReaction = root.reaction_hard
     private val easyReaction = root.reaction_easy
 
     private lateinit var quizDelegate: AttemptDelegate
-
+    val cardView: FrameLayout = root.card
     @Inject
     lateinit var screenManager: ScreenManager
 
@@ -79,7 +79,6 @@ class QuizCardViewHolder(
                 resetSupplementalActions()
             }
         }
-        container.setNestedScroll(scrollContainer as CardScrollView?)
     }
 
     private var hasSubmission = false
@@ -95,28 +94,23 @@ class QuizCardViewHolder(
             if (presenter?.isLoading == true) {
                 onSubmissionLoading()
             } else {
+                container.isEnabled = false
                 actionButton.visibility = View.VISIBLE
                 quizDelegate.isEnabled = true
+                hardReaction.visibility = View.VISIBLE
+                easyReaction.visibility = View.VISIBLE
             }
         }
-
-        container.setSwipeListener(object : SwipeableLayout.SwipeListener() {
-            override fun onScroll(scrollProgress: Float) {
-                hardReaction.alpha = Math.max(2 * scrollProgress, 0f)
-                easyReaction.alpha = Math.max(2 * -scrollProgress, 0f)
-            }
-
-            override fun onSwipeLeft() {
-                easyReaction.alpha = 1f
-                presenter?.createReaction(Reaction.NEVER_AGAIN)
-            }
-
-            override fun onSwipeRight() {
-                hardReaction.alpha = 1f
-                presenter?.createReaction(Reaction.MAYBE_LATER)
-            }
-        })
+        hardReaction.setOnClickListener {
+            presenter?.createReaction(Reaction.MAYBE_LATER)
+            container.swipeDown()
+        }
+        easyReaction.setOnClickListener {
+            presenter?.createReaction(Reaction.NEVER_AGAIN)
+            container.swipeDown()
+        }
     }
+
 
     private fun onCardLoaded() {
         curtain.visibility = View.GONE
@@ -151,7 +145,6 @@ class QuizCardViewHolder(
 
                 correctSign.visibility = View.VISIBLE
                 nextButton.visibility = View.VISIBLE
-                container.isEnabled = true
 
                 if (submission.hint?.isNotBlank() == true) {
                     hint.text = submission.hint
@@ -170,8 +163,6 @@ class QuizCardViewHolder(
 
                 wrongButton.visibility = View.VISIBLE
                 actionButton.visibility = View.GONE
-
-                container.isEnabled = true
             }
         }
     }
@@ -184,14 +175,12 @@ class QuizCardViewHolder(
         if (root.parent != null) {
             Snackbar.make(root.parent as ViewGroup, errorMessage, Snackbar.LENGTH_SHORT).show()
         }
-        container.isEnabled = true
         quizDelegate.isEnabled = true
         resetSupplementalActions()
     }
 
     override fun onSubmissionLoading() {
         resetSupplementalActions()
-        container.isEnabled = false
         quizDelegate.isEnabled = false
         actionButton.visibility = View.GONE
         answersProgress.visibility = View.VISIBLE
@@ -203,7 +192,7 @@ class QuizCardViewHolder(
 
     private fun scrollDown() {
         scrollContainer.post {
-            scrollContainer.fullScroll(View.FOCUS_DOWN)
+            scrollContainer.isEnabled = false
         }
     }
 

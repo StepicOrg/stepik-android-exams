@@ -12,17 +12,17 @@ import org.stepik.android.exams.adaptive.core.contracts.RecommendationsView
 import org.stepik.android.exams.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.MathUtli
 import javax.inject.Inject
 
 class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
     @Inject
     lateinit var recommendationsPresenter: RecommendationsPresenter
-
-    private var course: Long = 0
+    private var course: String = ""
+    private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        course = intent.getLongExtra(AppConstants.topicId, 8290)
-        inject()
+        course = intent.getStringExtra(AppConstants.topicId)
         setContentView(R.layout.fragment_recommendations)
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
@@ -32,8 +32,9 @@ class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
         super.onCreate(savedInstanceState)
     }
 
-    private fun inject() {
-        App.component().adaptiveComponentBuilder().courseId(course).build()
+    init {
+        App.componentManager()
+                .adaptiveComponent
                 .inject(this)
     }
 
@@ -44,7 +45,7 @@ class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
     override fun onLoading() {
         progress.visibility = View.VISIBLE
         error.visibility = View.GONE
-        //loadingPlaceholder.text = loadingPlaceholders[MathUtli.randomBetween(0, loadingPlaceholders.size - 1)]
+        loadingPlaceholder.text = loadingPlaceholders[MathUtli.randomBetween(0, loadingPlaceholders.size - 1)]
     }
 
     override fun onCardLoaded() {
@@ -87,6 +88,7 @@ class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
     override fun onStart() {
         super.onStart()
         recommendationsPresenter.attachView(this)
+        recommendationsPresenter.initPresenter(course)
     }
 
     override fun onStop() {
