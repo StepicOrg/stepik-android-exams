@@ -1,6 +1,7 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
+import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -17,7 +18,7 @@ constructor(
         private val mainScheduler: Scheduler,
         private val navigationNavigatorInteractor: NavigationInteractor
 ) : PresenterBase<NavigateView>() {
-
+    private var disposable = CompositeDisposable()
     fun navigateToLesson(step: Step?, id: String, lastPosition: Int, move: Boolean) {
         if (step?.position == 1L)
             navigateToPrev(step.lesson.toInt(), id, move)
@@ -26,7 +27,7 @@ constructor(
     }
 
     private fun navigateToPrev(id: Int, topicId: String, move: Boolean) {
-        navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move)
+        disposable.add(navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -35,11 +36,11 @@ constructor(
                     if (move) view?.moveToLesson(lesson.theoryId, lesson.lesson)
                 }, {
                     view?.hideNextButton()
-                })
+                }))
     }
 
     private fun navigateToNext(id: Int, topicId: String, move: Boolean) {
-        navigationNavigatorInteractor.resolveNextLesson(topicId, id, move)
+        disposable.add(navigationNavigatorInteractor.resolveNextLesson(topicId, id, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -48,9 +49,10 @@ constructor(
                     if (move) view?.moveToLesson(lesson.theoryId, lesson.lesson)
                 }, {
                     view?.hidePrevButton()
-                })
+                }))
     }
 
     override fun destroy() {
+        disposable.clear()
     }
 }

@@ -55,7 +55,7 @@ constructor(
     }
 
     fun checkStepExistence(reply: Reply, submissions: Submission?) {
-        Observable.fromCallable {
+        disposable.add(Observable.fromCallable {
             stepDao.findStepById(step?.id ?: 0)
         }
                 .onErrorReturn { StepInfo(null, null, null, false) }
@@ -68,7 +68,7 @@ constructor(
                         Submission(reply, attempt?.id ?: 0, null)
                     } else submissions
                     updateStepInDb(step?.id, attempt, submission)
-                }
+                })
     }
 
     fun checkStep(step: Step) {
@@ -83,7 +83,7 @@ constructor(
                         }
                         stepInfo.submission?.let { sub ->
                             submission = sub
-                            onSubmissionLoaded(submission as Submission)
+                            onSubmissionLoaded(submission)
                         }
                     }
                 }
@@ -105,7 +105,7 @@ constructor(
                         }
                         .subscribe { it ->
                             attemptLoaded(it.first?.attempts?.firstOrNull())
-                            onSubmissionLoaded(it.second as Submission)
+                            onSubmissionLoaded(it.second)
                         }
             }
 
@@ -166,7 +166,7 @@ constructor(
                 stepDao.updateStep(StepInfo(id, attempt, submission, false))
             }
                     .subscribeOn(backgroundScheduler)
-                    .subscribe({}, {}))
+                    .subscribe())
 
     fun createSubmission(id: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
@@ -183,11 +183,11 @@ constructor(
         submission = submissionResponse.firstSubmission
         submission?.let { s ->
             if (s.status == Submission.Status.EVALUATION) {
-                stepicRestService.getSubmissions(s.attempt, "desc")
+                disposable.add(stepicRestService.getSubmissions(s.attempt, "desc")
                         .delay(1, TimeUnit.SECONDS)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe({ onSubmissionLoaded(it) }, { onError() })
+                        .subscribe({ onSubmissionLoaded(it) }, { onError() }))
             } else {
                 updateStep(step?.id, attempt, submission)
                 shouldUpdate = true
@@ -200,7 +200,7 @@ constructor(
     fun updateStepInDb(id: Long?, attempt: Attempt?, submission: Submission?) =
             updateStep(id, attempt, submission)
 
-    private fun onSubmissionLoaded(s: Submission) {
+    private fun onSubmissionLoaded(s: Submission?) {
         viewState = AttemptView.State.Success
         view?.setSubmission(submission)
         checkSubmissionState(s)

@@ -2,9 +2,9 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.core.interactor.contacts.LessonInteractor
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject
@@ -16,7 +16,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val lessonInteractor: LessonInteractor
+        private val stepsRepository: StepsRepository
 ) : PresenterBase<LessonsView>() {
     private var viewState: LessonsView.State = LessonsView.State.Idle
         set(value) {
@@ -34,14 +34,14 @@ constructor(
     fun tryLoadLessons(id: String) {
         this.id = id
         viewState = LessonsView.State.Loading
-        lessonInteractor.loadLessons(topicId = id)
+        disposable.add(stepsRepository.tryLoadLessons(theoryId = id)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ list ->
                     onComplete(list.map { it.lesson })
                 }, {
                     onError()
-                })
+                }))
     }
 
     private fun onComplete(list: List<LessonWrapper>) {
