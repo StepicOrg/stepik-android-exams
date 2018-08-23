@@ -41,4 +41,14 @@ class GsonConverter {
         return gson.toJson(obj)
     }
 
+    @TypeConverter
+    fun stringToArray(data: String?): LongArray {
+        return gson.fromJson<LongArray>(data, LongArray::class.java)
+    }
+
+    @TypeConverter
+    fun arrayToString(obj: LongArray?): String? {
+        return gson.toJson(obj)
+    }
+
 }

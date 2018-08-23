@@ -7,7 +7,7 @@ import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.data.CourseInfo
+import org.stepik.android.exams.data.db.data.TopicInfo
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
@@ -84,12 +84,12 @@ constructor(
 
     private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
-    fun parseLessons(id: String) : List<GraphLesson> {
+    fun parseLessons(id: String): List<GraphLesson> {
         val filterType =
-        when (type){
-            TopicsListActivity.TYPE.THEORY -> AppConstants.lessonTheory
-            TopicsListActivity.TYPE.ADAPTIVE -> AppConstants.lessonPractice
-        }
+                when (type) {
+                    TopicsListActivity.TYPE.THEORY -> AppConstants.lessonTheory
+                    TopicsListActivity.TYPE.ADAPTIVE -> AppConstants.lessonPractice
+                }
         return getLessonsById(id)!!.filter { it.type == filterType }
     }
 
@@ -109,12 +109,21 @@ constructor(
         saveTopicInfoToDb(topicsList, lessonsList, typesList)
     }
 
-    private fun saveTopicInfoToDb(topics: List<String>, lessonsList : List<LongArray>, typesList : List<String>){
-
-        topicDao.insertCourseInfo(CourseInfo())
+    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<String>) {
+        val topicsIt = topics.listIterator()
+        val lessonsIt = lessonsList.listIterator()
+        val typesIt = typesList.listIterator()
+        val list = mutableListOf<TopicInfo>()
+        while (topicsIt.hasNext() && lessonsIt.hasNext() && typesIt.hasNext()) {
+            list.add(TopicInfo(topicsIt.next(), typesIt.next(), lessonsIt.next()))
+        }
+        Completable.fromCallable { topicDao.insertCourseInfo(list) }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe()
     }
 
-    private fun joinAllCourses(topics : List<String>){
+    private fun joinAllCourses(topics: List<String>) {
         Completable.concat(topics.map { tryJoinCourse(it) })
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
