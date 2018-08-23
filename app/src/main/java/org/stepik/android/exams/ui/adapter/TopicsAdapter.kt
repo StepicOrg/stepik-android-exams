@@ -9,7 +9,6 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.activity.TopicsListActivity
 

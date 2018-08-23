@@ -69,7 +69,7 @@ constructor(
     override fun openImage(context: Context, path: String) {
     }
 
-    override fun pushToViewedQueue(viewAssignment: ViewAssignment){
+    override fun pushToViewedQueue(viewAssignment: ViewAssignment) {
         val context = App.getAppContext()
         val intent = Intent(context, ViewPushService::class.java)
         intent.putExtra(AppConstants.viewPush, viewAssignment)

@@ -19,6 +19,7 @@ import javax.inject.Provider
 class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     @Inject
     lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+
     override fun getPresenterProvider() = recommendationsPresenterProvider
 
     private var course: String = ""
@@ -34,6 +35,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
         }
         super.onCreate(savedInstanceState)
     }
+
     override fun injectComponent() {
         App.componentManager()
                 .adaptiveComponent
@@ -41,7 +43,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
     }
 
     override fun setState(state: RecommendationsView.State) {
-        when (state){
+        when (state) {
             RecommendationsView.State.InitPresenter ->
                 presenter?.initPresenter(course)
             RecommendationsView.State.Loading ->

@@ -10,7 +10,6 @@ import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.di.network.RoomModule
 import org.stepik.android.exams.di.network.StepsModule
-import org.stepik.android.exams.di.qualifiers.CourseId
 import org.stepik.android.exams.ui.activity.LessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity

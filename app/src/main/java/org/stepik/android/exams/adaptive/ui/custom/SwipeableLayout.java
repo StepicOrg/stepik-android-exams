@@ -6,10 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
-
-import org.stepik.android.exams.adaptive.ui.adapter.QuizCardViewHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -189,17 +186,26 @@ public final class SwipeableLayout extends FrameLayout {
     }
 
     public static class SwipeListener {
-        public void onSwiped() {}
-        public void onFlingDown() {}
-        public void onSwipeLeft() {}
-        public void onSwipeRight() {}
-        public void onSwipeDown() {}
+        public void onSwiped() {
+        }
+
+        public void onFlingDown() {
+        }
+
+        public void onSwipeLeft() {
+        }
+
+        public void onSwipeRight() {
+        }
+
+        public void onSwipeDown() {
+        }
 
         /**
-         *
          * @param scrollProgress - represents scroll progress for current state, e.g. 1.0 when card completely swiped to right
          */
-        public void onScroll(final float scrollProgress) {}
+        public void onScroll(final float scrollProgress) {
+        }
 
     }
 }

@@ -14,14 +14,11 @@ import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.PresenterBase
-import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.RecommendationReactionsRequest
 import org.stepik.android.exams.data.model.RecommendationsResponse
 import org.stepik.android.exams.data.model.ViewAssignment
-import org.stepik.android.exams.data.model.ViewAssignmentWrapper
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
-import org.stepik.android.exams.di.qualifiers.CourseId
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.util.AppConstants
@@ -63,7 +60,7 @@ constructor(
 
     private var isCourseCompleted = false
 
-    private var course : Long = 0
+    private var course: Long = 0
 
     private var viewState: RecommendationsView.State = RecommendationsView.State.Idle
         set(value) {
@@ -75,12 +72,11 @@ constructor(
         viewState = RecommendationsView.State.InitPresenter
     }
 
-    fun initPresenter(courseId: String){
+    fun initPresenter(courseId: String) {
         val list = parseLessons(courseId)
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             view?.onCourseNotSupported()
-        }
-        else {
+        } else {
             course = list.first().course
             compositeDisposable.add(tryJoinCourse())
             createReaction(0, Reaction.INTERESTING)
@@ -93,10 +89,10 @@ constructor(
             getLessonsById(id)!!.filter { it.type == AppConstants.lessonPractice }
 
     private fun tryJoinCourse() =
-        stepicRestService.joinCourse(EnrollmentWrapper(course))
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({}, {onError(it)})
+            stepicRestService.joinCourse(EnrollmentWrapper(course))
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe({}, { onError(it) })
 
 
     override fun attachView(view: RecommendationsView) {

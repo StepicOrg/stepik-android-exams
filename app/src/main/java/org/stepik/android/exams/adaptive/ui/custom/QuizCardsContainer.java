@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
 
 import org.jetbrains.annotations.NotNull;
 import org.stepik.android.exams.adaptive.ui.custom.container.ContainerAdapter;

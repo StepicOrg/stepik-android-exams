@@ -2,21 +2,18 @@ package org.stepik.android.exams.adaptive.ui.adapter
 
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
-import android.support.v4.widget.NestedScrollView
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import android.widget.ScrollView
 import kotlinx.android.synthetic.main.adaptive_quiz_card_view.view.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.adaptive.core.contracts.CardView
 import org.stepik.android.exams.adaptive.core.presenter.CardPresenter
-import org.stepik.android.exams.adaptive.ui.custom.CardScrollView
 import org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout
 import org.stepik.android.exams.adaptive.ui.custom.container.ContainerView
 import org.stepik.android.exams.core.ScreenManager

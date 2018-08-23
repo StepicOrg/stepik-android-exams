@@ -1,6 +1,6 @@
 package org.stepik.android.exams.util
 
-import java.util.Random
+import java.util.*
 
 object MathUtli {
 

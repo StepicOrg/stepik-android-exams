@@ -27,8 +27,6 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
 
     private lateinit var topicsAdapter: TopicsAdapter
 
-    private var type: TYPE = TYPE.THEORY
-
     override fun injectComponent() {
         App.component().inject(this)
     }
@@ -49,15 +47,16 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
             presenter?.getGraphData()
         }
         theory.isChecked = true
-        topicsAdapter.updateType(type)
         theory.setOnClickListener {
-            type = TYPE.THEORY
-            topicsAdapter.updateType(type)
+            presenter?.setType(TYPE.THEORY)
         }
         adaptive.setOnClickListener {
-            type = TYPE.ADAPTIVE
-            topicsAdapter.updateType(type)
+            presenter?.setType(TYPE.ADAPTIVE)
         }
+    }
+
+    override fun setActivityType(type: TYPE) {
+        topicsAdapter.updateType(type)
     }
 
     override fun showGraphData(graphData: GraphData) {

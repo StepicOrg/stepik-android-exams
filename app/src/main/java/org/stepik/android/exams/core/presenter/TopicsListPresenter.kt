@@ -24,6 +24,7 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
 
     private var graphData: GraphData
+    private var type = TopicsListActivity.TYPE.THEORY
 
     private var viewState: TopicsListView.State = TopicsListView.State.Idle
         set(value) {
@@ -34,6 +35,11 @@ constructor(
     init {
         graphData = GraphData()
         getGraphData()
+    }
+
+    fun setType(type: TopicsListActivity.TYPE) {
+        this.type = type
+        view?.setActivityType(type)
     }
 
     fun getGraphData() {
@@ -66,8 +72,10 @@ constructor(
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
         view.setState(viewState)
-        if (graphData.topics.isNotEmpty())
+        setType(type)
+        if (graphData.topics.isNotEmpty()) {
             view.showGraphData(graphData)
+        }
     }
 
     override fun destroy() {
