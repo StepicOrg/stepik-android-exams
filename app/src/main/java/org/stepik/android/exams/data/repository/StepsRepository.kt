@@ -12,6 +12,7 @@ import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.model.Step
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class StepsRepository
     private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
     fun parseLessons(id: String) =
-            getLessonsById(id)!!.filter { it.type == "theory" }
+            getLessonsById(id)!!.filter { it.type == AppConstants.lessonTheory }
 
     private fun getUniqueCourses(graphLessons: List<GraphLesson>): MutableList<Long> {
         val uniqueCourses = mutableListOf<Long>()

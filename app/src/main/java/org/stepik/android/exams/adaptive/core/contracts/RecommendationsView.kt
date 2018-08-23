@@ -13,4 +13,14 @@ interface RecommendationsView {
     fun onCourseNotSupported()
     fun onCourseCompleted()
     fun onCardLoaded()
+
+    fun setState(state: State)
+    sealed class State {
+        object Idle : State()
+        object InitPresenter : State()
+        object Loading : State()
+        object Success : State()
+        object RequestError : State()
+        object NetworkError : State()
+    }
 }

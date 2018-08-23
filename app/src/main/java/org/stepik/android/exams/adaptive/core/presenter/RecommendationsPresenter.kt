@@ -14,6 +14,7 @@ import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.PresenterBase
+import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.model.RecommendationReactionsRequest
 import org.stepik.android.exams.data.model.RecommendationsResponse
 import org.stepik.android.exams.data.model.ViewAssignment
@@ -23,6 +24,7 @@ import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.CourseId
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.model.EnrollmentWrapper
 import org.stepik.android.model.adaptive.Reaction
 import org.stepik.android.model.adaptive.RecommendationReaction
@@ -39,7 +41,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
+        private val screenManager: ScreenManager
 ) : PresenterBase<RecommendationsView>(), AdaptiveReactionListener, AnswerListener {
 
     companion object {
@@ -60,32 +63,49 @@ constructor(
 
     private var isCourseCompleted = false
 
-    private var courseId : Long = 0
+    private var course : Long = 0
+
+    private var viewState: RecommendationsView.State = RecommendationsView.State.Idle
+        set(value) {
+            field = value
+            view?.setState(value)
+        }
+
+    init {
+        viewState = RecommendationsView.State.InitPresenter
+    }
 
     fun initPresenter(courseId: String){
-        this.courseId = parseLessons(courseId).first().course
-        compositeDisposable.add(tryJoinCourse())
-        createReaction(0, Reaction.INTERESTING)
+        val list = parseLessons(courseId)
+        if (list.isEmpty()){
+            view?.onCourseNotSupported()
+        }
+        else {
+            course = list.first().course
+            compositeDisposable.add(tryJoinCourse())
+            createReaction(0, Reaction.INTERESTING)
+        }
     }
 
     private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
     private fun parseLessons(id: String) =
-            getLessonsById(id)!!.filter { it.type == "practice" }
+            getLessonsById(id)!!.filter { it.type == AppConstants.lessonPractice }
 
     private fun tryJoinCourse() =
-        stepicRestService.joinCourse(EnrollmentWrapper(courseId))
+        stepicRestService.joinCourse(EnrollmentWrapper(course))
                 .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
                 .subscribe({}, {onError(it)})
 
 
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
-        view.onLoading()
         when {
             isCourseCompleted -> view.onCourseCompleted()
         }
         view.onAdapter(adapter)
+        view.setState(viewState)
     }
 
     override fun onCorrectAnswer(submissionId: Long) {
@@ -96,7 +116,7 @@ constructor(
 
     override fun createReaction(lessonId: Long, reaction: Reaction) {
         if (adapter.isEmptyOrContainsOnlySwipedCard(lessonId)) {
-            view?.onLoading()
+            viewState = RecommendationsView.State.Loading
         }
 
         compositeDisposable.add(createReactionObservable(lessonId, reaction, cards.size + adapter.getItemCount())
@@ -116,7 +136,7 @@ constructor(
             val size = cards.size
             recommendations
                     .filter { !isCardExists(it.lesson) }
-                    .forEach { cards.add(Card(courseId, it.lesson)) }
+                    .forEach { cards.add(Card(course, it.lesson)) }
 
             if (size == 0) resubscribe()
         }
@@ -125,15 +145,15 @@ constructor(
     private fun onError(throwable: Throwable?) {
         this.error = throwable
         when (throwable) {
-            is HttpException -> view?.onRequestError()
-            else -> view?.onConnectivityError()
+            is HttpException -> viewState = RecommendationsView.State.RequestError
+            else -> viewState = RecommendationsView.State.NetworkError
         }
     }
 
     fun retry() {
         this.error = null
         retrySubject.onNext(0)
-        view?.onLoading()
+        viewState = RecommendationsView.State.Loading
 
         if (cards.isNotEmpty()) {
             cards.peek().initCard()
@@ -155,7 +175,7 @@ constructor(
     private fun onCardDataLoaded(card: Card) {
         reportView(card)
         adapter.add(card)
-        view?.onCardLoaded()
+        viewState = RecommendationsView.State.Success
         cards.poll()
         resubscribe()
     }
@@ -176,7 +196,7 @@ constructor(
     }
 
     private fun createReactionObservable(lesson: Long, reaction: Reaction, cacheSize: Int): Observable<RecommendationsResponse> {
-        val responseObservable = stepicRestService.getNextRecommendations(courseId, CARDS_IN_CACHE).toObservable()
+        val responseObservable = stepicRestService.getNextRecommendations(course, CARDS_IN_CACHE).toObservable()
 
         if (lesson != 0L) {
             val reactionCompletable = stepicRestService
@@ -191,22 +211,15 @@ constructor(
         return responseObservable
     }
 
-    private fun sendViewAssigment(viewAssignment: ViewAssignment){
-        compositeDisposable.add(stepicRestService.postViewed(ViewAssignmentWrapper(viewAssignment.assignment, viewAssignment.step))
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({}, {onError(it)}))
-    }
-
     private fun reportView(card: Card) {
-        compositeDisposable.add(stepicRestService.getUnits(courseId, card.lessonId)
+        compositeDisposable.add(stepicRestService.getUnits(course, card.lessonId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ response ->
                     val unit = response.units?.firstOrNull()
                     val stepId = card.step?.id ?: 0
                     unit?.assignments?.firstOrNull()?.let { assignmentId ->
-                        sendViewAssigment(ViewAssignment(assignmentId, stepId))
+                        screenManager.pushToViewedQueue((ViewAssignment(assignmentId, stepId)))
                     }
                 }, {}))
     }

@@ -2,7 +2,6 @@ package org.stepik.android.exams.adaptive.ui.activity
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import kotlinx.android.synthetic.main.fragment_recommendations.*
@@ -11,13 +10,17 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.adaptive.core.contracts.RecommendationsView
 import org.stepik.android.exams.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
+import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.MathUtli
 import javax.inject.Inject
+import javax.inject.Provider
 
-class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
+class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, RecommendationsView>(), RecommendationsView {
     @Inject
-    lateinit var recommendationsPresenter: RecommendationsPresenter
+    lateinit var recommendationsPresenterProvider: Provider<RecommendationsPresenter>
+    override fun getPresenterProvider() = recommendationsPresenterProvider
+
     private var course: String = ""
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
 
@@ -27,15 +30,29 @@ class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
         tryAgain.setOnClickListener {
-            recommendationsPresenter.retry()
+            presenter?.retry()
         }
         super.onCreate(savedInstanceState)
     }
-
-    init {
+    override fun injectComponent() {
         App.componentManager()
                 .adaptiveComponent
                 .inject(this)
+    }
+
+    override fun setState(state: RecommendationsView.State) {
+        when (state){
+            RecommendationsView.State.InitPresenter ->
+                presenter?.initPresenter(course)
+            RecommendationsView.State.Loading ->
+                onLoading()
+            RecommendationsView.State.RequestError ->
+                onRequestError()
+            RecommendationsView.State.NetworkError ->
+                onConnectivityError()
+            RecommendationsView.State.Success ->
+                onCardLoaded()
+        }
     }
 
     override fun onAdapter(cardsAdapter: QuizCardsAdapter) {
@@ -87,18 +104,17 @@ class AdaptiveCourseActivity : AppCompatActivity(), RecommendationsView {
 
     override fun onStart() {
         super.onStart()
-        recommendationsPresenter.attachView(this)
-        recommendationsPresenter.initPresenter(course)
+        presenter?.attachView(this)
     }
 
     override fun onStop() {
-        recommendationsPresenter.detachView(this)
+        presenter?.detachView(this)
         super.onStop()
     }
 
 
     override fun onDestroy() {
-        recommendationsPresenter.destroy()
+        presenter?.destroy()
         super.onDestroy()
     }
 }

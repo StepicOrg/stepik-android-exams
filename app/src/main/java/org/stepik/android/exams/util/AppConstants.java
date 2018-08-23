@@ -39,4 +39,8 @@ public final class AppConstants {
     public static final String topicId = "topicId";
     public static final String step = "step";
     public static final String lastPosition = "last_position";
+    public static final String viewPush = "view_push";
+
+    public static final String lessonTheory = "theory";
+    public static final String lessonPractice = "practice";
 }

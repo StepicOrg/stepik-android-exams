@@ -16,6 +16,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     android {
         compileOptions {
@@ -65,4 +66,5 @@ dependencies {
     api libraries.lifecycleExtensions
     kapt libraries.lifecycleCompiler
     testImplementation libraries.coreTesting
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.2.60"
 }
