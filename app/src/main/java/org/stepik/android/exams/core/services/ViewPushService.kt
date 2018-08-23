@@ -13,7 +13,7 @@ import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
 
-class ViewPushService : IntentService(ViewPushService::class.simpleName) {
+class ViewPushService : IntentService("view_state_pusher") {
     @Inject
     lateinit var stepicRestService: StepicRestService
     @Inject

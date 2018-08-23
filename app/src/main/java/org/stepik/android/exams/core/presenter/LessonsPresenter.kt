@@ -37,8 +37,10 @@ constructor(
         disposable.add(stepsRepository.tryLoadLessons(theoryId = id)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({ list ->
-                    onComplete(list.map { it.lesson })
+                .subscribe({ l ->
+                    val list = l.map { it.lesson }
+                    lessonsList = list
+                    onComplete(list)
                 }, {
                     onError()
                 }))
