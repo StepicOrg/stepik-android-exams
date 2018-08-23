@@ -38,9 +38,9 @@ class StepsRepository
     fun parseLessons(id: String) =
             getLessonsById(id)!!.filter { it.type == "theory" }
 
-    private fun getUniqueCourses(graphLessons: List<GraphLesson>): MutableList<Long> {
-        val uniqueCourses = mutableListOf<Long>()
-        uniqueCourses.add(graphLessons.first { l -> l.course != 0L }.course)
+    private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
+        val uniqueCourses = mutableSetOf<Long>()
+        uniqueCourses.addAll(graphLessons.map { it.course })
         return uniqueCourses
     }
 
