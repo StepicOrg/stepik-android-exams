@@ -1,25 +1,33 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
+import org.stepik.android.exams.data.db.dao.TopicDao
+import org.stepik.android.exams.data.db.data.CourseInfo
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.activity.TopicsListActivity
+import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
 
 class TopicsListPresenter
 @Inject
 constructor(
+        private val api: Api,
         private val graph: Graph<String>,
         private val graphService: GraphService,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
-        private val mainScheduler: Scheduler
+        private val mainScheduler: Scheduler,
+        private val topicDao: TopicDao
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -58,6 +66,33 @@ constructor(
                 }))
     }
 
+    private fun tryJoinCourse(id: String): Completable {
+        val list = mutableListOf<Completable>()
+        for (u in getUniqueCourses(parseLessons(id)))
+            list.add(joinCourse(u))
+        return Completable.concat(list)
+    }
+
+    private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
+        val uniqueCourses = mutableSetOf<Long>()
+        uniqueCourses.addAll(graphLessons.map { it.course })
+        return uniqueCourses
+    }
+
+    private fun joinCourse(id: Long) =
+            api.joinCourse(id)
+
+    private fun getLessonsById(id: String) = graph[id]?.graphLessons
+
+    fun parseLessons(id: String) : List<GraphLesson> {
+        val filterType =
+        when (type){
+            TopicsListActivity.TYPE.THEORY -> AppConstants.lessonTheory
+            TopicsListActivity.TYPE.ADAPTIVE -> AppConstants.lessonPractice
+        }
+        return getLessonsById(id)!!.filter { it.type == filterType }
+    }
+
     private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics) {
             graph.createVertex(topic.id, topic.title)
@@ -67,6 +102,23 @@ constructor(
         for (maps in graphData.topicsMap) {
             graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
         }
+        val topicsList = graphData.topicsMap.map { it.id }
+        val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.course }.toLongArray() }
+        val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type }.toString() }
+        joinAllCourses(topicsList)
+        saveTopicInfoToDb(topicsList, lessonsList, typesList)
+    }
+
+    private fun saveTopicInfoToDb(topics: List<String>, lessonsList : List<LongArray>, typesList : List<String>){
+
+        topicDao.insertCourseInfo(CourseInfo())
+    }
+
+    private fun joinAllCourses(topics : List<String>){
+        Completable.concat(topics.map { tryJoinCourse(it) })
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({}, {})
     }
 
     override fun attachView(view: TopicsListView) {
