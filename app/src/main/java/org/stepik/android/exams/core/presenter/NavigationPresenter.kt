@@ -4,6 +4,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
+import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.model.Step
@@ -16,18 +17,26 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val navigationNavigatorInteractor: NavigationInteractor
+        private val navigationNavigatorInteractor: NavigationInteractor,
+        private val topicDao: TopicDao
 ) : PresenterBase<NavigateView>() {
+    companion object {
+        const val type = "theory"
+    }
+
     private var disposable = CompositeDisposable()
     fun navigateToLesson(step: Step?, id: String, lastPosition: Int, move: Boolean) {
         if (step?.position == 1L)
-            navigateToPrev(step.lesson.toInt(), id, move)
+            navigateToPrev(step.lesson, id, move)
         if (step?.position == lastPosition.toLong())
-            navigateToNext(step.lesson.toInt(), id, move)
+            navigateToNext(step.lesson, id, move)
     }
 
-    private fun navigateToPrev(id: Int, topicId: String, move: Boolean) {
-        disposable.add(navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move)
+    private fun getLessonId(topicId: String) =
+            topicDao.getTopicInfoByType(topicId, type)
+
+    private fun navigateToPrev(id: Long, topicId: String, move: Boolean) {
+        disposable.add(getLessonId(topicId).flatMapObservable { navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move, it.toLongArray()) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -39,8 +48,8 @@ constructor(
                 }))
     }
 
-    private fun navigateToNext(id: Int, topicId: String, move: Boolean) {
-        disposable.add(navigationNavigatorInteractor.resolveNextLesson(topicId, id, move)
+    private fun navigateToNext(id: Long, topicId: String, move: Boolean) {
+        disposable.add(getLessonId(topicId).flatMapObservable { navigationNavigatorInteractor.resolveNextLesson(topicId, id, move, it.toLongArray()) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->

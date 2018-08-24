@@ -59,6 +59,7 @@ constructor(
                 .subscribe({ data ->
                     graphData = data
                     addDataToGraph(graphData)
+                    checkIfJoined()
                     view?.showGraphData(graphData)
                     viewState = TopicsListView.State.Success
                 }, {
@@ -66,32 +67,12 @@ constructor(
                 }))
     }
 
-    private fun tryJoinCourse(id: String): Completable {
-        val list = mutableListOf<Completable>()
-        for (u in getUniqueCourses(parseLessons(id)))
-            list.add(joinCourse(u))
-        return Completable.concat(list)
-    }
+    private fun tryJoinCourse(id: String, lessons : List<Long>) =
+            Completable.concat(lessons.map { joinCourse(it) })
 
-    private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
-        val uniqueCourses = mutableSetOf<Long>()
-        uniqueCourses.addAll(graphLessons.map { it.course })
-        return uniqueCourses
-    }
 
     private fun joinCourse(id: Long) =
             api.joinCourse(id)
-
-    private fun getLessonsById(id: String) = graph[id]?.graphLessons
-
-    fun parseLessons(id: String): List<GraphLesson> {
-        val filterType =
-                when (type) {
-                    TopicsListActivity.TYPE.THEORY -> AppConstants.lessonTheory
-                    TopicsListActivity.TYPE.ADAPTIVE -> AppConstants.lessonPractice
-                }
-        return getLessonsById(id)!!.filter { it.type == filterType }
-    }
 
     private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics) {
@@ -102,29 +83,43 @@ constructor(
         for (maps in graphData.topicsMap) {
             graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
         }
-        val topicsList = graphData.topicsMap.map { it.id }
-        val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.course }.toLongArray() }
-        val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type }.toString() }
-        joinAllCourses(topicsList)
-        saveTopicInfoToDb(topicsList, lessonsList, typesList)
+    }
+    private fun checkIfJoined() {
+        topicDao.isJoinedToCourses()
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({joined ->
+                    if (joined)
+                        return@subscribe
+                }, {
+                    val topicsList = graphData.topicsMap.map { it.id }
+                    val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.id }.toLongArray() }
+                    val courseList = graphData.topicsMap.map { it.graphLessons.map { it.course } }
+                    val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type } }
+                    saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
+                    joinAllCourses(topicsList, courseList.flatMap { it })
+                })
     }
 
-    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<String>) {
-        val topicsIt = topics.listIterator()
-        val lessonsIt = lessonsList.listIterator()
-        val typesIt = typesList.listIterator()
+
+    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<String>>, courseList : List<List<Long>>) {
         val list = mutableListOf<TopicInfo>()
-        while (topicsIt.hasNext() && lessonsIt.hasNext() && typesIt.hasNext()) {
-            list.add(TopicInfo(topicsIt.next(), typesIt.next(), lessonsIt.next()))
-        }
+             (0 until topics.size).map { i ->
+                 (0..minOf(lessonsList.size-1, typesList.size-1)).map { m ->
+                     val size = lessonsList[m].size-1
+                     (0..minOf(lessonsList[m].size-1, typesList[m].size-1)).map { k ->
+                         list.add(TopicInfo(topics[i], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
+                     }
+                 }
+             }
         Completable.fromCallable { topicDao.insertCourseInfo(list) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe()
     }
 
-    private fun joinAllCourses(topics: List<String>) {
-        Completable.concat(topics.map { tryJoinCourse(it) })
+    private fun joinAllCourses(topics: List<String>, lessons : List<Long>) {
+        Completable.concat(topics.map { tryJoinCourse(it, lessons) })
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({}, {})
