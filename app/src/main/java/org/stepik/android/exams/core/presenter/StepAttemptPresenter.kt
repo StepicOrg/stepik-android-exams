@@ -12,6 +12,7 @@ import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.web.AttemptRequest
+import org.stepik.android.exams.web.AttemptResponse
 import org.stepik.android.model.Reply
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
@@ -58,10 +59,10 @@ constructor(
         disposable.add(Observable.fromCallable {
             stepDao.findStepById(step?.id ?: 0)
         }
-                .onErrorReturn { StepInfo(null, null, null, false) }
                 .map {
                     it.attempt != null
                 }
+                .onErrorReturn { false }
                 .subscribeOn(backgroundScheduler)
                 .subscribe { exist ->
                     submission = if (exist && !shouldUpdate) {
@@ -72,42 +73,36 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1)
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step).toMaybe()).take(1)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe { stepInfo ->
-                    if (stepInfo is StepInfo) {
-                        stepInfo.attempt?.let { attempts ->
+                .subscribe { pair ->
+                        pair.first?.let { attempts ->
                             this.step = step
                             attemptLoaded(attempts)
                         }
-                        stepInfo.submission?.let { sub ->
+                        pair.second?.let { sub ->
                             submission = sub
                             onSubmissionLoaded(submission)
                         }
-                    }
                 }
     }
 
     private fun checkStepIdDb(step: Step) =
             Maybe.fromCallable { stepDao.findStepById(step.id) }
                     .filter { (it.attempt != null || it.submission != null) }
+                    .map { it.attempt to it.submission }
 
     private fun checkStepApi(step: Step) =
-            Maybe.fromCallable {
                 checkAttempts(step)
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
+                        .map { it.first?.attempts?.firstOrNull() to it.second }
                         .doOnSuccess {
-                            attempt = it.first?.attempts?.firstOrNull()
+                            attempt = it.first
                             submission = it.second
                             updateStepAttempt(step, attempt, submission)
                         }
-                        .subscribe { it ->
-                            attemptLoaded(it.first?.attempts?.firstOrNull())
-                            onSubmissionLoaded(it.second)
-                        }
-            }
 
 
     private fun checkAttempts(step: Step) =
@@ -115,15 +110,15 @@ constructor(
                     .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
                     .doOnSuccess { attempt ->
                         if (attempt.attempts.isEmpty()) {
-                            createNewAttempt(step)
+                            Observable.fromCallable { createNewAttempt(step) }
                         }
                     }
-                    .flatMap { att ->
-                        if (att.attempts.isNotEmpty()) {
-                            getSubmissions(att.attempts.firstOrNull()).map { s ->
-                                Pair(att, s)
+                    .flatMap { attemptResponse ->
+                        if (attemptResponse.attempts.isNotEmpty()) {
+                            getSubmissions(attemptResponse.attempts.firstOrNull()).map { submissionResponse ->
+                                attemptResponse to submissionResponse
                             }
-                        } else Single.just(Pair(null, null))
+                        } else Single.just(null to null)
                     }
 
     private fun getSubmissions(attempt: Attempt?) =
@@ -136,7 +131,6 @@ constructor(
 
     fun createNewAttempt(step: Step) {
         viewState = AttemptView.State.Loading
-        this.step = step
         disposable.add(
                 stepicRestService.createNewAttempt(AttemptRequest(step.id)).toObservable()
                         .filter { it.attempts.isNotEmpty() }
@@ -144,6 +138,7 @@ constructor(
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe {
+                            this.step = step
                             shouldUpdate = false
                             attemptLoaded(it)
                             updateStepAttempt(step, it, null)

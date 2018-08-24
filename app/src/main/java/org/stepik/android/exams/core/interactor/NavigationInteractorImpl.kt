@@ -18,7 +18,7 @@ constructor(
                 graph[topicId]?.graphLessons?.last()?.id == lesson)
             return Observable.empty()
         if (graph[topicId]?.graphLessons?.last()?.id != lesson) {
-            val theoryLessons = stepsRepository.parseLessons(topicId)
+            val theoryLessons = stepsRepository.parseLessonsType(topicId)
             val iterator = theoryLessons.iterator()
             var nextLesson = 0L
             while (iterator.hasNext()) {
@@ -45,7 +45,7 @@ constructor(
                 graph[topicId]?.graphLessons?.first()?.id == lesson)
             return Observable.empty()
         if (graph[topicId]?.graphLessons?.first()?.id != lesson) {
-            val theoryLessons = stepsRepository.parseLessons(topicId)
+            val theoryLessons = stepsRepository.parseLessonsType(topicId)
             val iterator = theoryLessons.listIterator()
             var nextLesson = 0L
             while (iterator.hasNext()) {

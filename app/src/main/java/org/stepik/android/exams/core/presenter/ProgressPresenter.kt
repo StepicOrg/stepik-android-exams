@@ -41,9 +41,8 @@ constructor(
                 }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe { _ ->
-                    view?.markedAsView(step)
-                }
+                .subscribe ({
+                    view?.markedAsView(step)}, {} )
     }
 
     fun isAllStepsPassed(steps: List<Step>) {

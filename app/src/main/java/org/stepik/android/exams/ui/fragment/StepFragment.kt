@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import kotlinx.android.synthetic.main.attempt_container_layout.*
 import kotlinx.android.synthetic.main.next_lesson_view.*
 import kotlinx.android.synthetic.main.step_delegate.*
@@ -27,10 +26,18 @@ import org.stepik.android.model.Step
 import javax.inject.Inject
 import javax.inject.Provider
 
-open class StepFragment :
-        BasePresenterFragment<StepAttemptPresenter, AttemptView>(),
-        NavigateView,
-        ProgressView {
+open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptView>(), NavigateView, ProgressView {
+    companion object {
+        fun newInstance(step: Step?, topicId: String, lastPosition: Int): StepFragment {
+            val args = Bundle()
+            args.putString(AppConstants.topicId, topicId)
+            args.putParcelable(AppConstants.step, step)
+            args.putInt(AppConstants.lastPosition, lastPosition)
+            val fragment = StepFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
     @Inject
     lateinit var stepPresenterProvider: Provider<StepAttemptPresenter>
     @Inject
@@ -41,20 +48,16 @@ open class StepFragment :
     protected lateinit var progressPresenter: ProgressPresenter
     protected var topicId = ""
     protected var lastPosition = 0
+    protected var step: Step? = null
+    lateinit var stepTypeResolver: StepTypeResolver
+    protected lateinit var parentContainer: ViewGroup
+    protected lateinit var attemptContainer: ViewGroup
 
     override fun getPresenterProvider() = stepPresenterProvider
 
     override fun injectComponent() {
         App.componentManager().stepComponent.inject(this)
     }
-
-    protected var step: Step? = null
-    lateinit var stepTypeResolver: StepTypeResolver
-    protected lateinit var parentContainer: ViewGroup
-    protected lateinit var attemptContainer: ViewGroup
-    private lateinit var nextLesson: TextView
-    private lateinit var prevLesson: TextView
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,16 +104,16 @@ open class StepFragment :
     override fun moveToLesson(id: String, lesson: LessonWrapper?) = screenManager.showStepsList(id, lesson!!, context)
 
     override fun showNextButton() {
-        prevLesson.visibility = View.VISIBLE
-        prevLesson.setOnClickListener { _ ->
+        previousLesson.visibility = View.VISIBLE
+        previousLesson.setOnClickListener { _ ->
             navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
-        route_lesson_root.visibility = View.VISIBLE
+        routeLesson.visibility = View.VISIBLE
     }
 
     override fun hideNextButton() {
         nextLesson.visibility = View.GONE
-        route_lesson_root.visibility = View.GONE
+        routeLesson.visibility = View.GONE
     }
 
     override fun showPrevButton() {
@@ -118,35 +121,20 @@ open class StepFragment :
         nextLesson.setOnClickListener { _ ->
             navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
-        route_lesson_root.visibility = View.VISIBLE
+        routeLesson.visibility = View.VISIBLE
     }
 
     override fun hidePrevButton() {
-        prevLesson.visibility = View.GONE
-        route_lesson_root.visibility = View.GONE
+        previousLesson.visibility = View.GONE
+        routeLesson.visibility = View.GONE
     }
 
     private fun loadNavigation() {
-        nextLesson = next_lesson_view
-        prevLesson = previous_lesson_view
         navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = false)
     }
 
     private fun showHeader() {
-        text_header?.setText(step?.block?.text)
-        text_header?.visibility = View.VISIBLE
+        textHeader?.setText(step?.block?.text)
+        textHeader?.visibility = View.VISIBLE
     }
-
-    companion object {
-        fun newInstance(step: Step?, topicId: String, lastPosition: Int): StepFragment {
-            val args = Bundle()
-            args.putString(AppConstants.topicId, topicId)
-            args.putParcelable(AppConstants.step, step)
-            args.putInt(AppConstants.lastPosition, lastPosition)
-            val fragment = StepFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
 }

@@ -24,8 +24,7 @@ class StepsRepository
 ) {
     private fun tryJoinCourse(id: String): Completable {
         val list = mutableListOf<Completable>()
-        for (u in getUniqueCourses(parseLessons(id)))
-            list.add(joinCourse(u))
+        getUniqueCourses(parseLessonsType(id)).map { list.add(joinCourse(it)) }
         return Completable.concat(list)
     }
 
@@ -35,8 +34,8 @@ class StepsRepository
 
     private fun getLessonsById(id: String) = graph[id]?.graphLessons
 
-    fun parseLessons(id: String) =
-            getLessonsById(id)!!.filter { it.type == "theory" }
+    fun parseLessonsType(topicId: String): List<GraphLesson> =
+            getLessonsById(topicId)!!.filter { it.type == "theory" }
 
     private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
         val uniqueCourses = mutableSetOf<Long>()
@@ -44,8 +43,8 @@ class StepsRepository
         return uniqueCourses
     }
 
-    private fun getIdFromTheory(id: String) =
-            parseLessons(id).map { it.id.toLong() }.toLongArray()
+    private fun getIdFromTheory(id: String) : LongArray =
+            parseLessonsType(id).map { it.id.toLong() }.toLongArray()
 
     fun tryLoadLessons(theoryId: String) =
             loadTheoryLessonsLocal(theoryId).toObservable()
@@ -71,7 +70,7 @@ class StepsRepository
                 }
                 .toList()
                 .flatMapObservable { lessonWrappers ->
-                    val lessons = parseLessons(theoryId).map { theory ->
+                    val lessons = parseLessonsType(theoryId).map { theory ->
                         lessonWrappers.first { it.lesson.id == theory.id.toLong() }
                     }
                     saveLessonsToDb(theoryId, lessons)
