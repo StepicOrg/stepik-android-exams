@@ -67,7 +67,7 @@ constructor(
                 }))
     }
 
-    private fun tryJoinCourse(id: String, lessons : List<Long>) =
+    private fun tryJoinCourse(lessons : Set<Long>) =
             Completable.concat(lessons.map { joinCourse(it) })
 
 
@@ -97,32 +97,32 @@ constructor(
                     val courseList = graphData.topicsMap.map { it.graphLessons.map { it.course } }
                     val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type } }
                     saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
-                    joinAllCourses(topicsList, courseList.flatMap { it })
+                    joinAllCourses(courseList.flatMap { it })
                 })
     }
 
 
     private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<String>>, courseList : List<List<Long>>) {
         val list = mutableListOf<TopicInfo>()
-             (0 until topics.size).map { i ->
-                 (0..minOf(lessonsList.size-1, typesList.size-1)).map { m ->
-                     val size = lessonsList[m].size-1
-                     (0..minOf(lessonsList[m].size-1, typesList[m].size-1)).map { k ->
-                         list.add(TopicInfo(topics[i], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
-                     }
-                 }
-             }
-        Completable.fromCallable { topicDao.insertCourseInfo(list) }
+
+        (0..minOf(lessonsList.size-1, typesList.size-1)).map { m ->
+            (0..minOf(lessonsList[m].size - 1, typesList[m].size - 1)).map { k ->
+                list.add(TopicInfo(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
+            }
+        }
+        Completable.fromAction { topicDao.insertCourseInfo(list) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe()
     }
 
-    private fun joinAllCourses(topics: List<String>, lessons : List<Long>) {
-        Completable.concat(topics.map { tryJoinCourse(it, lessons) })
+    private fun joinAllCourses(lessons : List<Long>) {
+        tryJoinCourse(lessons.toMutableSet())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({}, {})
+                .subscribe({}, {
+                    onError()
+                })
     }
 
     override fun attachView(view: TopicsListView) {
@@ -132,6 +132,10 @@ constructor(
         if (graphData.topics.isNotEmpty()) {
             view.showGraphData(graphData)
         }
+    }
+
+    private fun onError(){
+        viewState = TopicsListView.State.NetworkError
     }
 
     override fun destroy() {

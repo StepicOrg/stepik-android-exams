@@ -22,11 +22,11 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
 
     override fun getPresenterProvider() = recommendationsPresenterProvider
 
-    private var course: String = ""
+    private var topicId: String = ""
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        course = intent.getStringExtra(AppConstants.topicId)
+        topicId = intent.getStringExtra(AppConstants.topicId)
         setContentView(R.layout.fragment_recommendations)
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
@@ -45,7 +45,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
     override fun setState(state: RecommendationsView.State) {
         when (state) {
             RecommendationsView.State.InitPresenter ->
-                presenter?.initPresenter(course)
+                presenter?.initPresenter(topicId)
             RecommendationsView.State.Loading ->
                 onLoading()
             RecommendationsView.State.RequestError ->

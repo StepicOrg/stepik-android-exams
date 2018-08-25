@@ -16,4 +16,6 @@ interface TopicDao {
     fun isJoinedToCourses() : Single<Boolean>
     @Query("SELECT lesson FROM TopicInfo WHERE topicId = :topicId AND type = :type")
     fun getTopicInfoByType(topicId : String, type : String) : Maybe<List<Long>>
+    @Query("SELECT course FROM TopicInfo WHERE topicId = :topicId AND type = 'practice'")
+    fun getAdaptiveCourseId(topicId : String) : Single<Long>
 }

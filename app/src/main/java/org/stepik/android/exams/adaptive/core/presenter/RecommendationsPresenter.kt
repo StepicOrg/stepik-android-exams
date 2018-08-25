@@ -14,6 +14,7 @@ import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.PresenterBase
+import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.model.RecommendationReactionsRequest
 import org.stepik.android.exams.data.model.RecommendationsResponse
 import org.stepik.android.exams.data.model.ViewAssignment
@@ -21,8 +22,6 @@ import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
-import org.stepik.android.exams.util.AppConstants
-import org.stepik.android.model.EnrollmentWrapper
 import org.stepik.android.model.adaptive.Reaction
 import org.stepik.android.model.adaptive.RecommendationReaction
 import retrofit2.HttpException
@@ -32,14 +31,14 @@ import javax.inject.Inject
 class RecommendationsPresenter
 @Inject
 constructor(
-        private val graph: Graph<String>,
         private val stepicRestService: StepicRestService,
         @BackgroundScheduler
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
-        private val screenManager: ScreenManager
+        private val screenManager: ScreenManager,
+        private val topicDao: TopicDao
 ) : PresenterBase<RecommendationsView>(), AdaptiveReactionListener, AnswerListener {
 
     companion object {
@@ -49,19 +48,12 @@ constructor(
 
     private val compositeDisposable = CompositeDisposable()
     private val retrySubject = PublishSubject.create<Any>()
-
     private val cards = ArrayDeque<Card>()
-
     private val adapter = QuizCardsAdapter(this, this)
-
     private var cardDisposable: Disposable? = null
-
     private var error: Throwable? = null
-
     private var isCourseCompleted = false
-
     private var course: Long = 0
-
     private var viewState: RecommendationsView.State = RecommendationsView.State.Idle
         set(value) {
             field = value
@@ -72,27 +64,20 @@ constructor(
         viewState = RecommendationsView.State.InitPresenter
     }
 
-    fun initPresenter(courseId: String) {
-        val list = parseLessons(courseId)
-        if (list.isEmpty()) {
-            view?.onCourseNotSupported()
-        } else {
-            course = list.first().course
-            compositeDisposable.add(tryJoinCourse())
-            createReaction(0, Reaction.INTERESTING)
-        }
+    fun initPresenter(topicId: String) {
+        loadCourseId(topicId)
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({
+                    course = it
+                    createReaction(0, Reaction.INTERESTING)
+                }, {
+                    view?.onCourseNotSupported()
+                })
     }
 
-    private fun getLessonsById(id: String) = graph[id]?.graphLessons
-
-    private fun parseLessons(id: String) =
-            getLessonsById(id)!!.filter { it.type == AppConstants.lessonPractice }
-
-    private fun tryJoinCourse() =
-            stepicRestService.joinCourse(EnrollmentWrapper(course))
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe({}, { onError(it) })
+    private fun loadCourseId(topicId: String) =
+            topicDao.getAdaptiveCourseId(topicId)
 
 
     override fun attachView(view: RecommendationsView) {

@@ -40,6 +40,7 @@ class StepsRepository
                     .toObservable()
 
     private fun loadTheoryLessons(theoryId: String, array : LongArray): Observable<List<LessonTheoryWrapper>> {
+        parsedLessons = array.toList()
         return api.getLessons(array)
                 .flatMapObservable {
                     it.lessons!!.toObservable()
