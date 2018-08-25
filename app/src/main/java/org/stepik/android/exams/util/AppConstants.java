@@ -17,24 +17,10 @@ public final class AppConstants {
     public static final String TYPE_VIDEO = "video";
     public static final String TYPE_MATCHING = "matching";
     public static final String TYPE_SORTING = "sorting";
-    public static final String TYPE_MATH = "math";
     public static final String TYPE_FREE_ANSWER = "free-answer";
     public static final String TYPE_TABLE = "table";
     public static final String TYPE_STRING = "string";
     public static final String TYPE_CHOICE = "choice";
     public static final String TYPE_NUMBER = "number";
-    public static final String TYPE_DATASET = "dataset";
-    public static final String TYPE_ANIMATION = "animation";
-    public static final String TYPE_CHEMICAL = "chemical";
     public static final String TYPE_FILL_BLANKS = "fill-blanks";
-    public static final String TYPE_PUZZLE = "puzzle";
-    public static final String TYPE_PYCHARM = "pycharm";
-    public static final String TYPE_CODE = "code";
-    public static final String TYPE_ADMIN = "admin";
-    public static final String TYPE_SQL = "sql";
-    public static final String TYPE_LINUX_CODE = "linux-code";
-
-    public static final String topicId = "topicId";
-    public static final String step = "step";
-    public static final String lastPosition = "last_position";
 }
