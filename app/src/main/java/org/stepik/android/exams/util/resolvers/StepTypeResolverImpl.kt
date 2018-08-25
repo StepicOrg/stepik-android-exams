@@ -51,44 +51,24 @@ constructor(
         mapFromTypeToDrawable[AppConstants.TYPE_VIDEO] = videoDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_MATCHING] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_SORTING] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_MATH] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_FREE_ANSWER] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_TABLE] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_STRING] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_CHOICE] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_NUMBER] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_DATASET] = hardQuizDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_ANIMATION] = animationDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_CHEMICAL] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_PUZZLE] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_PYCHARM] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_CODE] = hardQuizDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_ADMIN] = hardQuizDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_SQL] = simpleQuestionDrawable
-        mapFromTypeToDrawable[AppConstants.TYPE_LINUX_CODE] = simpleQuestionDrawable
 
 
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_TEXT] = theoryDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_VIDEO] = videoDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_MATCHING] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_SORTING] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_MATH] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_FREE_ANSWER] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_TABLE] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_STRING] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_CHOICE] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_NUMBER] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_DATASET] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_ANIMATION] = animationDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_CHEMICAL] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_PUZZLE] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_PYCHARM] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_CODE] = hardQuizDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_ADMIN] = hardQuizDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_SQL] = simpleQuestionDrawableNotViewed
-        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_LINUX_CODE] = simpleQuestionDrawableNotViewed
     }
 
     override fun getDrawableForType(type: String?, viewed: Boolean, isPeerReview: Boolean): Drawable? {
