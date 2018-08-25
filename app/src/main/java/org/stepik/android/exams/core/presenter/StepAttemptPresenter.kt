@@ -73,7 +73,7 @@ constructor(
     }
 
     fun checkStep(step: Step) {
-        Maybe.concat(checkStepIdDb(step), checkStepApi(step).toMaybe()).take(1)
+        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe { pair ->
@@ -94,7 +94,7 @@ constructor(
                     .map { it.attempt to it.submission }
 
     private fun checkStepApi(step: Step) =
-                checkAttempts(step)
+                checkAttempts(step).switchIfEmpty(createNewAttempt(step))
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .map { it.first?.attempts?.firstOrNull() to it.second }
@@ -108,17 +108,15 @@ constructor(
     private fun checkAttempts(step: Step) =
             stepicRestService
                     .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
-                    .doOnSuccess { attempt ->
-                        if (attempt.attempts.isEmpty()) {
-                            Observable.fromCallable { createNewAttempt(step) }
-                        }
-                    }
+                    .filter { it.attempts.isNotEmpty() }
                     .flatMap { attemptResponse ->
                         if (attemptResponse.attempts.isNotEmpty()) {
-                            getSubmissions(attemptResponse.attempts.firstOrNull()).map { submissionResponse ->
+                            getSubmissions(attemptResponse.attempts.firstOrNull())
+                                    .toMaybe()
+                                    .map { submissionResponse ->
                                 attemptResponse to submissionResponse
                             }
-                        } else Single.just(null to null)
+                        } else Maybe.just(null to null)
                     }
 
     private fun getSubmissions(attempt: Attempt?) =
@@ -129,21 +127,22 @@ constructor(
                     }
 
 
-    fun createNewAttempt(step: Step) {
-        viewState = AttemptView.State.Loading
-        disposable.add(
-                stepicRestService.createNewAttempt(AttemptRequest(step.id)).toObservable()
+    private fun createNewAttempt(step: Step) =
+            stepicRestService.createNewAttempt(AttemptRequest(step.id)).toObservable()
                         .filter { it.attempts.isNotEmpty() }
-                        .map { it.attempts.first() }
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe {
-                            this.step = step
-                            shouldUpdate = false
-                            attemptLoaded(it)
-                            updateStepAttempt(step, it, null)
-                        })
-    }
+                        .map { AttemptResponse(it.attempts) to Submission() }
+                        .firstElement()
+
+    fun createAttempt(step: Step){
+        createNewAttempt(step)
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe {
+                    attemptLoaded(it.first.attempts.firstOrNull())
+                    updateStepAttempt(step, it.first.attempts.firstOrNull(), null)
+                    shouldUpdate = false
+                }
+}
 
     private fun attemptLoaded(it: Attempt?) {
         attempt = it
@@ -166,7 +165,6 @@ constructor(
     fun createSubmission(id: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
         submission = Submission(reply, id, null)
-        shouldUpdate = true
         disposable.add(stepicRestService.createSubmission(SubmissionRequest(submission))
                 .andThen(stepicRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
                 .subscribeOn(backgroundScheduler)
@@ -185,9 +183,7 @@ constructor(
                         .subscribe({ onSubmissionLoaded(it) }, { onError() }))
             } else {
                 updateStep(step?.id, attempt, submission)
-                shouldUpdate = true
                 onSubmissionLoaded(s)
-                viewState = AttemptView.State.Success
             }
         }
     }

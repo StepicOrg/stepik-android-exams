@@ -20,6 +20,8 @@ import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.FragmentArgumentDelegate
+import org.stepik.android.exams.util.argument
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
 import org.stepik.android.model.Step
@@ -28,16 +30,13 @@ import javax.inject.Provider
 
 open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptView>(), NavigateView, ProgressView {
     companion object {
-        fun newInstance(step: Step?, topicId: String, lastPosition: Int): StepFragment {
-            val args = Bundle()
-            args.putString(AppConstants.topicId, topicId)
-            args.putParcelable(AppConstants.step, step)
-            args.putInt(AppConstants.lastPosition, lastPosition)
-            val fragment = StepFragment()
-            fragment.arguments = args
-            return fragment
+        fun newInstance(step: Step, topicId: String, lastPosition: Int): StepFragment =
+                StepFragment().apply {
+                    this.step = step
+                    this.topicId = topicId
+                    this.lastPosition = lastPosition
+                }
         }
-    }
     @Inject
     lateinit var stepPresenterProvider: Provider<StepAttemptPresenter>
     @Inject
@@ -46,9 +45,9 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
     lateinit var screenManager: ScreenManager
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
-    protected var topicId = ""
-    protected var lastPosition = 0
-    protected var step: Step? = null
+    private var step: Step by argument()
+    private var topicId : String by argument()
+    private var lastPosition : Int by argument()
     lateinit var stepTypeResolver: StepTypeResolver
     protected lateinit var parentContainer: ViewGroup
     protected lateinit var attemptContainer: ViewGroup
@@ -61,9 +60,6 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        step = arguments.getParcelable(AppConstants.step)
-        topicId = arguments.getString(AppConstants.topicId, "")
-        lastPosition = arguments.getInt(AppConstants.lastPosition)
         stepTypeResolver = StepTypeResolverImpl(context)
     }
 
@@ -134,7 +130,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
     }
 
     private fun showHeader() {
-        textHeader?.setText(step?.block?.text)
+        textHeader?.setText(step.block?.text)
         textHeader?.visibility = View.VISIBLE
     }
 }
