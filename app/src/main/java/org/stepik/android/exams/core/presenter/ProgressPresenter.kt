@@ -34,15 +34,15 @@ constructor(
         val progress = step.progress ?: ""
         service.getProgresses(arrayOf(progress))
                 .delay(400, TimeUnit.MILLISECONDS)
-                .map {
-                    val isPassed = it.progresses.first().isPassed
-                    step.isCustomPassed = isPassed
-                    updateProgress(step.id, true)
+                .map { it.progresses.first().isPassed }
+                .doOnSuccess {
+                    stepDao.updateStepProgress(step.id, it)
                 }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe ({
-                    view?.markedAsView(step)}, {} )
+                .subscribeBy({}) {
+                    view?.markedAsView(step.copy(isCustomPassed = it))
+                }
     }
 
     fun isAllStepsPassed(steps: List<Step>) {

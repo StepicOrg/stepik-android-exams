@@ -22,20 +22,14 @@ class StepsRepository
         private val lessonDao: LessonDao,
         private val stepDao: StepDao
 ) {
-    private fun tryJoinCourse(id: String): Completable {
-        val list = mutableListOf<Completable>()
-        getUniqueCourses(parseLessonsType(id)).map { list.add(joinCourse(it)) }
-        return Completable.concat(list)
-    }
-
-    private fun joinCourse(id: Long) =
-            api.joinCourse(id)
+    private fun tryJoinCourses(topidId: String): Completable =
+            Completable.concat(getUniqueCourses(getTheoryLessonsByTopicId(topidId)).map(api::joinCourse))
 
 
-    private fun getLessonsById(id: String) = graph[id]?.graphLessons
+    private fun getLessonsByTopicId(topicId: String) = graph[topicId]?.graphLessons
 
-    fun parseLessonsType(topicId: String): List<GraphLesson> =
-            getLessonsById(topicId)!!.filter { it.type == "theory" }
+    fun getTheoryLessonsByTopicId(topicId: String): List<GraphLesson> =
+            getLessonsByTopicId(topicId)!!.filter { it.type == "theory" }
 
     private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
         val uniqueCourses = mutableSetOf<Long>()
@@ -43,14 +37,14 @@ class StepsRepository
         return uniqueCourses
     }
 
-    private fun getIdFromTheory(id: String) : LongArray =
-            parseLessonsType(id).map { it.id.toLong() }.toLongArray()
+    private fun getIdFromTheory(id: String): LongArray =
+            getTheoryLessonsByTopicId(id).map(GraphLesson::id).toLongArray()
 
-    fun tryLoadLessons(theoryId: String) =
+    fun tryLoadLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> =
             loadTheoryLessonsLocal(theoryId).toObservable()
-                    .switchIfEmpty(tryJoinCourse(theoryId).andThen(loadTheoryLessons(theoryId)))
+                    .switchIfEmpty(tryJoinCourses(theoryId).andThen(loadTheoryLessons(theoryId)))
 
-    fun findLessonInDb(topicId: String, nextLesson: Long) =
+    fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
                     .map { it -> LessonTheoryWrapper(topicId, it) }
                     .toObservable()
@@ -70,8 +64,8 @@ class StepsRepository
                 }
                 .toList()
                 .flatMapObservable { lessonWrappers ->
-                    val lessons = parseLessonsType(theoryId).map { theory ->
-                        lessonWrappers.first { it.lesson.id == theory.id.toLong() }
+                    val lessons = getTheoryLessonsByTopicId(theoryId).map { theory ->
+                        lessonWrappers.first { it.lesson.id == theory.id }
                     }
                     saveLessonsToDb(theoryId, lessons)
                     Observable.just(lessons.map { LessonTheoryWrapper(theoryId, it) })
