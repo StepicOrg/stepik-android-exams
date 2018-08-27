@@ -3,6 +3,7 @@ package org.stepik.android.exams.core.presenter
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.subscribeBy
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
@@ -87,16 +88,18 @@ constructor(
         topicDao.isJoinedToCourses()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({
+                .subscribeBy(onSuccess = {
                     // no op
-                }) {
+                }, onComplete = {
                     val topicsList = graphData.topicsMap.map { it.id }
                     val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.id }.toLongArray() }
                     val courseList = graphData.topicsMap.map { it.graphLessons.map { it.course } }
                     val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type } }
                     saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
                     joinAllCourses(courseList.flatMap { it })
-                }
+                }, onError = {
+
+                })
     }
 
 

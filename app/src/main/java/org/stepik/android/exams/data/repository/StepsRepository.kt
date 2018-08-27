@@ -1,6 +1,5 @@
 package org.stepik.android.exams.data.repository
 
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
@@ -12,7 +11,6 @@ import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class StepsRepository
@@ -26,11 +24,11 @@ class StepsRepository
     private fun getCoursesId(theoryId: String)  =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
-    fun tryLoadLessons(theoryId: String) =
+    fun tryLoadLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> =
             loadTheoryLessonsLocal(theoryId).toObservable()
                     .switchIfEmpty(getCoursesId(theoryId).flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
 
-    fun findLessonInDb(topicId: String, nextLesson: Long) =
+    fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
                     .map { it -> LessonTheoryWrapper(topicId, it) }
                     .toObservable()
@@ -41,33 +39,25 @@ class StepsRepository
                 .flatMapObservable {
                     it.lessons!!.toObservable()
                 }
-                .flatMap({
-                    api.getSteps(*it.steps).toObservable()
+                .flatMap({ lesson ->
+                    api.getSteps(*lesson.steps).doOnSuccess { response ->
+                        stepDao.insertSteps(response.steps!!.map { StepInfo(it.id) })
+                    }.toObservable()
                 }, { a, b -> a to b })
                 .map { (lesson, stepResponse) ->
-                    LessonWrapper(lesson, stepResponse.steps!!).apply {
-                        saveStepsToDb(stepResponse.steps)
-                    }
+                    LessonWrapper(lesson, stepResponse.steps!!)
                 }
                 .toList()
+                .doOnSuccess { wrappers ->
+                    lessonDao.insertLessons(wrappers.map { LessonInfo(theoryId, it.lesson.id, it) })
+                }
                 .flatMapObservable { lessonWrappers ->
                     val lessons = parsedLessons.map { id ->
                         lessonWrappers.first { it.lesson.id == id }
                     }
-                    saveLessonsToDb(theoryId, lessons)
                     Observable.just(lessons.map { LessonTheoryWrapper(theoryId, it) })
                 }
     }
-
-    private fun saveLessonsToDb(id: String, list: List<LessonWrapper>) =
-            Completable.fromAction {
-                lessonDao.insertLessons(list.map { LessonInfo(id, it.lesson.id, it) })
-            }.subscribe()
-
-    private fun saveStepsToDb(steps: List<Step>) =
-            Completable.fromAction {
-                stepDao.insertSteps(steps.map { StepInfo(it.id) })
-            }.subscribe()
 
     private fun loadTheoryLessonsLocal(theoryId: String) =
             lessonDao.findAllLessonsByTopicId(theoryId)
