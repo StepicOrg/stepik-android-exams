@@ -29,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun stepDao(): StepDao
     abstract fun navigationDao(): LessonDao
     abstract fun topicDao(): TopicDao
-    abstract fun attemptEntitiyDao() : AttemptEntitiyDao
+    abstract fun attemptEntityDao() : AttemptEntityDao
     abstract fun submissionEntityDao() : SubmissionEntityDao
 
     companion object {

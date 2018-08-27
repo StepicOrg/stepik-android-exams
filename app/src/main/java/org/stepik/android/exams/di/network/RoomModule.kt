@@ -36,8 +36,8 @@ class RoomModule {
     }
     @Provides
     @AppSingleton
-    fun providesAttemptDao(app: AppDatabase): AttemptEntitiyDao {
-        return app.attemptEntitiyDao()
+    fun providesAttemptDao(app: AppDatabase): AttemptEntityDao {
+        return app.attemptEntityDao()
     }
     @Provides
     @AppSingleton
