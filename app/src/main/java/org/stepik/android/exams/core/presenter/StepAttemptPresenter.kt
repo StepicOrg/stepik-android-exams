@@ -35,15 +35,11 @@ constructor(
     private var disposable = CompositeDisposable()
     private var shouldUpdate = false
 
-    private var viewState: AttemptView.State = AttemptView.State.Idle
+    private var viewState: AttemptView.State = AttemptView.State.FirstLoading
         set(value) {
             field = value
             view?.setState(value)
         }
-
-    init {
-        viewState = AttemptView.State.FirstLoading
-    }
 
     private var submission: Submission? = null
     private var attempt: Attempt? = null
@@ -56,9 +52,10 @@ constructor(
     }
 
     fun checkStepExistence(reply: Reply, submissions: Submission?) {
-        disposable.add(Observable.fromCallable {
-            stepDao.findStepById(step?.id ?: 0)
-        }
+        disposable.add(Observable
+                .fromCallable {
+                    stepDao.findStepById(step?.id ?: 0)
+                }
                 .map {
                     it.attempt != null
                 }

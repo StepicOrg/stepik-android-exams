@@ -13,7 +13,7 @@ constructor(
         val graph: Graph<String>,
         private val stepsRepository: StepsRepository
 ) : NavigationInteractor {
-    override fun resolveNextLesson(topicId: String, lesson: Int, move: Boolean): Observable<List<LessonTheoryWrapper>> {
+    override fun resolveNextLesson(topicId: String, lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
                 graph[topicId]?.graphLessons?.last()?.id == lesson)
             return Observable.empty()
@@ -24,7 +24,7 @@ constructor(
             while (iterator.hasNext()) {
                 val next = iterator.next()
                 if (next.id == lesson)
-                    nextLesson = iterator.next().id.toLong()
+                    nextLesson = iterator.next().id
             }
             if (nextLesson != 0L && move) {
                 return stepsRepository.findLessonInDb(topicId, nextLesson)
@@ -40,7 +40,7 @@ constructor(
         return Observable.just(listOf(LessonTheoryWrapper()))
     }
 
-    override fun resolvePrevLesson(topicId: String, lesson: Int, move: Boolean): Observable<List<LessonTheoryWrapper>> {
+    override fun resolvePrevLesson(topicId: String, lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.children?.isEmpty() == true &&
                 graph[topicId]?.graphLessons?.first()?.id == lesson)
             return Observable.empty()
@@ -52,7 +52,7 @@ constructor(
                 val next = iterator.next()
                 if (next.id == lesson) {
                     iterator.previous()
-                    nextLesson = iterator.previous().id.toLong()
+                    nextLesson = iterator.previous().id
                     break
                 }
             }

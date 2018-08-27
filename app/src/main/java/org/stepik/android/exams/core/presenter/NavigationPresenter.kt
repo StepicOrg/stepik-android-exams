@@ -19,15 +19,15 @@ constructor(
         private val navigationNavigatorInteractor: NavigationInteractor
 ) : PresenterBase<NavigateView>() {
     private var disposable = CompositeDisposable()
-    fun navigateToLesson(step: Step?, id: String, lastPosition: Int, move: Boolean) {
+    fun navigateToLesson(step: Step?, topicId: String, lastPosition: Long, move: Boolean) {
         if (step?.position == 1L)
-            navigateToPrev(step.lesson.toInt(), id, move)
-        if (step?.position == lastPosition.toLong())
-            navigateToNext(step.lesson.toInt(), id, move)
+            navigateToPrev(topicId, step.lesson, move)
+        if (step?.position == lastPosition)
+            navigateToNext(topicId, step.lesson, move)
     }
 
-    private fun navigateToPrev(id: Int, topicId: String, move: Boolean) {
-        disposable.add(navigationNavigatorInteractor.resolvePrevLesson(topicId, id, move)
+    private fun navigateToPrev(topicId: String, lessonId: Long, move: Boolean) {
+        disposable.add(navigationNavigatorInteractor.resolvePrevLesson(topicId, lessonId, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->
@@ -39,8 +39,8 @@ constructor(
                 }))
     }
 
-    private fun navigateToNext(id: Int, topicId: String, move: Boolean) {
-        disposable.add(navigationNavigatorInteractor.resolveNextLesson(topicId, id, move)
+    private fun navigateToNext(topicId: String, lessonId: Long, move: Boolean) {
+        disposable.add(navigationNavigatorInteractor.resolveNextLesson(topicId, lessonId, move)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->

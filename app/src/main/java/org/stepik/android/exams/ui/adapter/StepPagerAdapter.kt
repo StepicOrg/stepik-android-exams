@@ -19,8 +19,8 @@ class StepPagerAdapter(
     private var steps: MutableList<Step> = stepsList.toMutableList()
     override fun getItem(position: Int): Fragment {
         return when (steps.getOrNull(position)?.block?.name) {
-            AppConstants.TYPE_TEXT -> StepFragment.newInstance(steps[position], topicId, lastPosition = steps.size)
-            else -> AttemptFragment.newInstance(steps[position], topicId, lastPosition = steps.size)
+            AppConstants.TYPE_TEXT -> StepFragment.newInstance(steps[position], topicId, lastPosition = steps.size.toLong())
+            else -> AttemptFragment.newInstance(steps[position], topicId, lastPosition = steps.size.toLong())
         }
     }
 

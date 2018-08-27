@@ -19,8 +19,6 @@ import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.exams.util.AppConstants
-import org.stepik.android.exams.util.FragmentArgumentDelegate
 import org.stepik.android.exams.util.argument
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
@@ -30,25 +28,32 @@ import javax.inject.Provider
 
 open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptView>(), NavigateView, ProgressView {
     companion object {
-        fun newInstance(step: Step, topicId: String, lastPosition: Int): StepFragment =
+        fun newInstance(step: Step, topicId: String, lastPosition: Long): StepFragment =
                 StepFragment().apply {
                     this.step = step
                     this.topicId = topicId
                     this.lastPosition = lastPosition
                 }
         }
+
     @Inject
     lateinit var stepPresenterProvider: Provider<StepAttemptPresenter>
+
     @Inject
     lateinit var navigationPresenter: NavigationPresenter
+
     @Inject
     lateinit var screenManager: ScreenManager
+
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
+
     private var step: Step by argument()
     private var topicId : String by argument()
-    private var lastPosition : Int by argument()
+    private var lastPosition : Long by argument()
+
     lateinit var stepTypeResolver: StepTypeResolver
+
     protected lateinit var parentContainer: ViewGroup
     protected lateinit var attemptContainer: ViewGroup
 
@@ -97,11 +102,12 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         progressPresenter.detachView(this)
     }
 
-    override fun moveToLesson(id: String, lesson: LessonWrapper?) = screenManager.showStepsList(id, lesson!!, context)
+    override fun moveToLesson(id: String, lesson: LessonWrapper?) =
+            screenManager.showStepsList(id, lesson!!, context)
 
     override fun showNextButton() {
         previousLesson.visibility = View.VISIBLE
-        previousLesson.setOnClickListener { _ ->
+        previousLesson.setOnClickListener {
             navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
         routeLesson.visibility = View.VISIBLE
@@ -114,7 +120,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
 
     override fun showPrevButton() {
         nextLesson.visibility = View.VISIBLE
-        nextLesson.setOnClickListener { _ ->
+        nextLesson.setOnClickListener {
             navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
         }
         routeLesson.visibility = View.VISIBLE
@@ -130,7 +136,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
     }
 
     private fun showHeader() {
-        textHeader?.setText(step.block?.text)
-        textHeader?.visibility = View.VISIBLE
+        textHeader.setText(step.block?.text)
+        textHeader.visibility = View.VISIBLE
     }
 }
