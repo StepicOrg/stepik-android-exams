@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import org.stepik.android.exams.adaptive.ui.adapter.QuizCardViewHolder;
+import org.stepik.android.exams.adaptive.math.LinearRegression;
 import org.stepik.android.exams.adaptive.ui.animations.CardAnimations;
 
 import java.util.HashSet;
@@ -62,9 +62,9 @@ public final class SwipeableLayout extends FrameLayout {
         MIN_FLING_TRANSLATION = this.screenWidth / 4;
     }
 
-    private FrameLayout nestedScroll;
+    private CardScrollView nestedScroll;
 
-    public void setNestedScroll(FrameLayout nestedScroll) {
+    public void setNestedScroll(CardScrollView nestedScroll) {
         this.nestedScroll = nestedScroll;
     }
 
@@ -115,7 +115,7 @@ public final class SwipeableLayout extends FrameLayout {
                 intercepted =
                         intercepted ||
                                 isOwnEvent ||
-                                nestedScroll != null && !nestedScroll.canScrollVertically(1) && (ady > MIN_DELTA || adx > MIN_DELTA) ||
+                                nestedScroll != null && !nestedScroll.canScrollVertically() && (ady > MIN_DELTA || adx > MIN_DELTA) ||
                                 adx > MIN_DELTA && adx > ady;// || Math.abs(dy) > MIN_DELTA;
 
                 if (intercepted) {
@@ -154,6 +154,11 @@ public final class SwipeableLayout extends FrameLayout {
         }
     }
 
+    private float getTargetY(final float targetX) {
+        final LinearRegression regression = new LinearRegression(new double[]{0, elemX}, new double[]{0, elemY});
+        return (float) regression.predict(targetX);
+    }
+
     private void onMotionEnd(final float vx, final float vy) {
         if (Math.abs(elemX) > MIN_FLING_TRANSLATION) {
             if (elemX > 0) {
@@ -165,6 +170,19 @@ public final class SwipeableLayout extends FrameLayout {
                     l.onSwipeLeft();
                 }
             }
+            final float targetX = Math.signum(elemX) * screenWidth;
+            final float targetY = getTargetY(targetX);
+            CardAnimations.createTransitionAnimation(this, targetX, targetY)
+                    .rotation(0)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (SwipeListener l : listeners) {
+                                l.onSwiped();
+                            }
+                        }
+                    })
+                    .start();
         } else {
             if (Math.abs(vy) > MIN_FLING_VELOCITY) {
                 for (SwipeListener l : listeners) {
@@ -175,6 +193,7 @@ public final class SwipeableLayout extends FrameLayout {
             for (SwipeListener l : listeners) {
                 l.onScroll(0);
             }
+            CardAnimations.playRollBackAnimation(this);
         }
     }
 
@@ -187,9 +206,12 @@ public final class SwipeableLayout extends FrameLayout {
         CardAnimations.createTransitionAnimation(this, 0, screenHeight)
                 .rotation(0)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(() -> {
-                    for (SwipeListener l : listeners) {
-                        l.onSwiped();
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (SwipeListener l : listeners) {
+                            l.onSwiped();
+                        }
                     }
                 })
                 .start();
