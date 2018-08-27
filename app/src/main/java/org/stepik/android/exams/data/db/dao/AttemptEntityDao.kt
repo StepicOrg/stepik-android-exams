@@ -3,16 +3,17 @@ package org.stepik.android.exams.data.db.dao
 import android.arch.persistence.room.*
 import org.stepik.android.exams.data.db.entity.AttemptEntity
 
-interface AttemptEntitiyDao {
-    @Query("SELECT * FROM AttemptEntitiy WHERE id = :id")
+@Dao
+interface AttemptEntityDao {
+    @Query("SELECT * FROM AttemptEntity WHERE id = :id")
     fun findAttemptById(id: Long): AttemptEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAttempt(attemptEntitiy: AttemptEntity)
+    fun insertAttempt(attemptEntity: AttemptEntity)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateAttempt(attemptEntitiy: AttemptEntity)
+    fun updateAttempt(attemptEntity: AttemptEntity)
 
     @Delete
-    fun deleteAttempt(attemptEntitiy: AttemptEntity)
+    fun deleteAttempt(attemptEntity: AttemptEntity)
 }

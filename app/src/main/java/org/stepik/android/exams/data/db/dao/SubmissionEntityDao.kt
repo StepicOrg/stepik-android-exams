@@ -4,6 +4,7 @@ import android.arch.persistence.room.*
 import io.reactivex.Maybe
 import org.stepik.android.exams.data.db.entity.SubmissionEntity
 
+@Dao
 interface SubmissionEntityDao {
     @Query("SELECT * FROM SubmissionEntity WHERE id = :id")
     fun findSubmissionById(id: Long): Maybe<SubmissionEntity>

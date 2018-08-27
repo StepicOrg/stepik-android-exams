@@ -1,12 +1,12 @@
 package org.stepik.android.exams.data.repository
 
-import org.stepik.android.exams.data.db.dao.AttemptEntitiyDao
+import org.stepik.android.exams.data.db.dao.AttemptEntityDao
 import javax.inject.Inject
 
 class AttemptRepository
 @Inject
 constructor(
-        private val attemptEntitiyDao: AttemptEntitiyDao
+        private val attemptEntityDao: AttemptEntityDao
 ) {
 
 }
