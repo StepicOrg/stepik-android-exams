@@ -8,13 +8,13 @@ import org.stepik.android.model.Submission
 @Entity(tableName = "SubmissionEntity")
 class SubmissionEntity(
         @PrimaryKey(autoGenerate = false)
-        val id: Long = 0,
-        val status: Submission.Status? = null,
-        val score: String? = null,
-        val hint: String? = null,
-        val time: String? = null,
-        val reply: Reply? = null,
-        val attempt: Long = 0,
-        val session: String? = null,
-        val eta: String? = null
+        val id: Long,
+        val status: Submission.Status?,
+        val score: String?,
+        val hint: String?,
+        val time: String?,
+        val reply: Reply?,
+        val attempt: Long,
+        val session: String?,
+        val eta: String?
 )

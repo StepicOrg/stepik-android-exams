@@ -39,5 +39,9 @@ constructor(
                     }
 
     fun addSubmission(submission: Submission): Completable =
-            stepicRestService.createSubmission(SubmissionRequest(submission))
+            if (submission.status == Submission.Status.LOCAL) {
+                Completable.fromCallable { submissionEntityDao.insertSubmission(submission.toEntity()) }
+            } else {
+                stepicRestService.createSubmission(SubmissionRequest(submission))
+            }
 }
