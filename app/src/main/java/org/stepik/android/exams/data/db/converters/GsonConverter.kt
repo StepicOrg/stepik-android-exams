@@ -5,8 +5,10 @@ import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.model.Reply
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
+import org.stepik.android.model.attempts.DatasetWrapper
 
 
 class GsonConverter {
@@ -59,4 +61,20 @@ class GsonConverter {
     @TypeConverter
     fun graphLessonTypefromString(type: String): GraphLesson.Type =
             GraphLesson.Type.valueOf(type)
+
+    @TypeConverter
+    fun stringToDatasetWrapper(data: String): DatasetWrapper =
+            gson.fromJson<DatasetWrapper>(data, DatasetWrapper::class.java)
+
+    @TypeConverter
+    fun datasetWrapperToString(obj: DatasetWrapper): String =
+            gson.toJson(obj)
+
+    @TypeConverter
+    fun stringToReply(data: String): Reply =
+            gson.fromJson<Reply>(data, Reply::class.java)
+
+    @TypeConverter
+    fun replyToString(obj: Reply): String =
+            gson.toJson(obj)
 }
