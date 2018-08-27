@@ -14,7 +14,8 @@ import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 
 class StepsRepository
-@Inject constructor(
+@Inject
+constructor(
         private val api: Api,
         private val lessonDao: LessonDao,
         private val stepDao: StepDao,
