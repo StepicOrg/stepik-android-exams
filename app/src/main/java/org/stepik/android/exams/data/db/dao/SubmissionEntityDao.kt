@@ -5,14 +5,14 @@ import org.stepik.android.exams.data.db.entity.SubmissionEntity
 
 interface SubmissionEntityDao {
     @Query("SELECT * FROM SubmissionEntity WHERE id = :id")
-    fun findAttemptById(id: Long): SubmissionEntity
+    fun findSubmissionById(id: Long): SubmissionEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAttempt(submissionEntity: SubmissionEntity)
+    fun insertSubmission(submissionEntity: SubmissionEntity)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateAttempt(submissionEntity: SubmissionEntity)
+    fun updateSubmission(submissionEntity: SubmissionEntity)
 
     @Delete
-    fun deleteStep(submissionEntity: SubmissionEntity)
+    fun deleteSubmission(submissionEntity: SubmissionEntity)
 }

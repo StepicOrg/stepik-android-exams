@@ -14,5 +14,5 @@ interface AttemptEntitiyDao {
     fun updateAttempt(attemptEntitiy: AttemptEntitiy)
 
     @Delete
-    fun deleteStep(attemptEntitiy: AttemptEntitiy)
+    fun deleteAttempt(attemptEntitiy: AttemptEntitiy)
 }
