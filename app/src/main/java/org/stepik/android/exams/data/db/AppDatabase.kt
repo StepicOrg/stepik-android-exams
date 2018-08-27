@@ -10,16 +10,20 @@ import org.stepik.android.exams.data.db.dao.*
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.db.data.TopicInfo
-import org.stepik.android.exams.data.db.entity.AttemptEntitiy
+import org.stepik.android.exams.data.db.entity.AttemptEntity
 import org.stepik.android.exams.data.db.entity.SubmissionEntity
 
-@Database(entities =
-[StepInfo::class,
-    LessonInfo::class,
-    TopicInfo::class,
-    AttemptEntitiy::class,
-    SubmissionEntity::class],
-        version = 1, exportSchema = false)
+@Database(
+        entities = [
+            StepInfo::class,
+            LessonInfo::class,
+            TopicInfo::class,
+            AttemptEntity::class,
+            SubmissionEntity::class
+        ],
+        version = 1,
+        exportSchema = false
+)
 @TypeConverters(GsonConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun stepDao(): StepDao
