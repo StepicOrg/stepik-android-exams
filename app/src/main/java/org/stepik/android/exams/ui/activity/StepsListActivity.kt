@@ -19,6 +19,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>(), RoutingViewListener, ProgressView {
+    companion object {
+        const val EXTRA_LESSON = "lesson"
+        const val EXTRA_TOPIC_ID = "topicId"
+    }
     private lateinit var adapter: StepPagerAdapter
     private lateinit var steps: List<Step>
     @Inject
@@ -35,9 +39,9 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.steps_activity)
-        val lesson: LessonWrapper? = intent.getParcelableExtra(AppConstants.lesson)
-        val topicId: String = intent.getStringExtra(AppConstants.topicId)
-        steps = lesson?.stepsList!!
+        val lesson: LessonWrapper = intent.getParcelableExtra(EXTRA_LESSON)
+        val topicId: String = intent.getStringExtra(EXTRA_TOPIC_ID)
+        steps = lesson.stepsList
         adapter = StepPagerAdapter(supportFragmentManager, topicId, steps, stepTypeResolver)
         pagers.adapter = adapter
         pageChangeListener = object : ViewPager.OnPageChangeListener {

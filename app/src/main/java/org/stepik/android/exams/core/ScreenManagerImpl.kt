@@ -23,14 +23,14 @@ constructor(
     override fun showStepsList(topicId: String, lesson: LessonWrapper, context: Context) {
         val intent = Intent(context, StepsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(AppConstants.lesson, lesson)
-        intent.putExtra(AppConstants.topicId, topicId)
+        intent.putExtra(StepsListActivity.EXTRA_LESSON, lesson)
+        intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
         context.startActivity(intent)
     }
 
     override fun showLessons(topicId: String, context: Context) {
         val intent = Intent(context, LessonsActivity::class.java)
-        intent.putExtra(AppConstants.topicId, topicId)
+        intent.putExtra(LessonsActivity.EXTRA_TOPIC_ID, topicId)
         context.startActivity(intent)
     }
 
@@ -75,5 +75,4 @@ constructor(
         intent.putExtra(AppConstants.viewPush, viewAssignment)
         context.startService(intent)
     }
-
 }

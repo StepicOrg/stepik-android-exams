@@ -2,14 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/route_lesson_root"
+    android:id="@+id/routeLesson"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
     tools:visibility="visible">
 
     <TextView
-        android:id="@+id/previous_lesson_view"
+        android:id="@+id/previousLesson"
         style="@style/previousNextTextViewStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         />
 
     <TextView
-        android:id="@+id/next_lesson_view"
+        android:id="@+id/nextLesson"
         style="@style/previousNextTextViewStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

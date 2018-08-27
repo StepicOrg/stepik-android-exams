@@ -4,6 +4,7 @@ package org.stepik.android.exams.data.db.converters
 import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
@@ -51,4 +52,11 @@ class GsonConverter {
         return gson.toJson(obj)
     }
 
+    @TypeConverter
+    fun graphLessonTypeToString(type: GraphLesson.Type): String =
+            type.name
+
+    @TypeConverter
+    fun graphLessonTypefromString(type: String): GraphLesson.Type =
+            GraphLesson.Type.valueOf(type)
 }

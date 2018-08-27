@@ -19,6 +19,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), LessonsView {
+    companion object {
+        const val EXTRA_TOPIC_ID = "topicId"
+    }
     private lateinit var lessonsAdapter: LessonsAdapter
 
     @Inject
@@ -83,7 +86,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        topicId = intent.getStringExtra(AppConstants.topicId)
+        topicId = intent.getStringExtra(EXTRA_TOPIC_ID)
         setContentView(R.layout.fragment_study)
         lessonsAdapter = LessonsAdapter(this, screenManager, topicId)
         recyclerLesson.adapter = lessonsAdapter

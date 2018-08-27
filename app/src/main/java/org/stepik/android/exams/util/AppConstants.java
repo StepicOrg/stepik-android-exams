@@ -17,15 +17,11 @@ public final class AppConstants {
     public static final String TYPE_VIDEO = "video";
     public static final String TYPE_MATCHING = "matching";
     public static final String TYPE_SORTING = "sorting";
-    public static final String TYPE_MATH = "math";
     public static final String TYPE_FREE_ANSWER = "free-answer";
     public static final String TYPE_TABLE = "table";
     public static final String TYPE_STRING = "string";
     public static final String TYPE_CHOICE = "choice";
     public static final String TYPE_NUMBER = "number";
-    public static final String TYPE_DATASET = "dataset";
-    public static final String TYPE_ANIMATION = "animation";
-    public static final String TYPE_CHEMICAL = "chemical";
     public static final String TYPE_FILL_BLANKS = "fill-blanks";
     public static final String TYPE_PUZZLE = "puzzle";
     public static final String TYPE_PYCHARM = "pycharm";
@@ -38,9 +34,5 @@ public final class AppConstants {
     public static final String lessonId = "lessonId";
     public static final String topicId = "topicId";
     public static final String step = "step";
-    public static final String lastPosition = "last_position";
     public static final String viewPush = "view_push";
-
-    public static final String lessonTheory = "theory";
-    public static final String lessonPractice = "practice";
 }

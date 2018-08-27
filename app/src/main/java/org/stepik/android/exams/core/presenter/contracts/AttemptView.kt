@@ -9,9 +9,9 @@ interface AttemptView {
     fun onCorrectAnswer()
     fun onWrongAnswer()
     fun setState(state: AttemptView.State)
+
     sealed class State {
         object FirstLoading : State()
-        object Idle : State()
         object Loading : State()
         object Success : State()
         object NetworkError : State()

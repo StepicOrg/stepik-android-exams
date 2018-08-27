@@ -1,7 +1,6 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
@@ -12,6 +11,7 @@ import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.model.Step
 import javax.inject.Inject
 
@@ -22,13 +22,9 @@ class StepsRepository
         private val stepDao: StepDao,
         private val topicsDao: TopicDao
 ) {
-    companion object {
-        const val type = "theory"
-    }
     private lateinit var parsedLessons : List<Long>
     private fun getCoursesId(theoryId: String)  =
-            topicsDao.getTopicInfoByType(theoryId, type)
-
+            topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
     fun tryLoadLessons(theoryId: String) =
             loadTheoryLessonsLocal(theoryId).toObservable()
@@ -75,6 +71,6 @@ class StepsRepository
 
     private fun loadTheoryLessonsLocal(theoryId: String) =
             lessonDao.findAllLessonsByTopicId(theoryId)
-                    .filter { t: List<LessonWrapper> -> t.isNotEmpty() }
+                    .filter { it.isNotEmpty() }
                     .map { list -> list.map { LessonTheoryWrapper(theoryId, it) } }
 }

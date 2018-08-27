@@ -14,7 +14,6 @@ import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.activity.TopicsListActivity
-import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
 
 class TopicsListPresenter
@@ -88,21 +87,20 @@ constructor(
         topicDao.isJoinedToCourses()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({joined ->
-                    if (joined)
-                        return@subscribe
-                }, {
+                .subscribe({
+                    // no op
+                }) {
                     val topicsList = graphData.topicsMap.map { it.id }
                     val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.id }.toLongArray() }
                     val courseList = graphData.topicsMap.map { it.graphLessons.map { it.course } }
                     val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type } }
                     saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
                     joinAllCourses(courseList.flatMap { it })
-                })
+                }
     }
 
 
-    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<String>>, courseList : List<List<Long>>) {
+    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<GraphLesson.Type>>, courseList : List<List<Long>>) {
         val list = mutableListOf<TopicInfo>()
 
         (0..minOf(lessonsList.size-1, typesList.size-1)).map { m ->

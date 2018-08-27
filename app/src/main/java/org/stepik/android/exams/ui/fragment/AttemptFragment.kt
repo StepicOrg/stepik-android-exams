@@ -2,11 +2,10 @@ package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.v4.content.ContextCompat
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import kotlinx.android.synthetic.main.answer_layout.view.*
-import kotlinx.android.synthetic.main.button_container.view.*
+import kotlinx.android.synthetic.main.answer_layout.*
+import kotlinx.android.synthetic.main.button_container.*
 import kotlinx.android.synthetic.main.step_delegate.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
@@ -14,7 +13,7 @@ import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.ui.steps.AttemptDelegate
 import org.stepik.android.exams.ui.steps.StepDelegate
-import org.stepik.android.exams.util.AppConstants
+import org.stepik.android.exams.util.argument
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
@@ -22,39 +21,34 @@ import org.stepik.android.model.attempts.Attempt
 
 
 class AttemptFragment : StepFragment(), AttemptView {
+    companion object {
+        fun newInstance(step: Step, topicId: String, lastPosition: Long): AttemptFragment =
+                AttemptFragment().apply {
+                    this.step = step
+                    this.topicId = topicId
+                    this.lastPosition = lastPosition
+                }
+    }
 
     private var attempt: Attempt? = null
     private var submissions: Submission? = null
-    private var actionButton: Button? = null
+
     private lateinit var stepDelegate: StepDelegate
-    private lateinit var answerField: TextView
     private lateinit var routingViewListener: RoutingViewListener
 
-    companion object {
-        fun newInstance(step: Step?, topicId: String, lastPosition: Int): AttemptFragment {
-            val args = Bundle()
-            args.putString(AppConstants.topicId, topicId)
-            args.putParcelable(AppConstants.step, step)
-            args.putInt(AppConstants.lastPosition, lastPosition)
-            val fragment = AttemptFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
+    private var step: Step by argument()
+    private var topicId: String by argument()
+    private var lastPosition: Long by argument()
 
     private fun resolveStep() {
         stepDelegate = stepTypeResolver.getStepDelegate(step)
         attemptContainer.addView(stepDelegate.createView(parentContainer))
-        answerField = parentContainer.answer_status_text
     }
 
     override fun setState(state: AttemptView.State): Unit = when (state) {
         is AttemptView.State.FirstLoading -> {
             showRefreshView()
             startLoading(step)
-        }
-
-        is AttemptView.State.Idle -> {
         }
 
         is AttemptView.State.Loading -> {
@@ -70,9 +64,11 @@ class AttemptFragment : StepFragment(), AttemptView {
             hideRefreshView()
             hideErrorMessage()
         }
+
         is AttemptView.State.CorrectAnswerState -> {
             onCorrectAnswer()
         }
+
         is AttemptView.State.WrongAnswerState -> {
             onWrongAnswer()
         }
@@ -102,20 +98,23 @@ class AttemptFragment : StepFragment(), AttemptView {
         errorText.changeVisibillity(false)
     }
 
-    private fun setTextToActionButton(actionButton: Button?, text: String) {
-        actionButton?.text = text
-    }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         resolveStep()
-        loadUI(view)
-        actionButton?.setOnClickListener {
-            if (submissions?.status?.name == "CORRECT"
-                    || submissions?.status?.name == "WRONG") {
+
+        buttonsContainer.visibility = View.VISIBLE
+        stepAttemptSubmitButton.visibility = View.VISIBLE
+        stepAttemptSubmitButton.setText(R.string.submit)
+
+        stepAttemptSubmitButton.setOnClickListener {
+            if (submissions?.status?.name == "CORRECT" ||
+                    submissions?.status?.name == "WRONG") {
                 clearAttemptContainer()
                 tryAgain()
-            } else makeSubmission()
+            } else {
+                makeSubmission()
+            }
         }
         nestedScrollView.isFillViewport = true
     }
@@ -136,22 +135,15 @@ class AttemptFragment : StepFragment(), AttemptView {
         super.onDestroyView()
     }
 
-    private fun loadUI(view: View?) {
-        parentContainer.buttonsContainer.visibility = View.VISIBLE
-        parentContainer.stepAttemptSubmitButton.visibility = View.VISIBLE
-        actionButton = view?.stepAttemptSubmitButton
-        setTextToActionButton(actionButton, view?.resources?.getString(R.string.submit) ?: "")
-    }
-
     private fun tryAgain() {
         submissions = null
-        presenter?.createNewAttempt(step as Step)
+        presenter?.createAttempt(step)
     }
 
     private fun clearAttemptContainer() {
-        setTextToActionButton(actionButton, context.getString(R.string.submit))
-        attemptContainer.setBackgroundColor(context.resources.getColor(R.color.white))
-        answerField.visibility = View.GONE
+        stepAttemptSubmitButton.setText(R.string.submit)
+        attemptContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        answerStatusText.visibility = View.GONE
         blockUIBeforeSubmit(true)
     }
 
@@ -164,12 +156,12 @@ class AttemptFragment : StepFragment(), AttemptView {
         submissions = submission
         (stepDelegate as AttemptDelegate).setSubmission(submission)
         submission?.let {
-            progressPresenter.isStepPassed(step as Step)
+            progressPresenter.isStepPassed(step)
         }
     }
 
     private fun makeSubmission() {
-        if (attempt == null || attempt?.id ?: 0 <= 0 && step?.isCustomPassed != true) return
+        if (attempt == null || attempt?.id ?: 0 <= 0 && !step.isCustomPassed) return
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
@@ -183,33 +175,38 @@ class AttemptFragment : StepFragment(), AttemptView {
 
     override fun onCorrectAnswer() {
         blockUIBeforeSubmit(false)
-        setTextToActionButton(actionButton, context.getString(R.string.next))
-        actionButton?.setOnClickListener {
-            routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+        stepAttemptSubmitButton.setText(R.string.next)
+        stepAttemptSubmitButton.setOnClickListener {
+            routingViewListener.scrollNext(step.position.toInt())
         }
+
         onNext()
-        attemptContainer.setBackgroundColor(context.resources.getColor(R.color.correct_answer_background))
-        answerField.setText(R.string.correct)
-        answerField.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_correct, 0, 0, 0)
-        answerField.visibility = View.VISIBLE
+        attemptContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.correct_answer_background))
+        answerStatusText.setText(R.string.correct)
+        answerStatusText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_correct, 0, 0, 0)
+        answerStatusText.visibility = View.VISIBLE
     }
 
     private fun onNext() {
         routingViewListener = activity as RoutingViewListener
-        actionButton?.setOnClickListener {
-            if (step?.position == lastPosition.toLong())
+
+        stepAttemptSubmitButton.setOnClickListener {
+            if (step.position == lastPosition) {
                 navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
-            else routingViewListener.scrollNext(step?.position?.toInt() ?: 0)
+            } else {
+                routingViewListener.scrollNext(step.position.toInt())
+            }
         }
     }
 
     override fun onWrongAnswer() {
         blockUIBeforeSubmit(false)
-        setTextToActionButton(actionButton, context.getString(R.string.try_again))
-        attemptContainer.setBackgroundColor(context.resources.getColor(R.color.wrong_answer_background))
-        answerField.setText(R.string.wrong)
-        answerField.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_error, 0, 0, 0)
-        answerField.visibility = View.VISIBLE
+
+        stepAttemptSubmitButton.setText(R.string.try_again)
+        attemptContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.wrong_answer_background))
+        answerStatusText.setText(R.string.wrong)
+        answerStatusText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_error, 0, 0, 0)
+        answerStatusText.visibility = View.VISIBLE
     }
 
     private fun blockUIBeforeSubmit(enable: Boolean) {
