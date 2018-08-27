@@ -94,10 +94,8 @@ constructor(
                 checkAttempts(step).switchIfEmpty(createNewAttempt(step))
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .map { it.first?.attempts?.firstOrNull() to it.second }
-                        .doOnSuccess {
-                            attempt = it.first
-                            submission = it.second
+                        .map { it.first.attempts.firstOrNull() to it.second }
+                        .doOnSuccess { (attempt, submission) ->
                             updateStepAttempt(step, attempt, submission)
                         }
 
@@ -107,13 +105,11 @@ constructor(
                     .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
                     .filter { it.attempts.isNotEmpty() }
                     .flatMap { attemptResponse ->
-                        if (attemptResponse.attempts.isNotEmpty()) {
-                            getSubmissions(attemptResponse.attempts.firstOrNull())
-                                    .toMaybe()
-                                    .map { submissionResponse ->
-                                attemptResponse to submissionResponse
-                            }
-                        } else Maybe.just(null to null)
+                        getSubmissions(attemptResponse.attempts.first())
+                                .toMaybe()
+                                .map { submission ->
+                                    attemptResponse to submission
+                                }
                     }
 
     private fun getSubmissions(attempt: Attempt?) =
@@ -130,7 +126,7 @@ constructor(
                         .map { AttemptResponse(it.attempts) to Submission() }
                         .firstElement()
 
-    fun createAttempt(step: Step){
+    fun createAttempt(step: Step) {
         createNewAttempt(step)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -139,7 +135,7 @@ constructor(
                     updateStepAttempt(step, it.first.attempts.firstOrNull(), null)
                     shouldUpdate = false
                 }
-}
+    }
 
     private fun attemptLoaded(it: Attempt?) {
         attempt = it

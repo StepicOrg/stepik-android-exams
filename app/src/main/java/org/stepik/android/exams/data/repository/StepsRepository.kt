@@ -20,7 +20,6 @@ class StepsRepository
         private val stepDao: StepDao,
         private val topicsDao: TopicDao
 ) {
-    private lateinit var parsedLessons : List<Long>
     private fun getCoursesId(theoryId: String)  =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
@@ -33,9 +32,8 @@ class StepsRepository
                     .map { it -> LessonTheoryWrapper(topicId, it) }
                     .toObservable()
 
-    private fun loadTheoryLessons(theoryId: String, array : LongArray): Observable<List<LessonTheoryWrapper>> {
-        parsedLessons = array.toList()
-        return api.getLessons(array)
+    private fun loadTheoryLessons(theoryId: String, lessonIds: LongArray): Observable<List<LessonTheoryWrapper>> {
+        return api.getLessons(lessonIds)
                 .flatMapObservable {
                     it.lessons!!.toObservable()
                 }
@@ -52,7 +50,7 @@ class StepsRepository
                     lessonDao.insertLessons(wrappers.map { LessonInfo(theoryId, it.lesson.id, it) })
                 }
                 .flatMapObservable { lessonWrappers ->
-                    val lessons = parsedLessons.map { id ->
+                    val lessons = lessonIds.map { id ->
                         lessonWrappers.first { it.lesson.id == id }
                     }
                     Observable.just(lessons.map { LessonTheoryWrapper(theoryId, it) })

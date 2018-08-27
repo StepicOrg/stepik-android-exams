@@ -54,15 +54,11 @@ constructor(
     private var error: Throwable? = null
     private var isCourseCompleted = false
     private var course: Long = 0
-    private var viewState: RecommendationsView.State = RecommendationsView.State.Idle
+    private var viewState: RecommendationsView.State = RecommendationsView.State.InitPresenter
         set(value) {
             field = value
             view?.setState(value)
         }
-
-    init {
-        viewState = RecommendationsView.State.InitPresenter
-    }
 
     fun initPresenter(topicId: String) {
         loadCourseId(topicId)

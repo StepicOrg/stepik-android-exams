@@ -16,7 +16,6 @@ interface RecommendationsView {
 
     fun setState(state: State)
     sealed class State {
-        object Idle : State()
         object InitPresenter : State()
         object Loading : State()
         object Success : State()
