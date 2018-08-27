@@ -48,7 +48,7 @@ interface StepicRestService {
 
     @GET("api/submissions")
     fun getSubmissions(
-            @Query("attempt") attempt_id: Long,
+            @Query("attempt") attemptId: Long,
             @Query("order") desc: String
     ): Single<SubmissionResponse>
 
