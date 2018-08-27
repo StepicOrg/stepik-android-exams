@@ -5,7 +5,7 @@ import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import org.stepik.android.model.attempts.Dataset
 import org.stepik.android.model.attempts.DatasetWrapper
-@Entity
+@Entity(tableName = "AttemptEntitiy")
 class AttemptEntitiy(
         @PrimaryKey(autoGenerate = false)
         val id: Long = 0,

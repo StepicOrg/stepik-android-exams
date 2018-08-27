@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import org.stepik.android.model.Reply
 import org.stepik.android.model.ReplyWrapper
 
-@Entity
+@Entity(tableName = "SubmissionEntity")
 class SubmissionEntity(
         @PrimaryKey(autoGenerate = false)
         val id: Long = 0,
