@@ -1,6 +1,8 @@
 package org.stepik.android.exams.graph
 
 class Graph<T> {
+    enum class Direction { UP, DOWN }
+
     private val vertices = mutableMapOf<T, Vertex<T>>()
     fun createVertex(id: T, title: String) {
         vertices[id] = Vertex(id, title)
@@ -15,22 +17,24 @@ class Graph<T> {
 
     operator fun get(vert: T) = vertices[vert]
 
-    private fun dfsSortAdjustment(vertex: T, visited : MutableSet<T>, stack : MutableList<T>) {
+    private fun dfsSort(vertex: T, visited: MutableSet<T>, stack: MutableList<T>, direction: Direction) {
         visited.add(vertex)
-            vertices[vertex]?.children?.forEach {
-                val vertNext: T = it.id
-                if (!visited.contains(vertNext)) {
-                    dfsSortAdjustment(vertNext, visited, stack)
+        when (direction) {
+            Direction.UP -> {
+                vertices[vertex]?.parent?.forEach {
+                    val vertNext: T = it.id
+                    if (!visited.contains(vertNext)) {
+                        dfsSort(vertNext, visited, stack, direction)
+                    }
                 }
             }
-        stack.add(vertex)
-    }
-    private fun dfsSortParent(vertex: T, visited : MutableSet<T>, stack : MutableList<T>) {
-        visited.add(vertex)
-        vertices[vertex]?.parent?.forEach {
-            val vertNext: T = it.id
-            if (!visited.contains(vertNext)) {
-                dfsSortParent(vertNext, visited, stack)
+            Direction.DOWN -> {
+                vertices[vertex]?.children?.forEach {
+                    val vertNext: T = it.id
+                    if (!visited.contains(vertNext)) {
+                        dfsSort(vertNext, visited, stack, direction)
+                    }
+                }
             }
         }
         stack.add(vertex)
@@ -38,16 +42,16 @@ class Graph<T> {
 
     fun dfs(vertex: T): List<T> {
         val stack = mutableListOf<T>()
-        dfsSortParent(vertex, mutableSetOf(), stack)
+        dfsSort(vertex, mutableSetOf(), stack, direction = Direction.UP)
         return stack.reversed()
     }
 
-    fun topologicalSort() : List<T> {
+    fun topologicalSort(): List<T> {
         val stack = mutableListOf<T>()
         val visited = mutableSetOf<T>()
         for (v in vertices)
             if (!visited.contains(v.key))
-                dfsSortAdjustment(v.key, visited, stack)
+                dfsSort(v.key, visited, stack, direction = Direction.DOWN)
         return stack.reversed()
     }
 }
