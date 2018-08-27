@@ -6,7 +6,7 @@ import org.stepik.android.exams.graph.Graph
 
 class GraphTest {
     private val graph = Graph<Int>()
-
+    private val stringGraph = Graph<String>()
     @Before
     fun setUp() {
         graph.createVertex(1, "")
@@ -28,10 +28,28 @@ class GraphTest {
         graph.addEdge(4, 6)
         graph.addEdge(6, 7)
         graph.addEdge(6, 8)
+
+        stringGraph.createVertex("0", "")
+        stringGraph.createVertex("1", "")
+        stringGraph.createVertex("2", "")
+        stringGraph.createVertex("3", "")
+        stringGraph.createVertex("4", "")
+        stringGraph.createVertex("5", "")
+        stringGraph.addEdge("5", "2")
+        stringGraph.addEdge("5", "0")
+        stringGraph.addEdge("4", "0")
+        stringGraph.addEdge("4", "1")
+        stringGraph.addEdge("2", "3")
+        stringGraph.addEdge("3", "1")
     }
 
     @Test
-    fun BFSTest(){
-        Assert.assertEquals(listOf(8, 6, 5, 4, 1, 3, 2), graph.bfs(8))
+    fun dfsTest(){
+        Assert.assertEquals(listOf(8, 6, 5, 4, 3, 2, 1), graph.dfs(8))
+    }
+
+    @Test
+    fun topologicalTest(){
+        Assert.assertEquals(listOf("5", "4", "2", "3", "1", "0"), stringGraph.topologicalSort())
     }
 }

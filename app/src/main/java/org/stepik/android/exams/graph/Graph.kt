@@ -1,7 +1,5 @@
 package org.stepik.android.exams.graph
 
-import java.util.*
-
 class Graph<T> {
     private val vertices = mutableMapOf<T, Vertex<T>>()
     fun createVertex(id: T, title: String) {
@@ -17,20 +15,39 @@ class Graph<T> {
 
     operator fun get(vert: T) = vertices[vert]
 
-    fun bfs(vertex: T): List<T> {
-        val visited = mutableSetOf<T>()
-        val queue: Queue<T> = ArrayDeque()
+    private fun dfsSortAdjustment(vertex: T, visited : MutableSet<T>, stack : MutableList<T>) {
         visited.add(vertex)
-        queue.add(vertex)
-        while (queue.isNotEmpty()) {
-            vertices[queue.poll()]?.parent?.forEach {
+            vertices[vertex]?.children?.forEach {
                 val vertNext: T = it.id
                 if (!visited.contains(vertNext)) {
-                    visited.add(vertNext)
-                    queue.add(vertNext)
+                    dfsSortAdjustment(vertNext, visited, stack)
                 }
             }
+        stack.add(vertex)
+    }
+    private fun dfsSortParent(vertex: T, visited : MutableSet<T>, stack : MutableList<T>) {
+        visited.add(vertex)
+        vertices[vertex]?.parent?.forEach {
+            val vertNext: T = it.id
+            if (!visited.contains(vertNext)) {
+                dfsSortParent(vertNext, visited, stack)
+            }
         }
-        return visited.toList()
+        stack.add(vertex)
+    }
+
+    fun dfs(vertex: T): List<T> {
+        val stack = mutableListOf<T>()
+        dfsSortParent(vertex, mutableSetOf(), stack)
+        return stack.reversed()
+    }
+
+    fun topologicalSort() : List<T> {
+        val stack = mutableListOf<T>()
+        val visited = mutableSetOf<T>()
+        for (v in vertices)
+            if (!visited.contains(v.key))
+                dfsSortAdjustment(v.key, visited, stack)
+        return stack.reversed()
     }
 }
