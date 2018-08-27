@@ -2,7 +2,7 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
 import org.stepik.android.exams.api.StepicRestService
-import org.stepik.android.exams.data.db.dao.AttemptEntitiyDao
+import org.stepik.android.exams.data.db.dao.AttemptEntityDao
 import org.stepik.android.exams.data.db.mapping.toEntity
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.web.AttemptRequest
@@ -13,19 +13,19 @@ import javax.inject.Inject
 class AttemptRepository
 @Inject
 constructor(
-        private val attemptEntitiyDao: AttemptEntitiyDao,
+        private val attemptEntityDao: AttemptEntityDao,
         private var stepicRestService: StepicRestService,
         private var sharedPreferenceHelper: SharedPreferenceHelper
 ) {
 
     fun createAttempt(attempt: Attempt) =
-            Completable.fromCallable { attemptEntitiyDao.insertAttempt(attempt.toEntity()) }
+            Completable.fromCallable { attemptEntityDao.insertAttempt(attempt.toEntity()) }
 
     fun updateAttempt(attempt: Attempt) =
-            Completable.fromCallable { attemptEntitiyDao.updateAttempt(attempt.toEntity()) }
+            Completable.fromCallable { attemptEntityDao.updateAttempt(attempt.toEntity()) }
 
     fun findAttemptInDb(attemptId: Long) =
-            attemptEntitiyDao.findAttemptById(attemptId)
+            attemptEntityDao.findAttemptById(attemptId)
 
     fun loadExistingAttempts(step: Step) =
             stepicRestService
