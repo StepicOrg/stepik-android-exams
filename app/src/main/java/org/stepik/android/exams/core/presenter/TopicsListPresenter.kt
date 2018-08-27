@@ -58,7 +58,7 @@ constructor(
                 graph.addEdge(topic.id, topic.requiredFor)
         }
         for (maps in graphData.topicsMap) {
-            graph[maps.id]?.lessons?.addAll(maps.lessons)
+            graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
         }
     }
 

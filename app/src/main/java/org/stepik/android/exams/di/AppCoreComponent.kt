@@ -6,13 +6,15 @@ import dagger.Component
 import org.stepik.android.exams.App
 import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
+import org.stepik.android.exams.di.network.RoomModule
+import org.stepik.android.exams.di.network.StepsModule
+import org.stepik.android.exams.ui.activity.LessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity
-import org.stepik.android.exams.ui.activity.StudyActivity
 import org.stepik.android.exams.ui.activity.TopicsListActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 
 @AppSingleton
-@Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class])
+@Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class, RoomModule::class, StepsModule::class])
 interface AppCoreComponent {
 
     @Component.Builder
@@ -21,9 +23,12 @@ interface AppCoreComponent {
 
         @BindsInstance
         fun context(context: Context): Builder
+
     }
 
     fun loginComponentBuilder(): LoginComponent.Builder
+
+    fun stepComponentBuilder(): StepComponent.Builder
 
     fun inject(activity: SplashActivity)
 
@@ -33,5 +38,5 @@ interface AppCoreComponent {
 
     fun inject(activityTopics: TopicsListActivity)
 
-    fun inject(studyActivity: StudyActivity)
+    fun inject(lessonsActivity: LessonsActivity)
 }

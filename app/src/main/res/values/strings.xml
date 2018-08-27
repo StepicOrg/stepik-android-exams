@@ -12,7 +12,9 @@
 
     <string name="first_name">First name</string>
     <string name="second_name">Second name</string>
-
+    <string name="auth_inline_message">To save your progress please sign in first</string>
+    <string name="go_to_the_next_lesson">Next lesson</string>
+    <string name="previous_lesson">Previous lesson</string>
     <string name="processing_your_request">Processing your request</string>
     <string name="remind_password_success">We sent you a letter</string>
     <string name="required_field">Required field</string>
@@ -28,4 +30,24 @@
     <string name="empty_auth_title" translatable="false">It\'s You!</string>
     <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
     <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
+    <plurals name="open_comments">
+        <item quantity="one">Open %d comment</item>
+        <item quantity="other">Open %d comments</item>
+    </plurals>
+    <string name="open_comments_zero">No comments. Add your comment</string>
+    <string name="comment_denied">Comments are not available for this lesson</string>
+
+    <string name="submit">Submit</string>
+    <string name="correct">Correct!</string>
+    <string name="wrong">Wrong. Please, try again.</string>
+    <string name="try_again">Try again</string>
+    <string name="step_only_online">Steps are available only online. Connect to the Internet and
+        start
+        completing the assignments.
+    </string>
+    <string name="correct_free_response">Your answer was saved.</string>
+    <string name="hint_for_type_answer">Type your answer here…</string>
+    <string name="table_quiz_beta">Table problem β</string>
+    <string name="next">Next</string>
+    <string name="open_web_to_solve">Open the web version to solve</string>
 </resources>

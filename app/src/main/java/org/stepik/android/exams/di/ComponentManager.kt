@@ -7,4 +7,7 @@ class ComponentManager(
         appCoreComponent.loginComponentBuilder().build()
     }
 
+    val stepComponent by lazy {
+        appCoreComponent.stepComponentBuilder().build()
+    }
 }

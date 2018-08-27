@@ -6,5 +6,5 @@ data class TopicsMap(
         @SerializedName("id")
         val id: String,
         @SerializedName("lessons")
-        val lessons: List<Lesson>
+        val graphLessons: List<GraphLesson>
 )

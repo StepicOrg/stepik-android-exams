@@ -12,7 +12,9 @@
 
     <string name="first_name">Имя</string>
     <string name="second_name">Фамилия</string>
-
+    <string name="auth_inline_message">Войдите, чтобы мы запомнили Ваши успехи</string>
+    <string name="go_to_the_next_lesson">Следующий урок</string>
+    <string name="previous_lesson">Предыдущий урок</string>
     <string name="processing_your_request">Обработка запроса</string>
     <string name="remind_password_success">Мы отправили вам письмо</string>
     <string name="required_field">Обязательное поле</string>
@@ -27,5 +29,25 @@
 
     <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
     <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
+    <plurals name="open_comments">
+        <item quantity="one">Открыть %d комментарий</item>
+        <item quantity="few">Открыть %d комментария</item>
+        <item quantity="many">Открыть %d комментариев</item>
+        <item quantity="other">Открыть %d комментариев</item>
+    </plurals>
+    <string name="open_comments_zero">Нет комментариев. Оставьте первый.</string>
+    <string name="comment_denied">Извините, возможность оставлять комментарии отключена</string>
 
+    <string name="submit">Отправить</string>
+    <string name="wrong">Неправильно. Пожалуйста, попробуйте еще раз.</string>
+    <string name="correct">Верно!</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="step_only_online">Шаги можно проходить только онлайн. Чтобы начать решать,
+        включите интернет-соединение.
+    </string>
+    <string name="correct_free_response">Ваше решение сохранено.</string>
+    <string name="hint_for_type_answer">Введите ответ здесь…</string>
+    <string name="table_quiz_beta">Табличная задача β</string>
+    <string name="next">Дальше</string>
+    <string name="open_web_to_solve">пройти задание в web-версии</string>
 </resources>
