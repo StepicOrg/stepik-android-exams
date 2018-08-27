@@ -22,5 +22,6 @@ interface RecommendationsView {
         object Success : State()
         object RequestError : State()
         object NetworkError : State()
+        object CourseCompleted : State()
     }
 }

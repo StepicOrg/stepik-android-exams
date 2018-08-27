@@ -54,6 +54,8 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
                 onConnectivityError()
             RecommendationsView.State.Success ->
                 onCardLoaded()
+            RecommendationsView.State.CourseCompleted ->
+                onCourseCompleted()
         }
     }
 

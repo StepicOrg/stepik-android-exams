@@ -83,7 +83,7 @@ constructor(
     override fun attachView(view: RecommendationsView) {
         super.attachView(view)
         when {
-            isCourseCompleted -> view.onCourseCompleted()
+            isCourseCompleted -> viewState = RecommendationsView.State.CourseCompleted
         }
         view.onAdapter(adapter)
         view.setState(viewState)
@@ -112,7 +112,7 @@ constructor(
         val recommendations = response.recommendations
         if (recommendations == null || recommendations.isEmpty()) {
             isCourseCompleted = true
-            view?.onCourseCompleted()
+            viewState = RecommendationsView.State.CourseCompleted
         } else {
             val size = cards.size
             recommendations
