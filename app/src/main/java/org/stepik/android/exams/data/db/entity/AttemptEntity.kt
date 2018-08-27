@@ -7,15 +7,15 @@ import org.stepik.android.model.attempts.Dataset
 @Entity(tableName = "AttemptEntity")
 class AttemptEntity(
         @PrimaryKey(autoGenerate = false)
-        val id: Long = 0,
-        val step: Long = 0,
-        val user: Long = 0,
+        val id: Long,
+        val step: Long,
+        val user: Long,
 
-        val dataset: Dataset? = null,
-        val datasetUrl: String? = null,
+        val dataset: Dataset?,
+        val datasetUrl: String?,
 
-        val status: String? = null,
-        val time: String? = null,
+        val status: String?,
+        val time: String?,
 
-        val timeLeft: String? = null
+        val timeLeft: String?
 )
