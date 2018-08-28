@@ -12,6 +12,7 @@ import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class StepAttemptPresenter
@@ -80,12 +81,21 @@ constructor(
 
     fun createSubmission(attemptId: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
-        submission = Submission(reply = reply, attempt = attemptId, status = null)
-        disposable.add(submissionRepository.addSubmission(submission!!)
+        val submission = Submission(reply = reply, attempt = attemptId, status = null)
+        disposable.add(submissionRepository.addSubmission(submission)
                 .andThen(submissionRepository.getLatestSubmissionByAttemptIdFromApi(attemptId))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({ onSubmissionLoaded(it) }, { onError() }))
+                .subscribe({s ->
+                    if (s.status == Submission.Status.EVALUATION){
+                        disposable.add(submissionRepository.getLatestSubmissionByAttemptId(s.attempt)
+                                .delay(1, TimeUnit.SECONDS)
+                                .subscribeOn(backgroundScheduler)
+                                .observeOn(mainScheduler)
+                                .subscribe ({
+                                    onSubmissionLoaded(s)
+                                }, {onError()}))
+                    } else onSubmissionLoaded(s) }, { onError() }))
     }
 
     private fun onSubmissionLoaded(submission: Submission?) {
@@ -124,7 +134,7 @@ constructor(
 
     override fun destroy() {
         submission?.let {
-            submissionRepository.addSubmission(submission!!)
+            submissionRepository.addSubmission(it)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
                     .subscribe()

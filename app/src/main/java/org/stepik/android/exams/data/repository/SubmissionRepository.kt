@@ -40,10 +40,6 @@ constructor(
                     .getSubmissions(attemptId, "desc")
                     .flatMapMaybe { response ->
                         val submission = response.submissions?.firstOrNull()
-                        if (submission?.status == Submission.Status.EVALUATION){
-                            return@flatMapMaybe getLatestSubmissionByAttemptId(submission.attempt)
-                                    .delay(1, TimeUnit.SECONDS)
-                        }
                         if (submission != null) {
                             Maybe.just(submission)
                         } else {
