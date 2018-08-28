@@ -22,5 +22,5 @@ interface TopicDao {
 
     // TODO fix constant
     @Query("SELECT course FROM TopicInfo WHERE topicId = :topicId AND type = 'PRACTICE'")
-    fun getAdaptiveCourseId(topicId: String): Single<Long>
+    fun getAdaptiveCourseId(topicId: String): Maybe<Long>
 }

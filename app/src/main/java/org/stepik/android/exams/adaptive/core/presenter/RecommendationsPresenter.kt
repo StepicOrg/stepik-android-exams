@@ -5,6 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import org.stepik.android.exams.adaptive.core.contracts.RecommendationsView
 import org.stepik.android.exams.adaptive.listeners.AdaptiveReactionListener
@@ -63,12 +64,12 @@ constructor(
         loadCourseId(topicId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({
+                .subscribeBy(onSuccess = {
                     course = it
                     createReaction(0, Reaction.INTERESTING)
-                }, {
+                }, onComplete = {
                     view?.onCourseNotSupported()
-                })
+                }, onError = {onError(it)})
     }
 
     private fun loadCourseId(topicId: String) =
