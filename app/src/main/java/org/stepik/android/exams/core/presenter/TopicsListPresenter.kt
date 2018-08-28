@@ -107,11 +107,9 @@ constructor(
     private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<GraphLesson.Type>>, courseList: List<List<Long>>) {
         val list = mutableListOf<TopicInfo>()
 
-        (0..minOf(lessonsList.size - 1, typesList.size - 1)).map { m ->
-            (0..minOf(lessonsList[m].size - 1, typesList[m].size - 1)).map { k ->
+        for (m in 0..minOf(lessonsList.size - 1, typesList.size - 1))
+            for (k in 0..minOf(lessonsList[m].size - 1, typesList[m].size - 1))
                 list.add(TopicInfo(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
-            }
-        }
         Completable.fromAction { topicDao.insertCourseInfo(list) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)

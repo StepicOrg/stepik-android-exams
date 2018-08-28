@@ -122,8 +122,6 @@ class Card(
      * Free resources
      */
     fun recycle() {
-        // App.componentManager()
-        //        .releaseAdaptiveCourseComponent(courseId)
         lessonDisposable?.dispose()
         stepSubscription?.dispose()
         attemptDisposable?.dispose()

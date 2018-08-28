@@ -2,10 +2,7 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.data.model.SubmissionRequest
-import org.stepik.android.exams.data.model.SubmissionResponse
 import org.stepik.android.exams.data.repository.AttemptRepository
 import org.stepik.android.exams.data.repository.SubmissionRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -15,13 +12,11 @@ import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class StepAttemptPresenter
 @Inject
 constructor(
-        private var stepicRestService: StepicRestService,
         @MainScheduler
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
@@ -76,36 +71,21 @@ constructor(
                         onSubmissionLoaded(it)
                     }, { onError() })
 
-    private fun attemptLoaded(it: Attempt) {
-        attempt = it
+    private fun attemptLoaded(attempt: Attempt) {
+        this.attempt = attempt
         viewState = AttemptView.State.Success
-        view?.onNeedShowAttempt(attempt)
+        view?.onNeedShowAttempt(this.attempt)
     }
 
 
-    fun createSubmission(id: Long, reply: Reply) {
+    fun createSubmission(attemptId: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
-        submission = Submission(reply, id, null)
-        disposable.add(stepicRestService.createSubmission(SubmissionRequest(submission))
-                .andThen(stepicRestService.getSubmissions(submission?.attempt ?: 0, "desc"))
+        submission = Submission(reply = reply, attempt = attemptId, status = null)
+        disposable.add(submissionRepository.addSubmission(submission!!)
+                .andThen(submissionRepository.getLatestSubmissionByAttemptIdFromApi(attemptId))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ onSubmissionLoaded(it) }, { onError() }))
-    }
-
-    private fun onSubmissionLoaded(submissionResponse: SubmissionResponse) {
-        submission = submissionResponse.firstSubmission
-        submission?.let { s ->
-            if (s.status == Submission.Status.EVALUATION) {
-                disposable.add(stepicRestService.getSubmissions(s.attempt, "desc")
-                        .delay(1, TimeUnit.SECONDS)
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe({ onSubmissionLoaded(it) }, { onError() }))
-            } else {
-                onSubmissionLoaded(s)
-            }
-        }
     }
 
     private fun onSubmissionLoaded(submission: Submission?) {
@@ -132,19 +112,23 @@ constructor(
     override fun detachView(view: AttemptView) {
         view.let {
             if (submission == null || submission?.status == Submission.Status.LOCAL) {
-                submission = Submission(reply = it.getAttemptDelegate().createReply(), id = attempt?.id
-                        ?: 0, status = Submission.Status.LOCAL,
+                submission = Submission(
+                        reply = it.getAttemptDelegate().createReply(),
+                        attempt = attempt?.id ?: 0,
+                        status = Submission.Status.LOCAL,
                         time = Date(Calendar.getInstance().timeInMillis))
-                submissionRepository.addSubmission(submission!!)
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe()
             }
             super.detachView(it)
         }
     }
 
     override fun destroy() {
+        submission?.let {
+            submissionRepository.addSubmission(submission!!)
+                    .subscribeOn(backgroundScheduler)
+                    .observeOn(mainScheduler)
+                    .subscribe()
+        }
         disposable.clear()
     }
 }

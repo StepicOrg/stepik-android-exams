@@ -9,6 +9,7 @@ import org.stepik.android.exams.data.db.mapping.toEntity
 import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.model.Submission
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SubmissionRepository
@@ -34,11 +35,15 @@ constructor(
                 }
             }
 
-    private fun getLatestSubmissionByAttemptIdFromApi(attemptId: Long): Maybe<Submission> =
+    fun getLatestSubmissionByAttemptIdFromApi(attemptId: Long): Maybe<Submission> =
             stepicRestService
                     .getSubmissions(attemptId, "desc")
                     .flatMapMaybe { response ->
                         val submission = response.submissions?.firstOrNull()
+                        if (submission?.status == Submission.Status.EVALUATION){
+                            return@flatMapMaybe getLatestSubmissionByAttemptId(submission.attempt)
+                                    .delay(1, TimeUnit.SECONDS)
+                        }
                         if (submission != null) {
                             Maybe.just(submission)
                         } else {
