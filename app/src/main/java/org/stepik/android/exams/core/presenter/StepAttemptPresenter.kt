@@ -1,22 +1,20 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.*
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
-import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.exams.data.model.SubmissionResponse
-import org.stepik.android.exams.data.preference.SharedPreferenceHelper
+import org.stepik.android.exams.data.repository.AttemptRepository
+import org.stepik.android.exams.data.repository.SubmissionRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.web.AttemptRequest
-import org.stepik.android.exams.web.AttemptResponse
 import org.stepik.android.model.Reply
 import org.stepik.android.model.Step
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -28,12 +26,10 @@ constructor(
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
         private var backgroundScheduler: Scheduler,
-        private var sharedPreferenceHelper: SharedPreferenceHelper,
-        private var stepDao: StepDao
+        private val attemptRepository: AttemptRepository,
+        private val submissionRepository: SubmissionRepository
 ) : PresenterBase<AttemptView>() {
-    private var step: Step? = null
     private var disposable = CompositeDisposable()
-    private var shouldUpdate = false
 
     private var viewState: AttemptView.State = AttemptView.State.FirstLoading
         set(value) {
@@ -51,109 +47,41 @@ constructor(
         view.setState(viewState)
     }
 
-    fun checkStepExistence(reply: Reply, submissions: Submission?) {
-        disposable.add(Observable
-                .fromCallable {
-                    stepDao.findStepById(step?.id ?: 0)
-                }
-                .map {
-                    it.attempt != null
-                }
-                .onErrorReturn { false }
-                .subscribeOn(backgroundScheduler)
-                .subscribe { exist ->
-                    submission = if (exist && !shouldUpdate) {
-                        Submission(reply, attempt?.id ?: 0, null)
-                    } else submissions
-                    updateStepInDb(step?.id, attempt, submission)
-                })
-    }
-
-    fun checkStep(step: Step) {
-        Maybe.concat(checkStepIdDb(step), checkStepApi(step)).take(1)
+    fun loadAttemptWithSubmission(step: Step) {
+        attemptRepository.resolveAttemptForStep(step.id)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe { pair ->
-                        pair.first?.let { attempts ->
-                            this.step = step
-                            attemptLoaded(attempts)
-                        }
-                        pair.second?.let { sub ->
-                            submission = sub
-                            onSubmissionLoaded(submission)
-                        }
-                }
+                .subscribe({
+                    attemptLoaded(it)
+                    loadSubmission(it.id)
+                }, { onError() })
+
     }
-
-    private fun checkStepIdDb(step: Step) =
-            Maybe.fromCallable { stepDao.findStepById(step.id) }
-                    .filter { (it.attempt != null || it.submission != null) }
-                    .map { it.attempt to it.submission }
-
-    private fun checkStepApi(step: Step) =
-                checkAttempts(step).switchIfEmpty(createNewAttempt(step))
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .map { it.first.attempts.firstOrNull() to it.second }
-                        .doOnSuccess { (attempt, submission) ->
-                            updateStepAttempt(step, attempt, submission)
-                        }
-
-
-    private fun checkAttempts(step: Step) =
-            stepicRestService
-                    .getExistingAttempts(step.id, sharedPreferenceHelper.getCurrentUserId() ?: 0)
-                    .filter { it.attempts.isNotEmpty() }
-                    .flatMap { attemptResponse ->
-                        getSubmissions(attemptResponse.attempts.first())
-                                .toMaybe()
-                                .map { submission ->
-                                    attemptResponse to submission
-                                }
-                    }
-
-    private fun getSubmissions(attempt: Attempt?) =
-            stepicRestService.getSubmissions(attempt?.id ?: 0, "desc")
-                    .map {
-                        if (it.submissions?.isEmpty() == true) Submission()
-                        else it.firstSubmission
-                    }
-
-
-    private fun createNewAttempt(step: Step) =
-            stepicRestService.createNewAttempt(AttemptRequest(step.id)).toObservable()
-                        .filter { it.attempts.isNotEmpty() }
-                        .map { AttemptResponse(it.attempts) to Submission() }
-                        .firstElement()
 
     fun createAttempt(step: Step) {
-        createNewAttempt(step)
+        submission = null
+        attemptRepository.createAttempt(step.id)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe {
-                    attemptLoaded(it.first.attempts.firstOrNull())
-                    updateStepAttempt(step, it.first.attempts.firstOrNull(), null)
-                    shouldUpdate = false
-                }
+                .subscribe({
+                    attemptLoaded(it)
+                }, { onError() })
     }
 
-    private fun attemptLoaded(it: Attempt?) {
-        attempt = it
-        attempt?.let {
-            view?.onNeedShowAttempt(attempt)
-            viewState = AttemptView.State.Success
-        }
-    }
-
-    private fun updateStepAttempt(step: Step, attempt: Attempt?, submission: Submission?) =
-            updateStep(step.id, attempt, submission)
-
-    private fun updateStep(id: Long?, attempt: Attempt?, submission: Submission?) =
-            disposable.add(Completable.fromCallable {
-                stepDao.updateStep(StepInfo(id, attempt, submission, false))
-            }
+    private fun loadSubmission(attemptId: Long) =
+            submissionRepository.getLatestSubmissionByAttemptId(attemptId)
                     .subscribeOn(backgroundScheduler)
-                    .subscribe())
+                    .observeOn(mainScheduler)
+                    .subscribe({
+                        onSubmissionLoaded(it)
+                    }, {})
+
+    private fun attemptLoaded(it: Attempt) {
+        attempt = it
+        view?.onNeedShowAttempt(attempt)
+        viewState = AttemptView.State.Success
+    }
+
 
     fun createSubmission(id: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
@@ -175,34 +103,45 @@ constructor(
                         .observeOn(mainScheduler)
                         .subscribe({ onSubmissionLoaded(it) }, { onError() }))
             } else {
-                updateStep(step?.id, attempt, submission)
                 onSubmissionLoaded(s)
             }
         }
     }
 
-    fun updateStepInDb(id: Long?, attempt: Attempt?, submission: Submission?) =
-            updateStep(id, attempt, submission)
-
-    private fun onSubmissionLoaded(s: Submission?) {
+    private fun onSubmissionLoaded(submission: Submission?) {
+        this.submission = submission
         viewState = AttemptView.State.Success
         view?.setSubmission(submission)
-        checkSubmissionState(s)
+        checkSubmissionState(submission)
     }
 
     private fun checkSubmissionState(submission: Submission?) {
         if (submission?.status == Submission.Status.CORRECT) {
             viewState = AttemptView.State.CorrectAnswerState
-            shouldUpdate = true
         }
         if (submission?.status == Submission.Status.WRONG) {
             viewState = AttemptView.State.WrongAnswerState
-            shouldUpdate = true
         }
     }
 
     private fun onError() {
         viewState = AttemptView.State.NetworkError
+    }
+
+
+    override fun detachView(view: AttemptView) {
+        view.let {
+            if (submission == null || submission?.status == Submission.Status.LOCAL) {
+                submission = Submission(reply = it.getAttemptDelegate().createReply(), id = attempt?.id
+                        ?: 0, status = Submission.Status.LOCAL,
+                        time = Date(Calendar.getInstance().timeInMillis))
+                submissionRepository.addSubmission(submission!!)
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe()
+            }
+            super.detachView(it)
+        }
     }
 
     override fun destroy() {

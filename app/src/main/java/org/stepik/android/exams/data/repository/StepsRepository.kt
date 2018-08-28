@@ -21,7 +21,7 @@ constructor(
         private val stepDao: StepDao,
         private val topicsDao: TopicDao
 ) {
-    private fun getCoursesId(theoryId: String)  =
+    private fun getCoursesId(theoryId: String) =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
     fun tryLoadLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> =

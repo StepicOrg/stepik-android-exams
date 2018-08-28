@@ -12,7 +12,6 @@ import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
-import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.model.Step
 import javax.inject.Inject
@@ -23,6 +22,7 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
         const val EXTRA_LESSON = "lesson"
         const val EXTRA_TOPIC_ID = "topicId"
     }
+
     private lateinit var adapter: StepPagerAdapter
     private lateinit var steps: List<Step>
     @Inject

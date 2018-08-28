@@ -67,7 +67,7 @@ constructor(
                 }))
     }
 
-    private fun tryJoinCourse(lessons : Set<Long>) =
+    private fun tryJoinCourse(lessons: Set<Long>) =
             Completable.concat(lessons.map { joinCourse(it) })
 
 
@@ -84,6 +84,7 @@ constructor(
             graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
         }
     }
+
     private fun checkIfJoined() {
         topicDao.isJoinedToCourses()
                 .subscribeOn(backgroundScheduler)
@@ -103,10 +104,10 @@ constructor(
     }
 
 
-    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<GraphLesson.Type>>, courseList : List<List<Long>>) {
+    private fun saveTopicInfoToDb(topics: List<String>, lessonsList: List<LongArray>, typesList: List<List<GraphLesson.Type>>, courseList: List<List<Long>>) {
         val list = mutableListOf<TopicInfo>()
 
-        (0..minOf(lessonsList.size-1, typesList.size-1)).map { m ->
+        (0..minOf(lessonsList.size - 1, typesList.size - 1)).map { m ->
             (0..minOf(lessonsList[m].size - 1, typesList[m].size - 1)).map { k ->
                 list.add(TopicInfo(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
             }
@@ -117,7 +118,7 @@ constructor(
                 .subscribe()
     }
 
-    private fun joinAllCourses(lessons : List<Long>) {
+    private fun joinAllCourses(lessons: List<Long>) {
         tryJoinCourse(lessons.toMutableSet())
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
@@ -135,7 +136,7 @@ constructor(
         }
     }
 
-    private fun onError(){
+    private fun onError() {
         viewState = TopicsListView.State.NetworkError
     }
 

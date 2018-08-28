@@ -12,7 +12,7 @@ class TopicInfo(
         @ColumnInfo(name = "lesson") val lesson: Long,
         @ColumnInfo(name = "course") val course: Long,
         @ColumnInfo(name = "isJoined") val isJoined: Boolean
-){
-        @PrimaryKey(autoGenerate = true)
-        var id: Long? = null
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Long? = null
 }

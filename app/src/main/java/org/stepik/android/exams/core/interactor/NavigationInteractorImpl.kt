@@ -13,7 +13,7 @@ constructor(
         val graph: Graph<String>,
         private val stepsRepository: StepsRepository
 ) : NavigationInteractor {
-    override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons : LongArray): Observable<List<LessonTheoryWrapper>> {
+    override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
                 graph[topicId]?.graphLessons?.last()?.id == lessonId)
             return Observable.empty()
@@ -39,7 +39,7 @@ constructor(
         return Observable.just(listOf(LessonTheoryWrapper()))
     }
 
-    override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons : LongArray): Observable<List<LessonTheoryWrapper>> {
+    override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.children?.isEmpty() == true &&
                 graph[topicId]?.graphLessons?.first()?.id == lessonId)
             return Observable.empty()

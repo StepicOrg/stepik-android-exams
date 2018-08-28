@@ -74,6 +74,8 @@ class AttemptFragment : StepFragment(), AttemptView {
         }
     }
 
+    override fun getAttemptDelegate() = stepDelegate as AttemptDelegate
+
     private fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
             Errors.ConnectionProblem -> R.string.auth_error_connectivity
@@ -129,12 +131,6 @@ class AttemptFragment : StepFragment(), AttemptView {
         super.onStop()
     }
 
-    override fun onDestroyView() {
-        val reply = (stepDelegate as AttemptDelegate).createReply()
-        presenter?.checkStepExistence(reply, submissions)
-        super.onDestroyView()
-    }
-
     private fun tryAgain() {
         submissions = null
         presenter?.createAttempt(step)
@@ -169,8 +165,8 @@ class AttemptFragment : StepFragment(), AttemptView {
     }
 
 
-    private fun startLoading(step: Step?) {
-        presenter?.checkStep(step as Step)
+    private fun startLoading(step: Step) {
+        presenter?.loadAttemptWithSubmission(step)
     }
 
     override fun onCorrectAnswer() {

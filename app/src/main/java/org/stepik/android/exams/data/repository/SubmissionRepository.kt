@@ -14,8 +14,8 @@ import javax.inject.Inject
 class SubmissionRepository
 @Inject
 constructor(
-    private val submissionEntityDao: SubmissionEntityDao,
-    private val stepicRestService: StepicRestService
+        private val submissionEntityDao: SubmissionEntityDao,
+        private val stepicRestService: StepicRestService
 ) {
     fun getLatestSubmissionByAttemptId(attemptId: Long): Maybe<Submission> = Maybe
             .concat(
@@ -34,7 +34,7 @@ constructor(
                 }
             }
 
-    fun getLatestSubmissionByAttemptIdFromApi(attemptId: Long): Maybe<Submission> =
+    private fun getLatestSubmissionByAttemptIdFromApi(attemptId: Long): Maybe<Submission> =
             stepicRestService
                     .getSubmissions(attemptId, "desc")
                     .flatMapMaybe { response ->

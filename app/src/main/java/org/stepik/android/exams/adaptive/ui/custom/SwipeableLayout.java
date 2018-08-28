@@ -222,17 +222,26 @@ public final class SwipeableLayout extends FrameLayout {
     }
 
     public static class SwipeListener {
-        public void onSwiped() {}
-        public void onFlingDown() {}
-        public void onSwipeLeft() {}
-        public void onSwipeRight() {}
-        public void onSwipeDown() {}
+        public void onSwiped() {
+        }
+
+        public void onFlingDown() {
+        }
+
+        public void onSwipeLeft() {
+        }
+
+        public void onSwipeRight() {
+        }
+
+        public void onSwipeDown() {
+        }
 
         /**
-         *
          * @param scrollProgress - represents scroll progress for current state, e.g. 1.0 when card completely swiped to right
          */
-        public void onScroll(final float scrollProgress) {}
+        public void onScroll(final float scrollProgress) {
+        }
 
     }
 }
