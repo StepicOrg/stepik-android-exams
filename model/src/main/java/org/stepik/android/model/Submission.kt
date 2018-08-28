@@ -1,13 +1,14 @@
 package org.stepik.android.model
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 class Submission(
         val id: Long = 0,
         val status: Status? = null,
         val score: String? = null,
         val hint: String? = null,
-        val time: String? = null,
+        val time: Date? = null,
         reply: Reply? = null,
         val attempt: Long = 0,
         val session: String? = null,

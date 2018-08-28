@@ -13,7 +13,6 @@ import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
-import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
@@ -22,6 +21,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     companion object {
         const val EXTRA_TOPIC_ID = "topicId"
     }
+
     private lateinit var lessonsAdapter: LessonsAdapter
 
     @Inject

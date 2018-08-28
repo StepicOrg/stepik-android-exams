@@ -34,7 +34,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
                     this.topicId = topicId
                     this.lastPosition = lastPosition
                 }
-        }
+    }
 
     @Inject
     lateinit var stepPresenterProvider: Provider<StepAttemptPresenter>
@@ -49,8 +49,8 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
     protected lateinit var progressPresenter: ProgressPresenter
 
     private var step: Step by argument()
-    private var topicId : String by argument()
-    private var lastPosition : Long by argument()
+    private var topicId: String by argument()
+    private var lastPosition: Long by argument()
 
     lateinit var stepTypeResolver: StepTypeResolver
 

@@ -4,8 +4,12 @@ package org.stepik.android.exams.data.db.converters
 import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.model.Reply
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
+import org.stepik.android.model.attempts.Dataset
+import java.util.*
 
 
 class GsonConverter {
@@ -41,4 +45,53 @@ class GsonConverter {
         return gson.toJson(obj)
     }
 
+    @TypeConverter
+    fun stringToArray(data: String?): LongArray {
+        return gson.fromJson<LongArray>(data, LongArray::class.java)
+    }
+
+    @TypeConverter
+    fun arrayToString(obj: LongArray?): String? {
+        return gson.toJson(obj)
+    }
+
+    @TypeConverter
+    fun graphLessonTypeToString(type: GraphLesson.Type): String =
+            type.name
+
+    @TypeConverter
+    fun graphLessonTypefromString(type: String): GraphLesson.Type =
+            GraphLesson.Type.valueOf(type)
+
+    @TypeConverter
+    fun stringToDatasetWrapper(data: String): Dataset =
+            gson.fromJson<Dataset>(data, Dataset::class.java)
+
+    @TypeConverter
+    fun datasetWrapperToString(obj: Dataset): String =
+            gson.toJson(obj)
+
+    @TypeConverter
+    fun stringToReply(data: String): Reply =
+            gson.fromJson<Reply>(data, Reply::class.java)
+
+    @TypeConverter
+    fun replyToString(obj: Reply): String =
+            gson.toJson(obj)
+
+    @TypeConverter
+    fun submissionStatusToString(status: Submission.Status): String =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun submissionStatusFromString(status: String): Submission.Status =
+            gson.fromJson<Submission.Status>(status, Submission.Status::class.java)
+
+    @TypeConverter
+    fun dateToLong(date: Date?): Long? =
+            date?.time
+
+    @TypeConverter
+    fun longToDate(time: Long?): Date? =
+            time?.let(::Date)
 }

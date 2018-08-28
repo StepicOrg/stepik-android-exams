@@ -3,6 +3,7 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.ViewAssignment
 
 interface ScreenManager {
     fun showOnboardingScreen()
@@ -12,5 +13,7 @@ interface ScreenManager {
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
     fun showLessons(topicId: String, context: Context)
+    fun continueAdaptiveCourse(topicId: String, activity: Activity)
     fun openImage(context: Context, path: String)
+    fun pushToViewedQueue(viewAssignment: ViewAssignment)
 }

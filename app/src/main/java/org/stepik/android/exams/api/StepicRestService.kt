@@ -31,6 +31,11 @@ interface StepicRestService {
             @Query("user") userId: Long
     ): Single<AttemptResponse>
 
+    @GET("api/steps")
+    fun getStepsByLessonId(
+            @Query("lesson") lessonId: Long
+    ): Single<StepResponse>
+
     @POST("api/attempts")
     fun createNewAttempt(
             @Body attemptRequest: AttemptRequest
@@ -43,7 +48,7 @@ interface StepicRestService {
 
     @GET("api/submissions")
     fun getSubmissions(
-            @Query("attempt") attempt_id: Long,
+            @Query("attempt") attemptId: Long,
             @Query("order") desc: String
     ): Single<SubmissionResponse>
 
@@ -51,4 +56,27 @@ interface StepicRestService {
     fun getProgresses(
             @Query("ids[]") progresses: Array<String>
     ): Single<ProgressesResponse>
+
+    @GET("api/recommendations")
+    fun getNextRecommendations(
+            @Query("course") courseId: Long,
+            @Query("count") count: Int
+    ): Single<RecommendationsResponse>
+
+    @POST("api/recommendation-reactions")
+    fun createRecommendationReaction(
+            @Body reactionsRequest: RecommendationReactionsRequest
+    ): Completable
+
+    @GET("api/units")
+    fun getUnits(
+            @Query("course") courseId: Long,
+            @Query("lesson") lessonId: Long
+    ): Single<UnitMetaResponse>
+
+    @Headers("Content-Type:application/json")
+    @POST("api/views")
+    fun postViewed(
+            @Body stepAssignment: ViewAssignmentWrapper
+    ): Completable
 }

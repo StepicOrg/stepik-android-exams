@@ -74,6 +74,8 @@ class AttemptFragment : StepFragment(), AttemptView {
         }
     }
 
+    override fun getAttemptDelegate() = stepDelegate as AttemptDelegate
+
     private fun onError(error: Errors) {
         @StringRes val messageResId = when (error) {
             Errors.ConnectionProblem -> R.string.auth_error_connectivity
@@ -97,6 +99,7 @@ class AttemptFragment : StepFragment(), AttemptView {
     private fun hideErrorMessage() {
         errorText.changeVisibillity(false)
     }
+
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -126,12 +129,6 @@ class AttemptFragment : StepFragment(), AttemptView {
     override fun onStop() {
         presenter?.detachView(this)
         super.onStop()
-    }
-
-    override fun onDestroyView() {
-        val reply = (stepDelegate as AttemptDelegate).createReply()
-        presenter?.checkStepExistence(reply, submissions)
-        super.onDestroyView()
     }
 
     private fun tryAgain() {
@@ -168,14 +165,14 @@ class AttemptFragment : StepFragment(), AttemptView {
     }
 
 
-    private fun startLoading(step: Step?) {
-        presenter?.checkStep(step as Step)
+    private fun startLoading(step: Step) {
+        presenter?.loadAttemptWithSubmission(step)
     }
 
     override fun onCorrectAnswer() {
         blockUIBeforeSubmit(false)
         stepAttemptSubmitButton.setText(R.string.next)
-        stepAttemptSubmitButton?.setOnClickListener {
+        stepAttemptSubmitButton.setOnClickListener {
             routingViewListener.scrollNext(step.position.toInt())
         }
 
@@ -188,7 +185,8 @@ class AttemptFragment : StepFragment(), AttemptView {
 
     private fun onNext() {
         routingViewListener = activity as RoutingViewListener
-        stepAttemptSubmitButton?.setOnClickListener {
+
+        stepAttemptSubmitButton.setOnClickListener {
             if (step.position == lastPosition) {
                 navigationPresenter.navigateToLesson(step, topicId, lastPosition, move = true)
             } else {
@@ -199,6 +197,7 @@ class AttemptFragment : StepFragment(), AttemptView {
 
     override fun onWrongAnswer() {
         blockUIBeforeSubmit(false)
+
         stepAttemptSubmitButton.setText(R.string.try_again)
         attemptContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.wrong_answer_background))
         answerStatusText.setText(R.string.wrong)

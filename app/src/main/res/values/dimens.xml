@@ -16,4 +16,8 @@
     <dimen name="table_cell_fixed_height">96dp</dimen>
     <dimen name="margin_option_top_bot">4dp</dimen>
     <dimen name="onePx">1px</dimen>
+    <dimen name="placeholders_image_width">180dp</dimen>
+    <dimen name="text_size_placeholders">16sp</dimen>
+    <dimen name="padding_placeholders">16dp</dimen>
+    <dimen name="guideline_standard_padding">16dp</dimen>
 </resources>

@@ -34,6 +34,7 @@ constructor(
         val progress = step.progress ?: ""
         service.getProgresses(arrayOf(progress))
                 .delay(400, TimeUnit.MILLISECONDS)
+
                 .map { it.progresses.first().isPassed }
                 .doOnSuccess {
                     stepDao.updateStepProgress(step.id, it)

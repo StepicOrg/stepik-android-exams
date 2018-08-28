@@ -4,6 +4,8 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import org.stepik.android.exams.App
+import org.stepik.android.exams.adaptive.ui.adapter.QuizCardViewHolder
+import org.stepik.android.exams.core.services.ViewPushService
 import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.di.network.RoomModule
@@ -30,6 +32,8 @@ interface AppCoreComponent {
 
     fun stepComponentBuilder(): StepComponent.Builder
 
+    fun adaptiveComponentBuilder(): AdaptiveComponent.Builder
+
     fun inject(activity: SplashActivity)
 
     fun inject(fragment: OnboardingFragment)
@@ -39,4 +43,8 @@ interface AppCoreComponent {
     fun inject(activityTopics: TopicsListActivity)
 
     fun inject(lessonsActivity: LessonsActivity)
+
+    fun inject(quizCardViewHolder: QuizCardViewHolder)
+
+    fun inject(viewPushService: ViewPushService)
 }

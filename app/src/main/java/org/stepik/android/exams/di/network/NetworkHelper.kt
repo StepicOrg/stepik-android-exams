@@ -8,6 +8,7 @@ import org.stepik.android.exams.jsonHelpers.DatasetDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplyDeserializer
 import org.stepik.android.exams.jsonHelpers.ReplySerializer
 import org.stepik.android.exams.jsonHelpers.adapters.CodeOptionsAdapterFactory
+import org.stepik.android.exams.jsonHelpers.adapters.UTCDateAdapter
 import org.stepik.android.exams.util.setTimeoutsInSeconds
 import org.stepik.android.model.ReplyWrapper
 import org.stepik.android.model.attempts.DatasetWrapper
@@ -15,6 +16,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
 object NetworkHelper {
     const val TIMEOUT_IN_SECONDS = 60L
@@ -35,6 +37,7 @@ object NetworkHelper {
                 .registerTypeAdapter(DatasetWrapper::class.java, DatasetDeserializer())
                 .registerTypeAdapter(ReplyWrapper::class.java, ReplyDeserializer())
                 .registerTypeAdapter(ReplyWrapper::class.java, ReplySerializer())
+                .registerTypeAdapter(Date::class.java, UTCDateAdapter())
                 .create()
         return GsonConverterFactory.create(gson)
     }

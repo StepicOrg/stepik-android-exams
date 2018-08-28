@@ -6,7 +6,7 @@ import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 
 abstract class AttemptDelegate : StepDelegate() {
-    protected abstract var isEnabled: Boolean
+    abstract var isEnabled: Boolean
     abstract var actionButton: Button?
     abstract fun setAttempt(attempt: Attempt?)
     abstract fun setSubmission(submission: Submission?)

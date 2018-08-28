@@ -23,4 +23,16 @@ public final class AppConstants {
     public static final String TYPE_CHOICE = "choice";
     public static final String TYPE_NUMBER = "number";
     public static final String TYPE_FILL_BLANKS = "fill-blanks";
+    public static final String TYPE_PUZZLE = "puzzle";
+    public static final String TYPE_PYCHARM = "pycharm";
+    public static final String TYPE_CODE = "code";
+    public static final String TYPE_ADMIN = "admin";
+    public static final String TYPE_SQL = "sql";
+    public static final String TYPE_LINUX_CODE = "linux-code";
+
+    public static final String lesson = "lesson";
+    public static final String lessonId = "lessonId";
+    public static final String topicId = "topicId";
+    public static final String step = "step";
+    public static final String viewPush = "view_push";
 }

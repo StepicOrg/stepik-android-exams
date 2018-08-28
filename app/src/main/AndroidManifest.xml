@@ -32,6 +32,10 @@
             android:name=".ui.activity.LessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.StepsListActivity"/>
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
+
+        <service android:name=".core.services.ViewPushService" />
     </application>
 
 </manifest>

@@ -13,18 +13,17 @@ constructor(
         val graph: Graph<String>,
         private val stepsRepository: StepsRepository
 ) : NavigationInteractor {
-    override fun resolveNextLesson(topicId: String, lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> {
+    override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.parent?.isEmpty() == true &&
-                graph[topicId]?.graphLessons?.last()?.id == lesson)
+                graph[topicId]?.graphLessons?.last()?.id == lessonId)
             return Observable.empty()
-        if (graph[topicId]?.graphLessons?.last()?.id != lesson) {
-            val theoryLessons = stepsRepository.getTheoryLessonsByTopicId(topicId)
-            val iterator = theoryLessons.iterator()
+        if (graph[topicId]?.graphLessons?.last()?.id != lessonId) {
+            val iterator = lessons.iterator()
             var nextLesson = 0L
             while (iterator.hasNext()) {
                 val next = iterator.next()
-                if (next.id == lesson)
-                    nextLesson = iterator.next().id
+                if (next == lessonId)
+                    nextLesson = iterator.next()
             }
             if (nextLesson != 0L && move) {
                 return stepsRepository.findLessonInDb(topicId, nextLesson)
@@ -40,19 +39,18 @@ constructor(
         return Observable.just(listOf(LessonTheoryWrapper()))
     }
 
-    override fun resolvePrevLesson(topicId: String, lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> {
+    override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
         if (graph[topicId]?.children?.isEmpty() == true &&
-                graph[topicId]?.graphLessons?.first()?.id == lesson)
+                graph[topicId]?.graphLessons?.first()?.id == lessonId)
             return Observable.empty()
-        if (graph[topicId]?.graphLessons?.first()?.id != lesson) {
-            val theoryLessons = stepsRepository.getTheoryLessonsByTopicId(topicId)
-            val iterator = theoryLessons.listIterator()
+        if (graph[topicId]?.graphLessons?.first()?.id != lessonId) {
+            val iterator = lessons.asList().listIterator()
             var nextLesson = 0L
             while (iterator.hasNext()) {
                 val next = iterator.next()
-                if (next.id == lesson) {
+                if (next == lessonId.toLong()) {
                     iterator.previous()
-                    nextLesson = iterator.previous().id
+                    nextLesson = iterator.previous()
                     break
                 }
             }

@@ -1,89 +1,65 @@
 package org.stepik.android.exams.data.repository
 
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
+import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class StepsRepository
-@Inject constructor(
-        private val graph: Graph<String>,
+@Inject
+constructor(
         private val api: Api,
         private val lessonDao: LessonDao,
-        private val stepDao: StepDao
+        private val stepDao: StepDao,
+        private val topicsDao: TopicDao
 ) {
-    private fun tryJoinCourses(topidId: String): Completable =
-            Completable.concat(getUniqueCourses(getTheoryLessonsByTopicId(topidId)).map(api::joinCourse))
-
-
-    private fun getLessonsByTopicId(topicId: String) = graph[topicId]?.graphLessons
-
-    fun getTheoryLessonsByTopicId(topicId: String): List<GraphLesson> =
-            getLessonsByTopicId(topicId)!!.filter { it.type == "theory" }
-
-    private fun getUniqueCourses(graphLessons: List<GraphLesson>): Set<Long> {
-        val uniqueCourses = mutableSetOf<Long>()
-        uniqueCourses.addAll(graphLessons.map { it.course })
-        return uniqueCourses
-    }
-
-    private fun getIdFromTheory(id: String): LongArray =
-            getTheoryLessonsByTopicId(id).map(GraphLesson::id).toLongArray()
+    private fun getCoursesId(theoryId: String) =
+            topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
     fun tryLoadLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> =
             loadTheoryLessonsLocal(theoryId).toObservable()
-                    .switchIfEmpty(tryJoinCourses(theoryId).andThen(loadTheoryLessons(theoryId)))
+                    .switchIfEmpty(getCoursesId(theoryId).flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
 
     fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
                     .map { it -> LessonTheoryWrapper(topicId, it) }
                     .toObservable()
 
-    private fun loadTheoryLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> {
-        return api.getLessons(getIdFromTheory(theoryId))
+    private fun loadTheoryLessons(theoryId: String, lessonIds: LongArray): Observable<List<LessonTheoryWrapper>> {
+        return api.getLessons(lessonIds)
                 .flatMapObservable {
                     it.lessons!!.toObservable()
                 }
-                .flatMap({
-                    api.getSteps(*it.steps).toObservable()
+                .flatMap({ lesson ->
+                    api.getSteps(*lesson.steps).doOnSuccess { response ->
+                        stepDao.insertSteps(response.steps!!.map { StepInfo(it.id) })
+                    }.toObservable()
                 }, { a, b -> a to b })
                 .map { (lesson, stepResponse) ->
-                    LessonWrapper(lesson, stepResponse.steps!!).apply {
-                        saveStepsToDb(stepResponse.steps)
-                    }
+                    LessonWrapper(lesson, stepResponse.steps!!)
                 }
                 .toList()
                 .flatMapObservable { lessonWrappers ->
-                    val lessons = getTheoryLessonsByTopicId(theoryId).map { theory ->
-                        lessonWrappers.first { it.lesson.id == theory.id }
+                    val lessons = lessonIds.map { id ->
+                        lessonWrappers.first { it.lesson.id == id }
                     }
-                    saveLessonsToDb(theoryId, lessons)
                     Observable.just(lessons.map { LessonTheoryWrapper(theoryId, it) })
+                }
+                .doOnNext { wrappers ->
+                    lessonDao.insertLessons(wrappers.map { LessonInfo(theoryId, it.lesson.lesson.id, it.lesson) })
                 }
     }
 
-    private fun saveLessonsToDb(id: String, list: List<LessonWrapper>) =
-            Completable.fromAction {
-                lessonDao.insertLessons(list.map { LessonInfo(id, it.lesson.id, it) })
-            }.subscribe()
-
-    private fun saveStepsToDb(steps: List<Step>) =
-            Completable.fromAction {
-                stepDao.insertSteps(steps.map { StepInfo(it.id) })
-            }.subscribe()
-
     private fun loadTheoryLessonsLocal(theoryId: String) =
             lessonDao.findAllLessonsByTopicId(theoryId)
-                    .filter { t: List<LessonWrapper> -> t.isNotEmpty() }
+                    .filter { it.isNotEmpty() }
                     .map { list -> list.map { LessonTheoryWrapper(theoryId, it) } }
 }

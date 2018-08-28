@@ -10,9 +10,11 @@ import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.ui.activity.TopicsListActivity
 
 class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     private var topics: List<Topic> = listOf()
+    private lateinit var type: TopicsListActivity.TYPE
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
             TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
@@ -25,9 +27,13 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
         holder?.bind(topics[position])
     }
 
-    fun updateTopics(topics: List<Topic>) {
+    fun updateData(topics: List<Topic>) {
         this.topics = topics
         notifyDataSetChanged()
+    }
+
+    fun updateType(type: TopicsListActivity.TYPE) {
+        this.type = type
     }
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -35,7 +41,10 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
 
         init {
             topicsText.setOnClickListener {
-                screenManager.showLessons(topics[adapterPosition].id, context)
+                when (type) {
+                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(topics[adapterPosition].id, context)
+                    TopicsListActivity.TYPE.ADAPTIVE -> screenManager.continueAdaptiveCourse(topics[adapterPosition].id, context)
+                }
             }
         }
 

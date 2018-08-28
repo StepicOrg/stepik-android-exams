@@ -12,6 +12,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
@@ -30,6 +31,12 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         App.component().inject(this)
     }
 
+    override fun getParsedLessons(list: List<GraphLesson>) {
+
+    }
+
+    enum class TYPE { THEORY, ADAPTIVE }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_topics_list)
@@ -39,10 +46,21 @@ class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsList
         swipeRefresh.setOnRefreshListener {
             presenter?.getGraphData()
         }
+        theory.isChecked = true
+        theory.setOnClickListener {
+            presenter?.setType(TYPE.THEORY)
+        }
+        adaptive.setOnClickListener {
+            presenter?.setType(TYPE.ADAPTIVE)
+        }
+    }
+
+    override fun setActivityType(type: TYPE) {
+        topicsAdapter.updateType(type)
     }
 
     override fun showGraphData(graphData: GraphData) {
-        topicsAdapter.updateTopics(graphData.topics)
+        topicsAdapter.updateData(graphData.topics)
     }
 
     override fun getPresenterProvider(): Provider<TopicsListPresenter> = topicsListPresenterProvider

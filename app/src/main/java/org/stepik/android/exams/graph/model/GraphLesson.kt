@@ -6,7 +6,14 @@ class GraphLesson(
         @SerializedName("id")
         val id: Long,
         @SerializedName("type")
-        val type: String,
+        val type: Type,
         @SerializedName("course")
         val course: Long
-)
+) {
+    enum class Type {
+        @SerializedName("theory")
+        THEORY,
+        @SerializedName("practice")
+        PRACTICE
+    }
+}

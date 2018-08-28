@@ -57,6 +57,13 @@ constructor(
         mapFromTypeToDrawable[AppConstants.TYPE_CHOICE] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_NUMBER] = simpleQuestionDrawable
         mapFromTypeToDrawable[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_PUZZLE] = simpleQuestionDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_PYCHARM] = simpleQuestionDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_CODE] = hardQuizDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_ADMIN] = hardQuizDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_SQL] = simpleQuestionDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_LINUX_CODE] = simpleQuestionDrawable
+        mapFromTypeToDrawable[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawable
 
 
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_TEXT] = theoryDrawableNotViewed
@@ -68,6 +75,13 @@ constructor(
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_STRING] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_CHOICE] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_NUMBER] = simpleQuestionDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_PUZZLE] = simpleQuestionDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_PYCHARM] = simpleQuestionDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_CODE] = hardQuizDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_ADMIN] = hardQuizDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_SQL] = simpleQuestionDrawableNotViewed
+        mapFromTypeToDrawableNotViewed[AppConstants.TYPE_LINUX_CODE] = simpleQuestionDrawableNotViewed
         mapFromTypeToDrawableNotViewed[AppConstants.TYPE_FILL_BLANKS] = simpleQuestionDrawableNotViewed
     }
 

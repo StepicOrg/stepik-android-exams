@@ -122,6 +122,7 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         private const val PROFILE = "profile"
         private const val PROFILE_ID = "profile_id"
         private const val NOT_FIRST_TIME = "not_first_time"
+        private const val FIRST_TIME_ADAPTIVE = "first_time_adaptive"
         private const val FAKE_USER = "fake_user"
     }
 

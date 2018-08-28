@@ -50,4 +50,17 @@
     <string name="table_quiz_beta">Табличная задача β</string>
     <string name="next">Дальше</string>
     <string name="open_web_to_solve">пройти задание в web-версии</string>
+    <string name="theory">Теория</string>
+    <string name="adaptive">Адаптивный режим</string>
+    <string name="adaptive_reaction_easy">ПРОСТО</string>
+    <string name="adaptive_reaction_hard">СЛОЖНО</string>
+    <string name="adaptive_retry">Новая попытка</string>
+    <string name="adaptive_correct">ВЕРНО</string>
+    <string name="adaptive_wrong">НЕВЕРНО</string>
+    <string name="adaptive_attempt_button">Решить</string>
+    <string name="adaptive_course_completed">Поздравляем!\n\nВы успешно прошли курс!</string>
+    <string name="adaptive_course_not_supported">Этот курс недоступен в адаптивном режиме</string>
+    <string name="internet_problem">Интернет недоступен. Попробуйте позже</string>
+    <string name="internet_problem_short">Интернет недоступен</string>
+    <string name="no_connection">Нет подключения</string>
 </resources>
