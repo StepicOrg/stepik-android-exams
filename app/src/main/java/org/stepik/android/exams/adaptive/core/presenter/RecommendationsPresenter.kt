@@ -79,6 +79,10 @@ constructor(
         super.attachView(view)
         when {
             isCourseCompleted -> viewState = RecommendationsView.State.CourseCompleted
+            else -> {
+                resubscribe()
+                error?.let(this::onError)
+            }
         }
         view.onAdapter(adapter)
         view.setState(viewState)

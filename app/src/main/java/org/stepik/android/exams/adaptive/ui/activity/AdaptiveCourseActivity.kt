@@ -22,7 +22,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
 
     override fun getPresenterProvider() = recommendationsPresenterProvider
 
-    private var topicId: String = ""
+    private lateinit var topicId: String
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
