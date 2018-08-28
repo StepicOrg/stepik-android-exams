@@ -47,14 +47,14 @@ constructor(
                     LessonWrapper(lesson, stepResponse.steps!!)
                 }
                 .toList()
-                .doOnSuccess { wrappers ->
-                    lessonDao.insertLessons(wrappers.map { LessonInfo(theoryId, it.lesson.id, it) })
-                }
                 .flatMapObservable { lessonWrappers ->
                     val lessons = lessonIds.map { id ->
                         lessonWrappers.first { it.lesson.id == id }
                     }
                     Observable.just(lessons.map { LessonTheoryWrapper(theoryId, it) })
+                }
+                .doOnNext { wrappers ->
+                    lessonDao.insertLessons(wrappers.map { LessonInfo(theoryId, it.lesson.lesson.id, it.lesson) })
                 }
     }
 

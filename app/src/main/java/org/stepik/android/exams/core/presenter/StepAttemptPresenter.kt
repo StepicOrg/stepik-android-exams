@@ -74,12 +74,12 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribe({
                         onSubmissionLoaded(it)
-                    }, {})
+                    }, { onError() })
 
     private fun attemptLoaded(it: Attempt) {
         attempt = it
-        view?.onNeedShowAttempt(attempt)
         viewState = AttemptView.State.Success
+        view?.onNeedShowAttempt(attempt)
     }
 
 
