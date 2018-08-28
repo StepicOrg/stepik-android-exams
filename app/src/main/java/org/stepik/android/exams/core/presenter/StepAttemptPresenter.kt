@@ -1,6 +1,8 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Maybe
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.data.repository.AttemptRepository
@@ -84,18 +86,17 @@ constructor(
         val submission = Submission(reply = reply, attempt = attemptId, status = null)
         disposable.add(submissionRepository.addSubmission(submission)
                 .andThen(submissionRepository.getLatestSubmissionByAttemptIdFromApi(attemptId))
+                .flatMap {
+                    if (it.status == Submission.Status.EVALUATION) {
+                        submissionRepository.getLatestSubmissionByAttemptId(it.attempt)
+                                .delay(1, TimeUnit.SECONDS)
+                    } else Maybe.just(it)
+                }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({s ->
-                    if (s.status == Submission.Status.EVALUATION){
-                        disposable.add(submissionRepository.getLatestSubmissionByAttemptId(s.attempt)
-                                .delay(1, TimeUnit.SECONDS)
-                                .subscribeOn(backgroundScheduler)
-                                .observeOn(mainScheduler)
-                                .subscribe ({
-                                    onSubmissionLoaded(s)
-                                }, {onError()}))
-                    } else onSubmissionLoaded(s) }, { onError() }))
+                .subscribe({ s ->
+                    onSubmissionLoaded(s)
+                }, { onError() }))
     }
 
     private fun onSubmissionLoaded(submission: Submission?) {
