@@ -53,7 +53,6 @@ constructor(
                     attemptLoaded(it)
                     loadSubmission(it.id)
                 }, { onError() })
-
     }
 
     fun createAttempt(step: Step) {
@@ -61,18 +60,14 @@ constructor(
         attemptRepository.createAttempt(step.id)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({
-                    attemptLoaded(it)
-                }, { onError() })
+                .subscribeBy(onError = { onError() }, onSuccess = ::attemptLoaded)
     }
 
     private fun loadSubmission(attemptId: Long) =
             submissionRepository.getLatestSubmissionByAttemptId(attemptId)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribe({
-                        onSubmissionLoaded(it)
-                    }, { onError() })
+                    .subscribeBy(onError = { onError() }, onSuccess = ::onSubmissionLoaded)
 
     private fun attemptLoaded(attempt: Attempt) {
         this.attempt = attempt
@@ -83,7 +78,7 @@ constructor(
 
     fun createSubmission(attemptId: Long, reply: Reply) {
         viewState = AttemptView.State.Loading
-        val submission = Submission(reply = reply, attempt = attemptId, status = null)
+        val submission = Submission(reply = reply, attempt = attemptId)
         disposable.add(submissionRepository.addSubmission(submission)
                 .andThen(getCompletedSubmission(attemptId))
                 .subscribeOn(backgroundScheduler)
@@ -122,7 +117,6 @@ constructor(
     private fun onError() {
         viewState = AttemptView.State.NetworkError
     }
-
 
     override fun detachView(view: AttemptView) {
         view.let {
