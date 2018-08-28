@@ -1,7 +1,6 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.data.db.dao.SubmissionEntityDao
@@ -18,15 +17,24 @@ constructor(
     private val submissionEntityDao: SubmissionEntityDao,
     private val stepicRestService: StepicRestService
 ) {
-    fun getSubmissionByAttemptId(attemptId: Long): Flowable<Submission> =
-            Maybe.concat(
+    fun getLatestSubmissionByAttemptId(attemptId: Long): Maybe<Submission> = Maybe
+            .concat(
                     submissionEntityDao
                             .findSubmissionByAttemptId(attemptId)
                             .map(SubmissionEntity::toObject),
-                    getLatestSubmission(attemptId)
+                    getLatestSubmissionByAttemptIdFromApi(attemptId)
             )
+            .toList()
+            .flatMapMaybe { submissions ->
+                val submission = submissions.maxBy { it.time?.time ?: 0 }
+                if (submission != null) {
+                    Maybe.just(submission)
+                } else {
+                    Maybe.empty()
+                }
+            }
 
-    fun getLatestSubmission(attemptId: Long): Maybe<Submission> =
+    fun getLatestSubmissionByAttemptIdFromApi(attemptId: Long): Maybe<Submission> =
             stepicRestService
                     .getSubmissions(attemptId, "desc")
                     .flatMapMaybe { response ->
