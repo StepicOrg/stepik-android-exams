@@ -9,6 +9,7 @@ import org.stepik.android.model.Reply
 import org.stepik.android.model.Submission
 import org.stepik.android.model.attempts.Attempt
 import org.stepik.android.model.attempts.Dataset
+import java.util.*
 
 
 class GsonConverter {
@@ -85,4 +86,12 @@ class GsonConverter {
     @TypeConverter
     fun submissionStatusFromString(status: String): Submission.Status =
             gson.fromJson<Submission.Status>(status, Submission.Status::class.java)
+
+    @TypeConverter
+    fun dateToLong(date: Date?): Long? =
+            date?.time
+
+    @TypeConverter
+    fun longToDate(time: Long?): Date? =
+            time?.let(::Date)
 }

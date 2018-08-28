@@ -10,7 +10,6 @@ import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.model.AccountCredentials
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.data.model.StepResponse
-import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.network.NetworkHelper
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
@@ -28,8 +27,7 @@ constructor(
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
         private val cookieHelper: CookieHelper,
-        private val stepicService: StepicRestService,
-        private var sharedPreference: SharedPreferenceHelper
+        private val stepicService: StepicRestService
 ) {
 
     companion object {
@@ -82,7 +80,6 @@ constructor(
         }
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addNetworkInterceptor(interceptor)
-        //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
         okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
         val notLogged = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
 

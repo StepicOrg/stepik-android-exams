@@ -9,7 +9,7 @@ interface SubmissionEntityDao {
     @Query("SELECT * FROM SubmissionEntity WHERE id = :id")
     fun findSubmissionById(id: Long): Maybe<SubmissionEntity>
 
-    @Query("SELECT * FROM SubmissionEntity where attempt = :attemptId")
+    @Query("SELECT * FROM SubmissionEntity where attempt = :attemptId ORDER BY time DESC")
     fun findSubmissionByAttemptId(attemptId: Long): Maybe<SubmissionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
