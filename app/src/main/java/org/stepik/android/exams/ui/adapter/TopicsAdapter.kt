@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.recycler_item.view.*
+import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
@@ -17,7 +17,7 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
     private lateinit var type: TopicsListActivity.TYPE
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
+            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_lesson, parent, false))
 
 
     override fun getItemCount() = topics.size
@@ -37,12 +37,14 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
     }
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        val topicsText: TextView = root.text
+        private val topicsText: TextView = root.lessonTitle
 
         init {
             topicsText.setOnClickListener {
+                if (adapterPosition !in topics.indices) return@setOnClickListener
+
                 when (type) {
-                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(topics[adapterPosition].id, context)
+                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(context, topics[adapterPosition])
                     TopicsListActivity.TYPE.ADAPTIVE -> screenManager.continueAdaptiveCourse(topics[adapterPosition].id, context)
                 }
             }

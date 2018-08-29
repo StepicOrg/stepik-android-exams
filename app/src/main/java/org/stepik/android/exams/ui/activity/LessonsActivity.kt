@@ -2,8 +2,11 @@ package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_study.*
+import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_lessons.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
@@ -12,14 +15,16 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
 class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), LessonsView {
     companion object {
-        const val EXTRA_TOPIC_ID = "topicId"
+        const val EXTRA_TOPIC = "topic"
     }
 
     private lateinit var lessonsAdapter: LessonsAdapter
@@ -30,17 +35,46 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var topicId: String
+    private lateinit var topic: Topic
 
     override fun injectComponent() {
         App.component().inject(this)
     }
 
-    override fun setState(state: LessonsView.State): Unit = when (state) {
-        is LessonsView.State.FirstLoading -> {
-            presenter?.tryLoadLessons(topicId) ?: Unit
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        topic = intent.getParcelableExtra(EXTRA_TOPIC)
+        setContentView(R.layout.activity_lessons)
+
+        initCenteredToolbar(R.string.topic, showHomeButton = true)
+
+        lessonsAdapter = LessonsAdapter(this, screenManager, topic)
+
+        recyclerLesson.adapter = lessonsAdapter
+        recyclerLesson.layoutManager = LinearLayoutManager(this)
+        swipeRefreshLessons.setOnRefreshListener {
+            presenter?.tryLoadLessons(topic.id)
         }
 
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
+        recyclerLesson.addItemDecoration(divider)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter?.attachView(this)
+    }
+
+    override fun onStop() {
+        presenter?.detachView(this)
+        super.onStop()
+    }
+
+    override fun setState(state: LessonsView.State): Unit = when (state) {
+        is LessonsView.State.FirstLoading -> {
+            presenter?.tryLoadLessons(topic.id) ?: Unit
+        }
 
         is LessonsView.State.Idle -> {
         }
@@ -84,32 +118,17 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         errorTextLesson.changeVisibillity(false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        topicId = intent.getStringExtra(EXTRA_TOPIC_ID)
-        setContentView(R.layout.fragment_study)
-        lessonsAdapter = LessonsAdapter(this, screenManager, topicId)
-        recyclerLesson.adapter = lessonsAdapter
-        recyclerLesson.layoutManager = LinearLayoutManager(this)
-        swipeRefreshLessons.setOnRefreshListener {
-            presenter?.tryLoadLessons(topicId)
-        }
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter?.attachView(this)
-    }
-
-    override fun onStop() {
-        presenter?.detachView(this)
-        super.onStop()
-    }
-
     override fun getPresenterProvider() = lessonsPresenterProvider
 
     override fun showLessons(lesson: List<LessonWrapper>) {
-        lessonsAdapter.addLessons(lesson)
+        lessonsAdapter.setLessons(lesson)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?) =
+            if (item?.itemId == android.R.id.home) {
+                onBackPressed()
+                true
+            } else {
+                super.onOptionsItemSelected(item)
+            }
 }

@@ -10,6 +10,7 @@ import org.stepik.android.exams.core.services.ViewPushService
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.AppSingleton
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.activity.*
 import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
@@ -28,9 +29,9 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun showLessons(topicId: String, context: Context) {
+    override fun showLessons(context: Context, topic: Topic) {
         val intent = Intent(context, LessonsActivity::class.java)
-        intent.putExtra(LessonsActivity.EXTRA_TOPIC_ID, topicId)
+        intent.putExtra(LessonsActivity.EXTRA_TOPIC, topic)
         context.startActivity(intent)
     }
 
