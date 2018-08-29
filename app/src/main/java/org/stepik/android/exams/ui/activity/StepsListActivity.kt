@@ -3,6 +3,7 @@ package org.stepik.android.exams.ui.activity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.steps_activity.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
@@ -12,6 +13,7 @@ import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
+import org.stepik.android.exams.util.initCenteredToolbar
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.model.Step
 import javax.inject.Inject
@@ -25,12 +27,17 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
 
     private lateinit var adapter: StepPagerAdapter
     private lateinit var steps: List<Step>
+
     @Inject
     lateinit var stepPresenterProvider: Provider<ProgressPresenter>
+
     @Inject
     lateinit var stepTypeResolver: StepTypeResolver
+
     private lateinit var pageChangeListener: ViewPager.OnPageChangeListener
-    override fun getPresenterProvider() = stepPresenterProvider
+
+    override fun getPresenterProvider() =
+            stepPresenterProvider
 
     override fun injectComponent() {
         App.componentManager().stepComponent.inject(this)
@@ -39,13 +46,16 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.steps_activity)
+
+        initCenteredToolbar(R.string.theory, showHomeButton = true)
+
         val lesson: LessonWrapper = intent.getParcelableExtra(EXTRA_LESSON)
         val topicId: String = intent.getStringExtra(EXTRA_TOPIC_ID)
         steps = lesson.stepsList
+
         adapter = StepPagerAdapter(supportFragmentManager, topicId, steps, stepTypeResolver)
         pagers.adapter = adapter
         pageChangeListener = object : ViewPager.OnPageChangeListener {
-
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
@@ -56,7 +66,6 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
         tabs.setupWithViewPager(pagers)
         tabs.tabMode = TabLayout.MODE_SCROLLABLE
     }
-
 
     override fun onResume() {
         presenter?.attachView(this)
@@ -97,4 +106,11 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?) =
+            if (item?.itemId == android.R.id.home) {
+                onBackPressed()
+                true
+            } else {
+                super.onOptionsItemSelected(item)
+            }
 }

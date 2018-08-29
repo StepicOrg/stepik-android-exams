@@ -39,6 +39,9 @@
     <string name="table_quiz_beta">Table problem β</string>
     <string name="next">Next</string>
     <string name="open_web_to_solve">Open the web version to solve</string>
+    <string name="theory">Theory</string>
+    <string name="practice">Practice</string>
+    <string name="adaptive">Adaptive</string>
     <string name="adaptive_reaction_easy">EASY</string>
     <string name="adaptive_reaction_hard">HARD</string>
     <string name="adaptive_retry">Retry</string>

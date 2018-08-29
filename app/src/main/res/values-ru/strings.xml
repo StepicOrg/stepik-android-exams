@@ -38,6 +38,11 @@
     <string name="table_quiz_beta">Табличная задача β</string>
     <string name="next">Дальше</string>
     <string name="open_web_to_solve">пройти задание в web-версии</string>
+
+    <string name="theory">Теория</string>
+    <string name="practice">Практика</string>
+
+    <string name="adaptive">Адаптивный режим</string>
     <string name="adaptive_reaction_easy">ПРОСТО</string>
     <string name="adaptive_reaction_hard">СЛОЖНО</string>
     <string name="adaptive_retry">Новая попытка</string>
