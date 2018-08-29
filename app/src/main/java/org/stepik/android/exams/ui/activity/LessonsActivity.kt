@@ -12,7 +12,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
-import org.stepik.android.exams.ui.adapter.LessonsAdapter
+import org.stepik.android.exams.ui.adapter.lessons.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider

@@ -1,4 +1,4 @@
-package org.stepik.android.exams.ui.adapter
+package org.stepik.android.exams.ui.adapter.lessons
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
