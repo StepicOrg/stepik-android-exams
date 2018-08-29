@@ -55,7 +55,7 @@
     <string name="no_connection">Нет подключения</string>
     <string name="study">Учеба</string>
     <string name="training">Тренировка</string>
-    <string name="testing">тестирование</string>
+    <string name="testing">Тестирование</string>
 
     <string name="topic">Тема</string>
 </resources>

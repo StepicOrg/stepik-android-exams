@@ -40,7 +40,7 @@ interface AppCoreComponent {
 
     fun inject(app: App)
 
-    fun inject(activityTopics: TopicsListFragment)
+    fun inject(fragmentTopics: TopicsListFragment)
 
     fun inject(lessonsActivity: LessonsActivity)
 

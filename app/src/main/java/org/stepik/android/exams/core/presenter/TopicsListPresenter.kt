@@ -85,7 +85,6 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribeBy(onSuccess = {
                     // no op
-                    it
                 }, onComplete = {
                     val topicsList = graphData.topicsMap.map { it.id }
                     val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.id }.toLongArray() }
@@ -94,7 +93,6 @@ constructor(
                     saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
                     joinAllCourses(courseList.flatMap { it })
                 }, onError = {
-                    it
                 })
     }
 

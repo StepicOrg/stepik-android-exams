@@ -34,7 +34,6 @@
             android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.MainMenuActivity" />
-
         <service android:name=".core.services.ViewPushService" />
     </application>
 
