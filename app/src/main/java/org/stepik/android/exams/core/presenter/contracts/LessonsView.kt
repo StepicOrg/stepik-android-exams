@@ -9,6 +9,7 @@ interface LessonsView {
         object Idle : State()
         object Loading : State()
         class Success(val lessons: List<LessonWrapper>) : State()
+        class Refreshing(val lessons: List<LessonWrapper>) : State()
         object NetworkError : State()
     }
 }

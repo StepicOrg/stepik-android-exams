@@ -16,6 +16,7 @@ import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
@@ -61,6 +62,18 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
         recyclerLesson.addItemDecoration(divider)
+
+        content.hideAllChildren()
+        loadingPlaceholder.changeVisibillity(true)
+
+        initPlaceholders()
+    }
+
+    private fun initPlaceholders() {
+        for (i in 0 until 3) {
+            loadingPlaceholder.addView(layoutInflater.inflate(R.layout.item_lesson_placeholder, loadingPlaceholder, false))
+            loadingPlaceholder.addView(layoutInflater.inflate(R.layout.view_divider_h, loadingPlaceholder, false))
+        }
     }
 
     override fun onStart() {
@@ -79,42 +92,28 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         }
 
         is LessonsView.State.Loading -> {
-            recyclerLesson.changeVisibillity(true)
-            showRefreshView()
+            content.hideAllChildren()
+            loadingPlaceholder.changeVisibillity(true)
+        }
+
+        is LessonsView.State.Refreshing -> {
+            content.hideAllChildren()
+            swipeRefreshLessons.changeVisibillity(true)
+            swipeRefreshLessons.isRefreshing = true
+            lessonsAdapter.setLessons(state.lessons)
         }
 
         is LessonsView.State.NetworkError -> {
-            recyclerLesson.changeVisibillity(false)
-            hideRefreshView()
-            onError()
+            content.hideAllChildren()
+            error.changeVisibillity(true)
         }
 
         is LessonsView.State.Success -> {
-            recyclerLesson.changeVisibillity(true)
+            content.hideAllChildren()
+            swipeRefreshLessons.changeVisibillity(true)
+            swipeRefreshLessons.isRefreshing = false
             lessonsAdapter.setLessons(state.lessons)
-            hideRefreshView()
-            hideErrorMessage()
         }
-    }
-
-    private fun onError() {
-        showErrorMessage()
-    }
-
-    private fun showRefreshView() {
-        swipeRefreshLessons.isRefreshing = true
-    }
-
-    private fun hideRefreshView() {
-        swipeRefreshLessons.isRefreshing = false
-    }
-
-    private fun showErrorMessage() {
-        error.changeVisibillity(true)
-    }
-
-    private fun hideErrorMessage() {
-        error.changeVisibillity(false)
     }
 
     override fun getPresenterProvider() = lessonsPresenterProvider

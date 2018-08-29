@@ -26,7 +26,12 @@ constructor(
     private val disposable = CompositeDisposable()
 
     fun tryLoadLessons(topicId: String) {
-        viewState = LessonsView.State.Loading
+        val oldViewState = viewState
+        viewState = if (oldViewState is LessonsView.State.Success) {
+            LessonsView.State.Refreshing(oldViewState.lessons)
+        } else {
+            LessonsView.State.Loading
+        }
         disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
