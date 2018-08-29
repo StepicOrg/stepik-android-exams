@@ -2,6 +2,8 @@ package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_lessons.*
@@ -53,6 +55,10 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         swipeRefreshLessons.setOnRefreshListener {
             presenter?.tryLoadLessons(topic.id)
         }
+
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
+        recyclerLesson.addItemDecoration(divider)
     }
 
     override fun onStart() {
@@ -115,7 +121,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     override fun getPresenterProvider() = lessonsPresenterProvider
 
     override fun showLessons(lesson: List<LessonWrapper>) {
-        lessonsAdapter.addLessons(lesson)
+        lessonsAdapter.setLessons(lesson)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) =

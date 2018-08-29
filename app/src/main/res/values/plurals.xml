@@ -4,4 +4,8 @@
         <item quantity="one">%d lesson</item>
         <item quantity="other">%d lessons</item>
     </plurals>
+    <plurals name="page">
+        <item quantity="one">%d page</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
 </resources>

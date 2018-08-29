@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.header_lessons.view.*
-import kotlinx.android.synthetic.main.recycler_item.view.*
+import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonWrapper
@@ -23,6 +23,8 @@ class LessonsAdapter(
         private const val VIEW_TYPE_LESSON = 2
     }
 
+    private val inflater = LayoutInflater.from(context)
+
     private var lessons: List<LessonWrapper> = listOf()
 
     override fun getItemViewType(position: Int) =
@@ -35,10 +37,10 @@ class LessonsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
             when(viewType) {
                 VIEW_TYPE_HEADER ->
-                    HeaderViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.header_lessons, parent, false))
+                    HeaderViewHolder(inflater.inflate(R.layout.header_lessons, parent, false))
 
                 VIEW_TYPE_LESSON ->
-                    LessonViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
+                    LessonViewHolder(inflater.inflate(R.layout.item_lesson, parent, false))
 
                 else -> throw IllegalStateException("unknown viewType = $viewType")
             }
@@ -51,11 +53,11 @@ class LessonsAdapter(
                 holder.bind(topic, lessons.size)
 
             is LessonViewHolder ->
-                holder.bind(lessons[position - 1])
+                holder.bind(lessons[position - 1], position)
         }
     }
 
-    fun addLessons(lessons: List<LessonWrapper>) {
+    fun setLessons(lessons: List<LessonWrapper>) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -71,16 +73,21 @@ class LessonsAdapter(
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        private val titleText: TextView = root.text
+        private val title: TextView = root.lessonTitle
+        private val index: TextView = root.lessonIndex
+        private val subtitle: TextView = root.lessonSubtitle
 
         init {
-            titleText.setOnClickListener {
+            root.setOnClickListener {
                 screenManager.showStepsList(topic.id, lessons[adapterPosition - 1], context)
             }
         }
 
-        fun bind(wrapper: LessonWrapper) {
-            titleText.text = wrapper.lesson.title
+        fun bind(wrapper: LessonWrapper, position: Int) {
+            val context = itemView.context
+            index.text = context.getString(R.string.position_placeholder, position)
+            title.text = wrapper.lesson.title
+            subtitle.text = context.resources.getQuantityString(R.plurals.page, wrapper.lesson.steps.size, wrapper.lesson.steps.size)
         }
     }
 }

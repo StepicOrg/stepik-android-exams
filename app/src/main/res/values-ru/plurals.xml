@@ -6,4 +6,10 @@
         <item quantity="many">%d уроков</item>
         <item quantity="other">%d уроков</item>
     </plurals>
+    <plurals name="page">
+        <item quantity="one">%d страница</item>
+        <item quantity="few">%d страницы</item>
+        <item quantity="many">%d страниц</item>
+        <item quantity="other">%d страниц</item>
+    </plurals>
 </resources>
