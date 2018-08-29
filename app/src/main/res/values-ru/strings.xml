@@ -66,4 +66,8 @@
     <string name="study">Учеба</string>
     <string name="training">Тренировка</string>
     <string name="testing">тестирование</string>
+
+    <string name="topic">Тема</string>
+    <string name="lesson_item_practice_title">Практические задания</string>
+    <string name="lesson_item_practice_subtitle">Закрепите полученные знания</string>
 </resources>
