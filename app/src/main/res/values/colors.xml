@@ -48,4 +48,7 @@
     <color name="table_header">#F0F0F0</color>
     <color name="new_cover">@color/white</color>
     <color name="stepic_weak_text">#A5A5A5</color>
+
+    <color name="loading_view_base_color">#F6F7F9</color>
+    <color name="loading_view_deep_color">#DBDBDB</color>
 </resources>

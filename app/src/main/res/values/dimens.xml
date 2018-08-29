@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- popup windows -->
-
     <dimen name="auth_elements_width">-1px</dimen>
     <dimen name="auth_form_margin">36dp</dimen>
     <dimen name="auth_button_radius">32dp</dimen>

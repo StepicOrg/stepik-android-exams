@@ -4,13 +4,14 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.model.Lesson
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class LessonsPresenter
 @Inject
@@ -21,49 +22,34 @@ constructor(
         private val mainScheduler: Scheduler,
         private val stepsRepository: StepsRepository
 ) : PresenterBase<LessonsView>() {
-    private var viewState: LessonsView.State = LessonsView.State.Idle
-        set(value) {
-            field = value
-            view?.setState(value)
-        }
-    private var topicId: String = ""
-    private var disposable = CompositeDisposable()
-    private var lessonsList: List<LessonWrapper>? = null
-
-    init {
-        viewState = LessonsView.State.FirstLoading
+    private var viewState by Delegates.observable(LessonsView.State.Idle as LessonsView.State) { _, _, newState ->
+        view?.setState(newState)
     }
 
+    private val disposable = CompositeDisposable()
+
     fun tryLoadLessons(topicId: String) {
-        this.topicId = topicId
-        viewState = LessonsView.State.Loading
+        val oldViewState = viewState
+        viewState = if (oldViewState is LessonsView.State.Success) {
+            LessonsView.State.Refreshing(oldViewState.lessons)
+        } else {
+            LessonsView.State.Loading
+        }
         disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({ l ->
-                    val list = l.map { it.lesson }
-                    lessonsList = list
-                    onComplete(list)
+                .subscribe({ theoryLessons ->
+                    viewState = LessonsView.State.Success(theoryLessons.map(LessonTheoryWrapper::lesson))
                 }, {
-                    onError()
+                    viewState = LessonsView.State.NetworkError
                 }))
     }
     private fun loadPracticeLesson(topicId: String) =
         stepsRepository.getCoursesId(topicId, GraphLesson.Type.PRACTICE)
 
-    private fun onComplete(list: List<LessonWrapper>) {
-        view?.showLessons(list)
-        viewState = LessonsView.State.Success
-    }
-
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        lessonsList?.let(view::showLessons)
-    }
-
-    private fun onError() {
-        viewState = LessonsView.State.NetworkError
     }
 
     override fun destroy() {
