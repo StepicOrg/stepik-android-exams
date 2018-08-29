@@ -3,7 +3,7 @@ package org.stepik.android.exams.ui.activity
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_study.*
+import kotlinx.android.synthetic.main.activity_lessons.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
@@ -13,7 +13,7 @@ import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.Topic
-import org.stepik.android.exams.ui.adapter.lessons.LessonsAdapter
+import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
@@ -35,6 +35,30 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     override fun injectComponent() {
         App.component().inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        topic = intent.getParcelableExtra(EXTRA_TOPIC)
+        setContentView(R.layout.activity_lessons)
+
+        lessonsAdapter = LessonsAdapter(this, screenManager, topic)
+
+        recyclerLesson.adapter = lessonsAdapter
+        recyclerLesson.layoutManager = LinearLayoutManager(this)
+        swipeRefreshLessons.setOnRefreshListener {
+            presenter?.tryLoadLessons(topic.id)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter?.attachView(this)
+    }
+
+    override fun onStop() {
+        presenter?.detachView(this)
+        super.onStop()
     }
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
@@ -82,28 +106,6 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     private fun hideErrorMessage() {
         errorTextLesson.changeVisibillity(false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        topic = intent.getParcelableExtra(EXTRA_TOPIC)
-        setContentView(R.layout.fragment_study)
-        lessonsAdapter = LessonsAdapter(this, screenManager, topic)
-        recyclerLesson.adapter = lessonsAdapter
-        recyclerLesson.layoutManager = LinearLayoutManager(this)
-        swipeRefreshLessons.setOnRefreshListener {
-            presenter?.tryLoadLessons(topic.id)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter?.attachView(this)
-    }
-
-    override fun onStop() {
-        presenter?.detachView(this)
-        super.onStop()
     }
 
     override fun getPresenterProvider() = lessonsPresenterProvider

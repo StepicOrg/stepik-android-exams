@@ -15,7 +15,6 @@ ext.versions = [
         okhttp3              : '3.11.0',
         supportLibs          : '26.1.0',
         constraintLayout     : '1.0.2',
-        adapterDelegates     : '3.0.1',
 
         jodaTime             : '2.8',
         junit                : '4.12',
@@ -49,7 +48,6 @@ ext.libraries = [
         loggingInterceptor   : "com.squareup.okhttp3:logging-interceptor:$versions.okhttp3",
 
         constraintLayout     : "com.android.support.constraint:constraint-layout:$versions.constraintLayout",
-        adapterDelegates     : "com.hannesdorfmann:adapterdelegates3:$versions.adapterDelegates",
 
         supportAppCompat     : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign        : "com.android.support:design:$versions.supportLibs",
