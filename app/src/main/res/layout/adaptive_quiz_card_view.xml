@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.stepik.android.exams.adaptive.ui.custom.SwipeableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -24,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/title_adaptive"
@@ -41,120 +43,83 @@
                     tools:ignore="MissingPrefix" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/supplemental_actions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <FrameLayout
+                android:id="@+id/supplemental_actions_container"
                 android:layout_alignParentBottom="true"
                 android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
-                android:paddingRight="4dp">
+                android:paddingRight="4dp"
+                android:paddingBottom="4dp">
 
-                <Button
-                    android:id="@+id/solve"
-                    style="@style/Adaptive.BorderlessButton"
+                <TextView
+                    android:id="@+id/reaction_hard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/adaptive_attempt_button"
-                    android:visibility="gone" />
+                    android:text="@string/adaptive_reaction_hard"
+                    android:textColor="@color/stepic_weak_text"
+                    android:layout_gravity="start"
+                    style="@style/Adaptive.BorderlessButton" />
 
                 <Button
-                    android:id="@+id/submit"
-                    style="@style/Adaptive.BorderlessButton"
+                    android:id="@+id/reaction_easy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/adaptive_reaction_easy"
+                    android:textColor="@color/stepic_weak_text"
+                    android:layout_gravity="end"
+                    style="@style/Adaptive.BorderlessButton" />
+
+                <RelativeLayout
+                    android:id="@+id/supplemental_actions"
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="start|center_vertical"
-                    android:text="@string/submit"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/next"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/next"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/wrongRetry"
-                    style="@style/Adaptive.BorderlessButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/adaptive_retry"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/correct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="6dp"
-                        android:layout_marginRight="6dp"
-                        android:tint="@color/adaptive_color_correct"
-                        app:srcCompat="@drawable/ic_adaptive_correct" />
-
-                    <TextView
+                    <Button
+                        android:id="@+id/solve"
+                        style="@style/Adaptive.BorderlessButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/adaptive_correct"
-                        android:textColor="@color/adaptive_color_correct" />
-                </LinearLayout>
+                        android:layout_centerInParent="true"
+                        android:text="@string/adaptive_attempt_button"
+                        android:visibility="gone" />
 
-                <LinearLayout
-                    android:id="@+id/wrong"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="6dp"
-                        android:layout_marginRight="6dp"
-                        android:tint="@color/adaptive_color_wrong"
-                        app:srcCompat="@drawable/ic_adaptive_wrong" />
-
-                    <TextView
+                    <Button
+                        android:id="@+id/submit"
+                        style="@style/Adaptive.BorderlessButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/adaptive_wrong"
-                        android:textColor="@color/adaptive_color_wrong" />
-                </LinearLayout>
-            </RelativeLayout>
+                        android:layout_centerInParent="true"
+                        android:text="@string/submit"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/next"
+                        style="@style/Adaptive.BorderlessButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/next"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/wrongRetry"
+                        style="@style/Adaptive.BorderlessButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/adaptive_retry"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </FrameLayout>
 
             <View
                 android:id="@+id/bottom_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_above="@id/supplemental_actions"
+                android:layout_above="@id/supplemental_actions_container"
                 android:background="@color/color_stroke" />
 
             <ScrollView
@@ -164,40 +129,6 @@
                 android:layout_above="@id/bottom_divider"
                 android:layout_below="@id/title_container"
                 android:background="@android:color/white">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/reaction_hard"
-                        style="@style/Adaptive.ReactionStamp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/adaptive_stamp_hard_bg"
-                        android:text="@string/adaptive_reaction_hard"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/reaction_easy"
-                        style="@style/Adaptive.ReactionStamp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/adaptive_stamp_easy_bg"
-                        android:text="@string/adaptive_reaction_easy"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -226,6 +157,62 @@
                         android:padding="16dp"
                         android:visibility="gone" />
 
+                    <LinearLayout
+                        android:id="@+id/correct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_gravity="start"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginRight="6dp"
+                            android:tint="@color/adaptive_color_correct"
+                            app:srcCompat="@drawable/ic_adaptive_correct" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/adaptive_correct"
+                            android:textColor="@color/adaptive_color_correct" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/wrong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_gravity="start"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="6dp"
+                            android:layout_marginRight="6dp"
+                            android:tint="@color/adaptive_color_wrong"
+                            app:srcCompat="@drawable/ic_adaptive_wrong" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/adaptive_wrong"
+                            android:textColor="@color/adaptive_color_wrong" />
+                    </LinearLayout>
+
                     <ProgressBar
                         android:id="@+id/answersProgress"
                         android:layout_width="32dp"
@@ -234,7 +221,6 @@
                         android:layout_margin="16dp"
                         android:visibility="gone" />
 
-                </LinearLayout>
                 </LinearLayout>
             </ScrollView>
         </RelativeLayout>
