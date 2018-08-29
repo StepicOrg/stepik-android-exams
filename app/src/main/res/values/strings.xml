@@ -66,4 +66,7 @@
 
     <string name="topic">Topic</string>
     <string name="position_placeholder" translatable="false">%d.</string>
+
+    <string name="lesson_item_practice_title">Practice</string>
+    <string name="lesson_item_practice_subtitle">Reinforce the knowledge</string>
 </resources>

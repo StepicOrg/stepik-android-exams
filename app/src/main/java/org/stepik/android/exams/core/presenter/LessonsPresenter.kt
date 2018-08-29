@@ -54,10 +54,7 @@ constructor(
     override fun attachView(view: LessonsView) {
         super.attachView(view)
         view.setState(viewState)
-        lessonsList?.let {
-            if (it.isNotEmpty())
-                view.showLessons(it)
-        }
+        lessonsList?.let(view::showLessons)
     }
 
     private fun onError() {
