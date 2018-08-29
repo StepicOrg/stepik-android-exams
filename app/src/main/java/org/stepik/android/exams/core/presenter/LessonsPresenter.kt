@@ -23,7 +23,7 @@ constructor(
             field = value
             view?.setState(value)
         }
-    private var id: String = ""
+    private var topicId: String = ""
     private var disposable = CompositeDisposable()
     private var lessonsList: List<LessonWrapper>? = null
 
@@ -31,10 +31,10 @@ constructor(
         viewState = LessonsView.State.FirstLoading
     }
 
-    fun tryLoadLessons(id: String) {
-        this.id = id
+    fun tryLoadLessons(topicId: String) {
+        this.topicId = topicId
         viewState = LessonsView.State.Loading
-        disposable.add(stepsRepository.tryLoadLessons(theoryId = id)
+        disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ l ->

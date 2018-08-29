@@ -12,6 +12,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.lessons.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
@@ -19,7 +20,7 @@ import javax.inject.Provider
 
 class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), LessonsView {
     companion object {
-        const val EXTRA_TOPIC_ID = "topicId"
+        const val EXTRA_TOPIC = "topic"
     }
 
     private lateinit var lessonsAdapter: LessonsAdapter
@@ -30,7 +31,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var topicId: String
+    private lateinit var topic: Topic
 
     override fun injectComponent() {
         App.component().inject(this)
@@ -38,9 +39,8 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.FirstLoading -> {
-            presenter?.tryLoadLessons(topicId) ?: Unit
+            presenter?.tryLoadLessons(topic.id) ?: Unit
         }
-
 
         is LessonsView.State.Idle -> {
         }
@@ -86,15 +86,14 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        topicId = intent.getStringExtra(EXTRA_TOPIC_ID)
+        topic = intent.getParcelableExtra(EXTRA_TOPIC)
         setContentView(R.layout.fragment_study)
-        lessonsAdapter = LessonsAdapter(this, screenManager, topicId)
+        lessonsAdapter = LessonsAdapter(this, screenManager, topic)
         recyclerLesson.adapter = lessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(this)
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.tryLoadLessons(topicId)
+            presenter?.tryLoadLessons(topic.id)
         }
-
     }
 
     override fun onStart() {

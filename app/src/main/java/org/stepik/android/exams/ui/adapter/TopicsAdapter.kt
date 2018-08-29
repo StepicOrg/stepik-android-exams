@@ -37,12 +37,14 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
     }
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        val topicsText: TextView = root.text
+        private val topicsText: TextView = root.text
 
         init {
             topicsText.setOnClickListener {
+                if (adapterPosition !in topics.indices) return@setOnClickListener
+
                 when (type) {
-                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(topics[adapterPosition].id, context)
+                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(context, topics[adapterPosition])
                     TopicsListActivity.TYPE.ADAPTIVE -> screenManager.continueAdaptiveCourse(topics[adapterPosition].id, context)
                 }
             }
