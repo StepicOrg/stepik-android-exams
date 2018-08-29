@@ -1,5 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
@@ -7,6 +8,8 @@ import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.model.Lesson
 import javax.inject.Inject
 
 class LessonsPresenter
@@ -45,6 +48,8 @@ constructor(
                     onError()
                 }))
     }
+    private fun loadPracticeLesson(topicId: String) =
+        stepsRepository.getCoursesId(topicId, GraphLesson.Type.PRACTICE)
 
     private fun onComplete(list: List<LessonWrapper>) {
         view?.showLessons(list)

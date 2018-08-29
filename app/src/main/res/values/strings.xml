@@ -30,28 +30,15 @@
     <string name="empty_auth_title" translatable="false">It\'s You!</string>
     <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
     <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
-    <plurals name="open_comments">
-        <item quantity="one">Open %d comment</item>
-        <item quantity="other">Open %d comments</item>
-    </plurals>
-    <string name="open_comments_zero">No comments. Add your comment</string>
-    <string name="comment_denied">Comments are not available for this lesson</string>
 
     <string name="submit">Submit</string>
     <string name="correct">Correct!</string>
     <string name="wrong">Wrong. Please, try again.</string>
     <string name="try_again">Try again</string>
-    <string name="step_only_online">Steps are available only online. Connect to the Internet and
-        start
-        completing the assignments.
-    </string>
-    <string name="correct_free_response">Your answer was saved.</string>
     <string name="hint_for_type_answer">Type your answer here…</string>
     <string name="table_quiz_beta">Table problem β</string>
     <string name="next">Next</string>
     <string name="open_web_to_solve">Open the web version to solve</string>
-    <string name="theory">Theory</string>
-    <string name="adaptive">Adaptive</string>
     <string name="adaptive_reaction_easy">EASY</string>
     <string name="adaptive_reaction_hard">HARD</string>
     <string name="adaptive_retry">Retry</string>
@@ -61,7 +48,6 @@
     <string name="adaptive_course_completed">Congratulations!\n\nYou have successfully completed the course!</string>
     <string name="adaptive_course_not_supported">This course is not supported in adaptive mode</string>
     <string name="internet_problem">Sorry, the connection is not available. Try again later</string>
-    <string name="internet_problem_short">Sorry, there is no connection</string>
     <string name="no_connection">No connection</string>
     <string name="study">Study</string>
     <string name="training">Training</string>
@@ -70,6 +56,4 @@
     <string name="topic">Topic</string>
     <string name="position_placeholder" translatable="false">%d.</string>
 
-    <string name="lesson_item_practice_title">Practice</string>
-    <string name="lesson_item_practice_subtitle">Reinforce the knowledge</string>
 </resources>

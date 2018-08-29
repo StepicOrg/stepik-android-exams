@@ -35,14 +35,8 @@ class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : R
 
         init {
             topicsText.setOnClickListener {
-                screenManager.showLessons(topics[adapterPosition].id, context)
-                //screenManager.continueAdaptiveCourse(topics[adapterPosition].id, context)
                 if (adapterPosition !in topics.indices) return@setOnClickListener
-
-                when (type) {
-                    TopicsListActivity.TYPE.THEORY -> screenManager.showLessons(context, topics[adapterPosition])
-                    TopicsListActivity.TYPE.ADAPTIVE -> screenManager.continueAdaptiveCourse(topics[adapterPosition].id, context)
-                }
+                screenManager.showLessons(context, topics[adapterPosition])
             }
         }
 

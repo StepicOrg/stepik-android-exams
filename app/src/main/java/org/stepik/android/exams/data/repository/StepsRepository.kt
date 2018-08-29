@@ -21,12 +21,13 @@ constructor(
         private val stepDao: StepDao,
         private val topicsDao: TopicDao
 ) {
-    private fun getCoursesId(theoryId: String) =
-            topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
+    fun getCoursesId(theoryId: String, type : GraphLesson.Type) =
+            topicsDao.getTopicInfoByType(theoryId, type)
 
     fun tryLoadLessons(theoryId: String): Observable<List<LessonTheoryWrapper>> =
             loadTheoryLessonsLocal(theoryId).toObservable()
-                    .switchIfEmpty(getCoursesId(theoryId).flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
+                    .switchIfEmpty(getCoursesId(theoryId, GraphLesson.Type.THEORY)
+                            .flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
 
     fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
