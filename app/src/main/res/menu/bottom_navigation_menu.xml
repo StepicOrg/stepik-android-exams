@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/study"
+        android:enabled="true"
+        android:icon="@drawable/ic_study"
+        android:title="@string/study"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/training"
+        android:enabled="true"
+        android:icon="@drawable/ic_training"
+        android:title="@string/training"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/testing"
+        android:enabled="true"
+        android:icon="@drawable/ic_testing"
+        android:title="@string/testing"
+        app:showAsAction="ifRoom" />
+</menu>

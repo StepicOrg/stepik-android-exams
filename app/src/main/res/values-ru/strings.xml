@@ -63,4 +63,7 @@
     <string name="internet_problem">Интернет недоступен. Попробуйте позже</string>
     <string name="internet_problem_short">Интернет недоступен</string>
     <string name="no_connection">Нет подключения</string>
+    <string name="study">Учеба</string>
+    <string name="training">Тренировка</string>
+    <string name="testing">тестирование</string>
 </resources>

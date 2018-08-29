@@ -14,7 +14,6 @@ import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.ui.activity.TopicsListActivity
 import javax.inject.Inject
 
 class TopicsListPresenter
@@ -32,7 +31,6 @@ constructor(
     private val compositeDisposable = CompositeDisposable()
 
     private var graphData: GraphData
-    private var type = TopicsListActivity.TYPE.THEORY
 
     private var viewState: TopicsListView.State = TopicsListView.State.Idle
         set(value) {
@@ -45,10 +43,6 @@ constructor(
         getGraphData()
     }
 
-    fun setType(type: TopicsListActivity.TYPE) {
-        this.type = type
-        view?.setActivityType(type)
-    }
 
     fun getGraphData() {
         viewState = TopicsListView.State.Loading
@@ -128,7 +122,6 @@ constructor(
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
         view.setState(viewState)
-        setType(type)
         if (graphData.topics.isNotEmpty()) {
             view.showGraphData(graphData)
         }

@@ -5,7 +5,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.reactivex.Maybe
-import io.reactivex.Single
 import org.stepik.android.exams.data.db.data.TopicInfo
 import org.stepik.android.exams.graph.model.GraphLesson
 
