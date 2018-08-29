@@ -1,20 +1,18 @@
 package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_lessons.*
+import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
-import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.LessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
@@ -56,6 +54,10 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
             presenter?.tryLoadLessons(topic.id)
         }
 
+        tryAgain.setOnClickListener {
+            presenter?.tryLoadLessons(topic.id)
+        }
+
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
         recyclerLesson.addItemDecoration(divider)
@@ -72,33 +74,31 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     }
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
-        is LessonsView.State.FirstLoading -> {
+        is LessonsView.State.Idle -> {
             presenter?.tryLoadLessons(topic.id) ?: Unit
         }
 
-        is LessonsView.State.Idle -> {
-        }
-
         is LessonsView.State.Loading -> {
+            recyclerLesson.changeVisibillity(true)
             showRefreshView()
         }
 
         is LessonsView.State.NetworkError -> {
+            recyclerLesson.changeVisibillity(false)
             hideRefreshView()
-            onError(Errors.ConnectionProblem)
+            onError()
         }
 
         is LessonsView.State.Success -> {
+            recyclerLesson.changeVisibillity(true)
+            lessonsAdapter.setLessons(state.lessons)
             hideRefreshView()
             hideErrorMessage()
         }
     }
 
-    private fun onError(error: Errors) {
-        @StringRes val messageResId = when (error) {
-            Errors.ConnectionProblem -> R.string.auth_error_connectivity
-        }
-        showErrorMessage(messageResId)
+    private fun onError() {
+        showErrorMessage()
     }
 
     private fun showRefreshView() {
@@ -109,20 +109,15 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         swipeRefreshLessons.isRefreshing = false
     }
 
-    private fun showErrorMessage(messageResId: Int) {
-        errorTextLesson.setText(messageResId)
-        errorTextLesson.changeVisibillity(true)
+    private fun showErrorMessage() {
+        error.changeVisibillity(true)
     }
 
     private fun hideErrorMessage() {
-        errorTextLesson.changeVisibillity(false)
+        error.changeVisibillity(false)
     }
 
     override fun getPresenterProvider() = lessonsPresenterProvider
-
-    override fun showLessons(lesson: List<LessonWrapper>) {
-        lessonsAdapter.setLessons(lesson)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem?) =
             if (item?.itemId == android.R.id.home) {
