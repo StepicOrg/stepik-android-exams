@@ -3,6 +3,7 @@ package org.stepik.android.exams.ui.activity
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_lessons.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
@@ -15,6 +16,7 @@ import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -41,6 +43,8 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
         super.onCreate(savedInstanceState)
         topic = intent.getParcelableExtra(EXTRA_TOPIC)
         setContentView(R.layout.activity_lessons)
+
+        initCenteredToolbar(R.string.topic, showHomeButton = true)
 
         lessonsAdapter = LessonsAdapter(this, screenManager, topic)
 
@@ -113,4 +117,12 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
     override fun showLessons(lesson: List<LessonWrapper>) {
         lessonsAdapter.addLessons(lesson)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?) =
+            if (item?.itemId == android.R.id.home) {
+                onBackPressed()
+                true
+            } else {
+                super.onOptionsItemSelected(item)
+            }
 }

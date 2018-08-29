@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import kotlinx.android.synthetic.main.header_lessons.view.*
 import kotlinx.android.synthetic.main.recycler_item.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
@@ -31,9 +32,10 @@ class LessonsAdapter(
                 VIEW_TYPE_LESSON
             }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
             when(viewType) {
-                VIEW_TYPE_HEADER -> null
+                VIEW_TYPE_HEADER ->
+                    HeaderViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.header_lessons, parent, false))
 
                 VIEW_TYPE_LESSON ->
                     LessonViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.recycler_item, parent, false))
@@ -59,8 +61,12 @@ class LessonsAdapter(
     }
 
     class HeaderViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        fun bind(topic: Topic, itemCount: Int) {
+        private val topicTitle = root.topicTitle
+        private val lessonsCount = root.lessonsCount
 
+        fun bind(topic: Topic, itemCount: Int) {
+            topicTitle.text = topic.title
+            lessonsCount.text = itemView.context.resources.getQuantityString(R.plurals.lesson, itemCount, itemCount)
         }
     }
 
