@@ -114,12 +114,15 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         sharedPreferences.edit().remove(name).apply()
     }
 
+    fun getCurrentUserId() = profile?.id
+
     companion object {
         private const val OAUTH_RESPONSE = "oauth_response"
         private const val OAUTH_RESPONSE_DEADLINE = "oauth_response_deadline"
         private const val PROFILE = "profile"
         private const val PROFILE_ID = "profile_id"
         private const val NOT_FIRST_TIME = "not_first_time"
+        private const val FIRST_TIME_ADAPTIVE = "first_time_adaptive"
         private const val FAKE_USER = "fake_user"
     }
 

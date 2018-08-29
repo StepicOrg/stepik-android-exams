@@ -1,17 +1,21 @@
 package org.stepik.android.exams.api
 
 import io.reactivex.Completable
+import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.stepik.android.exams.api.auth.CookieHelper
 import org.stepik.android.exams.api.auth.EmptyAuthService
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.model.AccountCredentials
+import org.stepik.android.exams.data.model.LessonStepicResponse
+import org.stepik.android.exams.data.model.StepResponse
 import org.stepik.android.exams.di.network.NetworkHelper
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.util.addUserAgent
 import org.stepik.android.exams.util.setTimeoutsInSeconds
+import org.stepik.android.model.EnrollmentWrapper
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
@@ -22,7 +26,8 @@ constructor(
         private val config: Config,
         @Named(AppConstants.userAgentName)
         private val userAgent: String,
-        private val cookieHelper: CookieHelper
+        private val cookieHelper: CookieHelper,
+        private val stepicService: StepicRestService
 ) {
 
     companion object {
@@ -75,12 +80,20 @@ constructor(
         }
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addNetworkInterceptor(interceptor)
-        //        okHttpBuilder.addNetworkInterceptor(this.stethoInterceptor);
         okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
         val notLogged = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
 
         val tempService = notLogged.create(EmptyAuthService::class.java)
         return tempService.remindPassword(encodedEmail)
     }
+
+    fun joinCourse(course: Long): Completable =
+            stepicService.joinCourse(EnrollmentWrapper(course))
+
+    fun getSteps(vararg lesson: Long): Single<StepResponse> =
+            stepicService.getSteps(lesson)
+
+    fun getLessons(lesson: LongArray): Single<LessonStepicResponse> =
+            stepicService.getLessons(lesson)
 
 }

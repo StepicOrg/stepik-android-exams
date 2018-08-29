@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="recommendation_loading_placeholders">
+         <item>Анализируем реакцию…</item> 
+        <item>Ищем следующую задачу…</item> 
+        <item>Роботы ищут задачи…</item> 
+        <item>Считаем что-то…</item> 
+    </string-array>
+    <string-array name="adaptive_rating_periods">
+        <item>Последние 24 часа</item>
+        <item>Последние 7 дней</item>
+        <item>За всё время</item>
+    </string-array>
+</resources>

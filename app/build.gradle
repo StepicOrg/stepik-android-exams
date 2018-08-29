@@ -34,13 +34,14 @@ android {
 }
 
 dependencies {
+    implementation project(':model')
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
     implementation libraries.rxKotlin
     implementation libraries.dagger
     kapt libraries.daggerCompiler
     implementation libraries.gson
-    annotationProcessor libraries.daggerCompiler
+    kapt libraries.daggerCompiler
     implementation libraries.retrofit
     implementation libraries.retrofitGsonConverter
     implementation libraries.retrofitRxJavaAdapter
@@ -53,4 +54,15 @@ dependencies {
     implementation libraries.supportCardView
     implementation libraries.constraintLayout
     implementation libraries.junit
+    implementation libraries.jsoup
+    implementation libraries.calligraphy
+    implementation libraries.butterKnife
+    kapt libraries.butterKnifeCompiler
+    implementation libraries.room
+    annotationProcessor libraries.roomCompiler
+    implementation libraries.roomRx
+    kapt libraries.roomCompiler
+    api libraries.lifecycleExtensions
+    kapt libraries.lifecycleCompiler
+    testImplementation libraries.coreTesting
 }

@@ -20,7 +20,32 @@
     <color name="auth_button_color_pressed">#6666CC66</color>
     <color name="auth_button_color_disabled">#0C66CC66</color>
     <color name="auth_button_text_color">#FF66CC66</color>
-
+    <color name="new_accent_color_alpha_40">#66535366</color>
     <color name="placeholder_button_pressed_color">#E8E8E8</color>
     <color name="placeholder_button_stroke_color">#CDCDCD</color>
+    <color name="text_color_highlight">#babac2</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="new_accent_color">#535366</color>
+    <color name="new_primary_color">#F6F6F6</color>
+    <color name="windowBackground">#eeeeee</color>
+    <color name="disabled_button_color">#D3D7D7</color>
+    <color name="adaptive_color_easy">#227300</color>
+    <color name="adaptive_color_hard">@color/new_red_color</color>
+    <color name="adaptive_color_wrong">@color/adaptive_color_hard</color>
+    <color name="adaptive_color_correct">#75B875</color>
+    <color name="new_red_color">#C82850</color>
+    <color name="color_stroke">#E4E4E4</color>
+    <color name="unviewed_step">@color/new_accent_color</color>
+    <color name="viewed_step">@color/new_accent_color_alpha_40</color>
+    <color name="launchTextColor">#757575</color>
+    <color name="correct_answer_background">#E9F9E9</color>
+    <color name="wrong_answer_background">#F5EBF2</color>
+    <color name="colorRadioButtonDefault">#CCCED1</color>
+    <color name="silver">#e6e6e6</color>
+    <color name="table_even_row">#F6F9FC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="table_header">#F0F0F0</color>
+    <color name="new_cover">@color/white</color>
+    <color name="stepic_weak_text">#A5A5A5</color>
 </resources>

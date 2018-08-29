@@ -11,8 +11,8 @@ class Graph<T> {
     fun addEdge(src: T, dest: T) {
         val start = vertices[src] ?: throw IllegalArgumentException("No such vertex with id $src")
         val end = vertices[dest] ?: throw IllegalArgumentException("No such vertex with id $src")
-        start.neighbours.add(end)
-        end.previous.add(start)
+        start.children.add(end)
+        end.parent.add(start)
     }
 
     operator fun get(vert: T) = vertices[vert]
@@ -23,7 +23,7 @@ class Graph<T> {
         visited.add(vertex)
         queue.add(vertex)
         while (queue.isNotEmpty()) {
-            vertices[queue.poll()]?.previous?.forEach {
+            vertices[queue.poll()]?.parent?.forEach {
                 val vertNext: T = it.id
                 if (!visited.contains(vertNext)) {
                     visited.add(vertNext)

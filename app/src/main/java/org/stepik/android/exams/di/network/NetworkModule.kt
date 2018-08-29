@@ -6,7 +6,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.stepik.android.exams.api.StepikRestService
+import org.stepik.android.exams.api.StepicRestService
+import org.stepik.android.exams.api.auth.AuthInterceptor
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.preference.AuthPreferences
@@ -42,12 +43,8 @@ abstract class NetworkModule {
         @Provides
         @AppSingleton
         @JvmStatic
-        internal fun provideStepikService(config: Config): StepikRestService {
-            val okHttpBuilder = OkHttpClient.Builder()
-            okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-            val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), config.host)
-            return retrofit.create(StepikRestService::class.java)
-        }
+        internal fun provideStepikService(authInterceptor: AuthInterceptor, config: Config, gson: Gson): StepicRestService =
+                NetworkHelper.createServiceWithAuth(authInterceptor, config.host, gson)
     }
 
 }

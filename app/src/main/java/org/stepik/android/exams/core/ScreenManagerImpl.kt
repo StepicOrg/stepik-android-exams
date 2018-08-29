@@ -4,9 +4,14 @@ package org.stepik.android.exams.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import org.stepik.android.exams.App
+import org.stepik.android.exams.adaptive.ui.activity.AdaptiveCourseActivity
+import org.stepik.android.exams.core.services.ViewPushService
+import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.ui.activity.*
-
+import org.stepik.android.exams.util.AppConstants
 import javax.inject.Inject
 
 @AppSingleton
@@ -15,10 +20,24 @@ class ScreenManagerImpl
 constructor(
         private val context: Context
 ) : ScreenManager {
-    override fun showCourse(id: String, context: Context) {
-        val intent = Intent(context, StudyActivity::class.java)
-        intent.putExtra("id", id)
+    override fun showStepsList(topicId: String, lesson: LessonWrapper, context: Context) {
+        val intent = Intent(context, StepsListActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra(StepsListActivity.EXTRA_LESSON, lesson)
+        intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
         context.startActivity(intent)
+    }
+
+    override fun showLessons(topicId: String, context: Context) {
+        val intent = Intent(context, LessonsActivity::class.java)
+        intent.putExtra(LessonsActivity.EXTRA_TOPIC_ID, topicId)
+        context.startActivity(intent)
+    }
+
+    override fun continueAdaptiveCourse(topicId: String, activity: Activity) {
+        val adaptiveCourseIntent = Intent(activity, AdaptiveCourseActivity::class.java)
+        adaptiveCourseIntent.putExtra(AppConstants.topicId, topicId)
+        activity.startActivity(adaptiveCourseIntent)
     }
 
     override fun showTopicsList() {
@@ -45,5 +64,15 @@ constructor(
 
     override fun showRegisterScreen(activity: Activity) {
         activity.startActivityForResult(Intent(activity, RegisterActivity::class.java), RegisterActivity.REQUEST_CODE)
+    }
+
+    override fun openImage(context: Context, path: String) {
+    }
+
+    override fun pushToViewedQueue(viewAssignment: ViewAssignment) {
+        val context = App.getAppContext()
+        val intent = Intent(context, ViewPushService::class.java)
+        intent.putExtra(AppConstants.viewPush, viewAssignment)
+        context.startService(intent)
     }
 }
