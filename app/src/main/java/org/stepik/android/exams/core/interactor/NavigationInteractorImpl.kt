@@ -2,6 +2,7 @@ package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Observable
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
+import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.graph.Graph
@@ -34,6 +35,9 @@ constructor(
             val nextTopic = graph[topicId]?.parent?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
                 return stepsRepository.tryLoadLessons(nextTopic)
+                        .flatMapIterable { it.map { (it as LessonsView.Type.Theory).lessonTheoryWrapper } }
+                        .toList()
+                        .toObservable()
             }
         }
         return Observable.just(listOf(LessonTheoryWrapper()))
@@ -48,7 +52,7 @@ constructor(
             var nextLesson = 0L
             while (iterator.hasNext()) {
                 val next = iterator.next()
-                if (next == lessonId.toLong()) {
+                if (next == lessonId) {
                     iterator.previous()
                     nextLesson = iterator.previous()
                     break
@@ -63,6 +67,9 @@ constructor(
             val nextTopic = graph[topicId]?.children?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
                 return stepsRepository.tryLoadLessons(nextTopic)
+                        .flatMapIterable { it.map { (it as LessonsView.Type.Theory).lessonTheoryWrapper } }
+                        .toList()
+                        .toObservable()
             }
         }
         return Observable.just(listOf(LessonTheoryWrapper()))

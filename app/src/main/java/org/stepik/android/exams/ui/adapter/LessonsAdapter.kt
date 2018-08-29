@@ -1,5 +1,6 @@
 package org.stepik.android.exams.ui.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import kotlinx.android.synthetic.main.header_lessons.view.*
 import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
+import org.stepik.android.exams.core.presenter.contracts.LessonsView.Type
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.Topic
 
@@ -25,7 +27,7 @@ class LessonsAdapter(
 
     private val inflater = LayoutInflater.from(context)
 
-    private var lessons: List<LessonWrapper> = listOf()
+    private var lessons: List<Type> = listOf()
 
     override fun getItemViewType(position: Int) =
             if (position == 0) {
@@ -35,7 +37,7 @@ class LessonsAdapter(
             }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
-            when(viewType) {
+            when (viewType) {
                 VIEW_TYPE_HEADER ->
                     HeaderViewHolder(inflater.inflate(R.layout.header_lessons, parent, false))
 
@@ -48,16 +50,19 @@ class LessonsAdapter(
     override fun getItemCount() = lessons.size + 1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is HeaderViewHolder ->
                 holder.bind(topic, lessons.size)
 
             is LessonViewHolder ->
-                holder.bind(lessons[position - 1], position)
+                when (lessons[position - 1]) {
+                    is Type.Theory -> holder.bind((lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, position)
+                    else -> holder.bind(position - 1)
+                }
         }
     }
 
-    fun setLessons(lessons: List<LessonWrapper>) {
+    fun setLessons(lessons: List<Type>) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -79,8 +84,17 @@ class LessonsAdapter(
 
         init {
             root.setOnClickListener {
-                screenManager.showStepsList(topic.id, lessons[adapterPosition - 1], context)
+                when (lessons[adapterPosition - 1]) {
+                    is Type.Theory -> screenManager.showStepsList(topic.id, (lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, context)
+                    else -> screenManager.continueAdaptiveCourse(topic.id, context as Activity)
+                }
             }
+        }
+
+        fun bind(position: Int) {
+            val context = itemView.context
+            index.text = context.getString(R.string.position_placeholder, position)
+            title.text = context.getString(R.string.adaptive)
         }
 
         fun bind(wrapper: LessonWrapper, position: Int) {

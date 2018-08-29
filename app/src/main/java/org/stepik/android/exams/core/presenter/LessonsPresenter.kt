@@ -1,15 +1,11 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.model.Lesson
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -38,14 +34,12 @@ constructor(
         disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({ theoryLessons ->
-                    viewState = LessonsView.State.Success(theoryLessons.map(LessonTheoryWrapper::lesson))
+                .subscribe({ lessons ->
+                    viewState = LessonsView.State.Success(lessons)
                 }, {
                     viewState = LessonsView.State.NetworkError
                 }))
     }
-    private fun loadPracticeLesson(topicId: String) =
-        stepsRepository.getCoursesId(topicId, GraphLesson.Type.PRACTICE)
 
     override fun attachView(view: LessonsView) {
         super.attachView(view)
