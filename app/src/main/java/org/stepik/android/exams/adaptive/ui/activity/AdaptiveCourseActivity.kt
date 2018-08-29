@@ -2,6 +2,7 @@ package org.stepik.android.exams.adaptive.ui.activity
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import kotlinx.android.synthetic.main.fragment_recommendations.*
@@ -13,6 +14,7 @@ import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.MathUtli
+import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -28,6 +30,9 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
     override fun onCreate(savedInstanceState: Bundle?) {
         topicId = intent.getStringExtra(AppConstants.topicId)
         setContentView(R.layout.fragment_recommendations)
+
+        initCenteredToolbar(R.string.practice, showHomeButton = true)
+
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
         tryAgain.setOnClickListener {
@@ -116,9 +121,16 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
         super.onStop()
     }
 
-
     override fun onDestroy() {
         presenter?.destroy()
         super.onDestroy()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?) =
+            if (item?.itemId == android.R.id.home) {
+                onBackPressed()
+                true
+            } else {
+                super.onOptionsItemSelected(item)
+            }
 }

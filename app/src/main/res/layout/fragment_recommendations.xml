@@ -1,56 +1,66 @@
-<FrameLayout android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:id="@+id/progress">
+    <include layout="@layout/view_centered_toolbar" />
+    <include layout="@layout/view_divider_h" />
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/loadingPlaceholder"/>
-    </LinearLayout>
-
-    <org.stepik.android.exams.adaptive.ui.custom.QuizCardsContainer
-        android:id="@+id/cardsContainer"
-        android:layout_gravity="center"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:id="@+id/courseState">
-
-        <!--<ImageView-->
-        <!--android:layout_width="125dp"-->
-        <!--android:layout_height="125dp"-->
-        <!--android:src="@drawable/course_passed" />-->
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="256dp"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="@string/adaptive_course_completed"
-            android:id="@+id/courseStateText"/>
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:id="@+id/progress">
 
-    </LinearLayout>
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <include layout="@layout/error_no_connection_with_button" />
-</FrameLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loadingPlaceholder"/>
+        </LinearLayout>
+
+        <org.stepik.android.exams.adaptive.ui.custom.QuizCardsContainer
+            android:id="@+id/cardsContainer"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:id="@+id/courseState">
+
+            <!--<ImageView-->
+            <!--android:layout_width="125dp"-->
+            <!--android:layout_height="125dp"-->
+            <!--android:src="@drawable/course_passed" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="256dp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/adaptive_course_completed"
+                android:id="@+id/courseStateText"/>
+
+        </LinearLayout>
+
+        <include layout="@layout/error_no_connection_with_button" />
+    </FrameLayout>
+</LinearLayout>
