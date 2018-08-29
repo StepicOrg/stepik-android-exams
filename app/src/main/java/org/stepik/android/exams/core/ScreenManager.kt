@@ -7,7 +7,7 @@ import org.stepik.android.exams.data.model.ViewAssignment
 
 interface ScreenManager {
     fun showOnboardingScreen()
-    fun showTopicsList()
+    fun showMainMenu()
     fun showStepsList(topicId: String, lesson: LessonWrapper, context: Context)
     fun showEmptyAuthScreen(context: Context)
     fun showLoginScreen(activity: Activity)

@@ -18,12 +18,7 @@ class MainMenuActivity : AppCompatActivity() {
             setFragment(item.itemId)
             return@setOnNavigationItemSelectedListener false
         }
-    }
-
-    private fun setFragment(@IdRes containerId: Int, fragment: Fragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(containerId, fragment, fragment.javaClass.simpleName)
-        fragmentTransaction.commit()
+        bottom_navigation.selectedItemId = R.id.study
     }
 
     private fun setFragment(@IdRes id: Int) {
@@ -45,6 +40,12 @@ class MainMenuActivity : AppCompatActivity() {
         if (nextFragment != null) {
             setFragment(R.id.frame, nextFragment)
         }
+    }
+
+    private fun setFragment(@IdRes containerId: Int, fragment: Fragment) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(containerId, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.commit()
     }
 
     private fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment): Fragment? {

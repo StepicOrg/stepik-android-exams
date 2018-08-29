@@ -45,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
                 .observeOn(mainScheduler)
                 .subscribe {
                     if (it.first != 0L && it.second) {
-                        screenManager.showTopicsList()
+                        screenManager.showMainMenu()
                     } else {
                         screenManager.showOnboardingScreen()
                     }
