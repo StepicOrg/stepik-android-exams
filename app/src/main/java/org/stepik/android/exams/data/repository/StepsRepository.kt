@@ -10,6 +10,7 @@ import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
+import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
@@ -26,15 +27,18 @@ constructor(
     private fun getTheoryCoursesId(theoryId: String) =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
-    private fun getPracticeCoursesId(theoryId: String): Maybe<LessonType.Practice> =
+    fun getPracticeCoursesId(theoryId: String): Maybe<LessonType.Practice> =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.PRACTICE)
                     .filter { it.isNotEmpty() }
-                    .map { topics -> LessonType.Practice(topics.first())  }
+                    .map { topics -> LessonType.Practice(LessonPracticeWrapper(theoryId, topics.first()))  }
+
+    fun loadTheoryLesson(theoryId: String) =
+            loadTheoryLessonsLocal(theoryId)
+                    .switchIfEmpty(getTheoryCoursesId(theoryId)
+                            .flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
 
     fun tryLoadLessons(theoryId: String): Observable<LessonType> =
-            Observable.merge(loadTheoryLessonsLocal(theoryId)
-                    .switchIfEmpty(getTheoryCoursesId(theoryId)
-                            .flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) }),
+            Observable.merge(loadTheoryLesson(theoryId),
                             getPracticeCoursesId(theoryId).toObservable())
 
     fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =

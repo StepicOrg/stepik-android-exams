@@ -13,6 +13,7 @@ class TestingFragment : Fragment() {
                 TestingFragment()
     }
 
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             LayoutInflater.from(context).inflate(R.layout.fragment_topics_list, container, false)
 }

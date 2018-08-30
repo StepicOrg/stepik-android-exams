@@ -14,6 +14,7 @@ import org.stepik.android.exams.ui.activity.LessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 import org.stepik.android.exams.ui.fragment.TopicsListFragment
+import org.stepik.android.exams.ui.fragment.TrainingFragment
 
 @AppSingleton
 @Component(modules = [AppCoreModule::class, NetworkModule::class, GraphModule::class, RoomModule::class, StepsModule::class])
@@ -45,6 +46,8 @@ interface AppCoreComponent {
     fun inject(lessonsActivity: LessonsActivity)
 
     fun inject(quizCardViewHolder: QuizCardViewHolder)
+
+    fun inject(trainingFragment: TrainingFragment)
 
     fun inject(viewPushService: ViewPushService)
 }
