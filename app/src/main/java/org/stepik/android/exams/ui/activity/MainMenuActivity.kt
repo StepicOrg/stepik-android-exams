@@ -16,9 +16,12 @@ class MainMenuActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_menu)
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             setFragment(item.itemId)
-            return@setOnNavigationItemSelectedListener true
+            true
         }
-        bottomNavigation.selectedItemId = R.id.study
+
+        if (savedInstanceState == null) {
+            bottomNavigation.selectedItemId = R.id.study
+        }
     }
 
     private fun setFragment(@IdRes id: Int) {
@@ -45,14 +48,14 @@ class MainMenuActivity : AppCompatActivity() {
     private fun setFragment(@IdRes containerId: Int, fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(containerId, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
-    private inline fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment): Fragment? {
-        return if (currentFragmentTag == null || currentFragmentTag != nextFragmentTag) {
-            nextFragmentCreation.invoke()
-        } else {
-            null
-        }
-    }
+    private inline fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment) =
+            if (currentFragmentTag != nextFragmentTag) {
+                supportFragmentManager.findFragmentByTag(nextFragmentTag) ?: nextFragmentCreation.invoke()
+            } else {
+                null
+            }
 }
