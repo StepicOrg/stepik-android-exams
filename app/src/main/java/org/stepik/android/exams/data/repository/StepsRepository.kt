@@ -2,10 +2,9 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.core.presenter.contracts.LessonsView.Type
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -27,11 +26,12 @@ constructor(
     private fun getTheoryCoursesId(theoryId: String) =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
-    private fun getPracticeCoursesId(theoryId: String): Maybe<Type.Practice> =
+    private fun getPracticeCoursesId(theoryId: String): Maybe<LessonType.Practice> =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.PRACTICE)
-                    .map { topics -> Type.Practice(topics.first())  }
+                    .filter { it.isNotEmpty() }
+                    .map { topics -> LessonType.Practice(topics.first())  }
 
-    fun tryLoadLessons(theoryId: String): Observable<Type> =
+    fun tryLoadLessons(theoryId: String): Observable<LessonType> =
             Observable.merge(loadTheoryLessonsLocal(theoryId)
                     .switchIfEmpty(getTheoryCoursesId(theoryId)
                             .flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) }),
@@ -42,7 +42,7 @@ constructor(
                     .map { it -> LessonTheoryWrapper(topicId, it) }
                     .toObservable()
 
-    private fun loadTheoryLessons(theoryId: String, lessonIds: LongArray): Observable<Type.Theory> {
+    private fun loadTheoryLessons(theoryId: String, lessonIds: LongArray): Observable<LessonType.Theory> {
         return api.getLessons(lessonIds)
                 .flatMapObservable {
                     it.lessons!!.toObservable()
@@ -61,12 +61,12 @@ constructor(
                         lessonWrappers.first { it.lesson.id == id }
                     }
                     lessonDao.insertLessons(lessons.map { LessonInfo(theoryId, it.lesson.id, it) })
-                    Observable.fromIterable(lessons.map { Type.Theory(LessonTheoryWrapper(theoryId, it)) })
+                    Observable.fromIterable(lessons.map { LessonType.Theory(LessonTheoryWrapper(theoryId, it)) })
                 }
     }
 
-    private fun loadTheoryLessonsLocal(theoryId: String): Observable<Type.Theory> =
+    private fun loadTheoryLessonsLocal(theoryId: String): Observable<LessonType.Theory> =
             lessonDao.findAllLessonsByTopicId(theoryId)
                     .filter { it.isNotEmpty() }
-                    .flatMapObservable { list -> Observable.fromIterable(list.map { Type.Theory(LessonTheoryWrapper(theoryId, it)) })}
+                    .flatMapObservable { list -> Observable.fromIterable(list.map { LessonType.Theory(LessonTheoryWrapper(theoryId, it)) })}
 }
