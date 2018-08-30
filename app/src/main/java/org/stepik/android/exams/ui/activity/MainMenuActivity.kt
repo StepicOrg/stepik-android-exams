@@ -16,7 +16,7 @@ class MainMenuActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_menu)
         bottom_navigation.setOnNavigationItemSelectedListener { item ->
             setFragment(item.itemId)
-            return@setOnNavigationItemSelectedListener false
+            return@setOnNavigationItemSelectedListener true
         }
         bottom_navigation.selectedItemId = R.id.study
     }
