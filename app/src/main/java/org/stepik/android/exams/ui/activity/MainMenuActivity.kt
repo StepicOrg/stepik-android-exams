@@ -48,7 +48,7 @@ class MainMenuActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment): Fragment? {
+    private inline fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment): Fragment? {
         return if (currentFragmentTag == null || currentFragmentTag != nextFragmentTag) {
             nextFragmentCreation.invoke()
         } else {

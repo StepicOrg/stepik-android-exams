@@ -35,7 +35,7 @@ constructor(
             val nextTopic = graph[topicId]?.parent?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
                 return stepsRepository.tryLoadLessons(nextTopic)
-                        .flatMapIterable { it.map { (it as LessonsView.Type.Theory).lessonTheoryWrapper } }
+                        .ofType(LessonTheoryWrapper::class.java)
                         .toList()
                         .toObservable()
             }
@@ -67,7 +67,7 @@ constructor(
             val nextTopic = graph[topicId]?.children?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
                 return stepsRepository.tryLoadLessons(nextTopic)
-                        .flatMapIterable { it.map { (it as LessonsView.Type.Theory).lessonTheoryWrapper } }
+                        .ofType(LessonTheoryWrapper::class.java)
                         .toList()
                         .toObservable()
             }

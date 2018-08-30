@@ -32,6 +32,7 @@ constructor(
             LessonsView.State.Loading
         }
         disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
+                .toList()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ lessons ->

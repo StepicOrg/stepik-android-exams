@@ -99,6 +99,7 @@ class LessonsAdapter(
             val context = itemView.context
             index.text = context.getString(R.string.position_placeholder, position)
             title.text = context.getString(R.string.adaptive)
+            subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
         }
 
         private fun bind(wrapper: LessonWrapper, position: Int) {
