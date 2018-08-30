@@ -80,9 +80,13 @@ class LessonsAdapter(
 
         init {
             root.setOnClickListener {
-                when (lessons[adapterPosition - 1]) {
-                    is LessonType.Theory -> screenManager.showStepsList(topic.id, (lessons[position - 1] as LessonType.Theory).lessonTheoryWrapper.lesson, context)
-                    else -> screenManager.continueAdaptiveCourse(topic.id, context as Activity)
+                val lessonType = lessons[position - 1]
+                when (lessonType) {
+                    is LessonType.Theory ->
+                        screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper.lesson, context)
+
+                    is LessonType.Practice ->
+                        screenManager.continueAdaptiveCourse(topic.id, context as Activity)
                 }
             }
         }
