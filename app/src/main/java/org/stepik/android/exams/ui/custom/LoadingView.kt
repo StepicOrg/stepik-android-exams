@@ -1,4 +1,4 @@
-package org.stepic.droid.ui.custom
+package org.stepik.android.exams.ui.custom
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator

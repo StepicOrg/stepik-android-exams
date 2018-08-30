@@ -9,7 +9,6 @@ import org.stepik.android.exams.data.db.mapping.toEntity
 import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.model.Submission
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SubmissionRepository

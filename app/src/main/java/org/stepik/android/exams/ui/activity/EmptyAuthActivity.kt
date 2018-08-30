@@ -38,5 +38,5 @@ class EmptyAuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun startStudy() = screenManager.showTopicsList()
+    private fun startStudy() = screenManager.showMainMenu()
 }

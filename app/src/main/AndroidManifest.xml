@@ -12,8 +12,6 @@
         android:allowBackup="false"
         android:theme="@style/AppTheme">
         <activity android:theme="@style/AppTheme.NoActionBar"
-                  android:name=".ui.activity.TopicsListActivity" />
-        <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.LoginActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.EmptyAuthActivity" />
@@ -34,7 +32,8 @@
             android:name=".ui.activity.StepsListActivity"/>
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
-
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.MainMenuActivity" />
         <service android:name=".core.services.ViewPushService" />
     </application>
 

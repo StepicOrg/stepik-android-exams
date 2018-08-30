@@ -3,7 +3,6 @@ package org.stepik.android.exams.core.presenter
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -33,10 +32,11 @@ constructor(
             LessonsView.State.Loading
         }
         disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
+                .toList()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({ theoryLessons ->
-                    viewState = LessonsView.State.Success(theoryLessons.map(LessonTheoryWrapper::lesson))
+                .subscribe({ lessons ->
+                    viewState = LessonsView.State.Success(lessons)
                 }, {
                     viewState = LessonsView.State.NetworkError
                 }))

@@ -1,63 +1,53 @@
-package org.stepik.android.exams.ui.activity
+package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_topics_list.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_topics_list.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.core.presenter.BasePresenterActivity
+import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
-import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import javax.inject.Inject
 import javax.inject.Provider
 
-class TopicsListActivity : BasePresenterActivity<TopicsListPresenter, TopicsListView>(), TopicsListView {
+class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsListView>(), TopicsListView {
+    companion object {
+        fun newInstance(): TopicsListFragment =
+                TopicsListFragment()
+    }
+
     @Inject
     lateinit var topicsListPresenterProvider: Provider<TopicsListPresenter>
-
     @Inject
     lateinit var screenManager: ScreenManager
-
     private lateinit var topicsAdapter: TopicsAdapter
 
     override fun injectComponent() {
         App.component().inject(this)
     }
 
-    override fun getParsedLessons(list: List<GraphLesson>) {
-
-    }
-
-    enum class TYPE { THEORY, ADAPTIVE }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_topics_list)
-        topicsAdapter = TopicsAdapter(this, screenManager)
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        topicsAdapter = TopicsAdapter(activity, screenManager)
         recycler.adapter = topicsAdapter
-        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.layoutManager = LinearLayoutManager(activity)
         swipeRefresh.setOnRefreshListener {
             presenter?.getGraphData()
         }
-        theory.isChecked = true
-        theory.setOnClickListener {
-            presenter?.setType(TYPE.THEORY)
-        }
-        adaptive.setOnClickListener {
-            presenter?.setType(TYPE.ADAPTIVE)
-        }
     }
 
-    override fun setActivityType(type: TYPE) {
-        topicsAdapter.updateType(type)
-    }
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            LayoutInflater.from(context).inflate(R.layout.fragment_topics_list, container, false)
 
     override fun showGraphData(graphData: GraphData) {
         topicsAdapter.updateData(graphData.topics)

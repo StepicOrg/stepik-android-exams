@@ -9,7 +9,7 @@ import org.stepik.android.model.EnrollmentWrapper
 import retrofit2.http.*
 
 interface StepicRestService {
-    @Headers("Content-Type: application/json")
+    @Headers("Content-LessonType: application/json")
     @POST("api/enrollments")
     fun joinCourse(
             @Body enrollmentCourse: EnrollmentWrapper
@@ -74,7 +74,7 @@ interface StepicRestService {
             @Query("lesson") lessonId: Long
     ): Single<UnitMetaResponse>
 
-    @Headers("Content-Type:application/json")
+    @Headers("Content-LessonType:application/json")
     @POST("api/views")
     fun postViewed(
             @Body stepAssignment: ViewAssignmentWrapper

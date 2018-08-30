@@ -1,5 +1,6 @@
 package org.stepik.android.exams.ui.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,7 +11,7 @@ import kotlinx.android.synthetic.main.header_lessons.view.*
 import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.Topic
 
 class LessonsAdapter(
@@ -25,7 +26,7 @@ class LessonsAdapter(
 
     private val inflater = LayoutInflater.from(context)
 
-    private var lessons: List<LessonWrapper> = listOf()
+    private var lessons: List<LessonType> = listOf()
 
     override fun getItemViewType(position: Int) =
             if (position == 0) {
@@ -35,7 +36,7 @@ class LessonsAdapter(
             }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
-            when(viewType) {
+            when (viewType) {
                 VIEW_TYPE_HEADER ->
                     HeaderViewHolder(inflater.inflate(R.layout.header_lessons, parent, false))
 
@@ -48,7 +49,7 @@ class LessonsAdapter(
     override fun getItemCount() = lessons.size + 1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is HeaderViewHolder ->
                 holder.bind(topic, lessons.size)
 
@@ -57,7 +58,7 @@ class LessonsAdapter(
         }
     }
 
-    fun setLessons(lessons: List<LessonWrapper>) {
+    fun setLessons(lessons: List<LessonType>) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -79,15 +80,32 @@ class LessonsAdapter(
 
         init {
             root.setOnClickListener {
-                screenManager.showStepsList(topic.id, lessons[adapterPosition - 1], context)
+                val lessonType = lessons[adapterPosition - 1]
+                when (lessonType) {
+                    is LessonType.Theory ->
+                        screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper.lesson, context)
+
+                    is LessonType.Practice ->
+                        screenManager.continueAdaptiveCourse(topic.id, context as Activity)
+                }
             }
         }
 
-        fun bind(wrapper: LessonWrapper, position: Int) {
+        fun bind(type: LessonType, position: Int) {
             val context = itemView.context
             index.text = context.getString(R.string.position_placeholder, position)
-            title.text = wrapper.lesson.title
-            subtitle.text = context.resources.getQuantityString(R.plurals.page, wrapper.lesson.steps.size, wrapper.lesson.steps.size)
+
+            when (type) {
+                is LessonType.Theory -> {
+                    val lesson = type.lessonTheoryWrapper.lesson.lesson
+                    title.text = lesson.title
+                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
+                }
+                is LessonType.Practice -> {
+                    title.text = context.getString(R.string.lesson_item_practice_title)
+                    subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                }
+            }
         }
     }
 }
