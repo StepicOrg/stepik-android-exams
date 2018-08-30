@@ -55,10 +55,7 @@ class LessonsAdapter(
                 holder.bind(topic, lessons.size)
 
             is LessonViewHolder ->
-                when (lessons[position - 1]) {
-                    is Type.Theory -> holder.bind((lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, position)
-                    else -> holder.bind(position - 1)
-                }
+                holder.bind(lessons[position - 1], position)
         }
     }
 
@@ -91,13 +88,20 @@ class LessonsAdapter(
             }
         }
 
-        fun bind(position: Int) {
+        fun bind(wrapper: Type, position: Int){
+            when (wrapper) {
+                is Type.Theory -> bind((lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, position)
+                else -> bind(position - 1)
+            }
+        }
+
+        private fun bind(position: Int) {
             val context = itemView.context
             index.text = context.getString(R.string.position_placeholder, position)
             title.text = context.getString(R.string.adaptive)
         }
 
-        fun bind(wrapper: LessonWrapper, position: Int) {
+        private fun bind(wrapper: LessonWrapper, position: Int) {
             val context = itemView.context
             index.text = context.getString(R.string.position_placeholder, position)
             title.text = wrapper.lesson.title

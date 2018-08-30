@@ -69,7 +69,7 @@ constructor(
                     createReaction(0, Reaction.INTERESTING)
                 }, onComplete = {
                     view?.onCourseNotSupported()
-                }, onError = { onError(it) })
+                }, onError = ::onError)
     }
 
     private fun loadCourseId(topicId: String) =

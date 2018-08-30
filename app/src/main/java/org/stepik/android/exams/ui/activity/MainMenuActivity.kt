@@ -14,11 +14,11 @@ class MainMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
-        bottom_navigation.setOnNavigationItemSelectedListener { item ->
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
             setFragment(item.itemId)
             return@setOnNavigationItemSelectedListener true
         }
-        bottom_navigation.selectedItemId = R.id.study
+        bottomNavigation.selectedItemId = R.id.study
     }
 
     private fun setFragment(@IdRes id: Int) {
