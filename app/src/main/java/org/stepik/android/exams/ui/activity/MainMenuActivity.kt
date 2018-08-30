@@ -58,4 +58,8 @@ class MainMenuActivity : AppCompatActivity() {
             } else {
                 null
             }
+
+    override fun onBackPressed() {
+        finish()
+    }
 }
