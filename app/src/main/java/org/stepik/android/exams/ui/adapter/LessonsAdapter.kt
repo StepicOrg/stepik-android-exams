@@ -80,7 +80,7 @@ class LessonsAdapter(
 
         init {
             root.setOnClickListener {
-                val lessonType = lessons[position - 1]
+                val lessonType = lessons[adapterPosition - 1]
                 when (lessonType) {
                     is LessonType.Theory ->
                         screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper.lesson, context)
