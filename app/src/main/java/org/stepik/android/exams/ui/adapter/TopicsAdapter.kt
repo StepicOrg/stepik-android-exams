@@ -6,42 +6,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.item_lesson.view.*
+import kotlinx.android.synthetic.main.item_topic.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
 
-class TopicsAdapter(var context: Activity, var screenManager: ScreenManager) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
+class TopicsAdapter(
+        private val context: Activity,
+        private val screenManager: ScreenManager
+) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     private var topics: List<Topic> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
-            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_lesson, parent, false))
-
+            TopicsViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_topic, parent, false))
 
     override fun getItemCount() = topics.size
-
 
     override fun onBindViewHolder(holder: TopicsViewHolder?, position: Int) {
         holder?.bind(topics[position])
     }
 
-    fun updateData(topics: List<Topic>) {
+    fun setData(topics: List<Topic>) {
         this.topics = topics
         notifyDataSetChanged()
     }
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
-        private val topicsText: TextView = root.lessonTitle
+        private val topicTitle: TextView = root.topicTitle
+        private val topicContainer: View = root.topicContainer
 
         init {
-            topicsText.setOnClickListener {
+            topicContainer.setOnClickListener {
                 if (adapterPosition !in topics.indices) return@setOnClickListener
                 screenManager.showLessons(context, topics[adapterPosition])
             }
         }
 
         fun bind(topic: Topic) {
-            topicsText.text = topic.title
+            topicTitle.text = topic.title
         }
     }
 }
