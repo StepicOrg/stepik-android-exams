@@ -88,25 +88,21 @@ class LessonsAdapter(
             }
         }
 
-        fun bind(wrapper: Type, position: Int){
-            when (wrapper) {
-                is Type.Theory -> bind((lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, position)
-                else -> bind(position - 1)
+        fun bind(type: Type, position: Int) {
+            val context = itemView.context
+            index.text = context.getString(R.string.position_placeholder, position)
+
+            when (type) {
+                is Type.Theory -> {
+                    val lesson = type.lessonTheoryWrapper.lesson.lesson
+                    title.text = lesson.title
+                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
+                }
+                is Type.Practice -> {
+                    title.text = context.getString(R.string.lesson_item_practice_title)
+                    subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                }
             }
-        }
-
-        private fun bind(position: Int) {
-            val context = itemView.context
-            index.text = context.getString(R.string.position_placeholder, position)
-            title.text = context.getString(R.string.adaptive)
-            subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
-        }
-
-        private fun bind(wrapper: LessonWrapper, position: Int) {
-            val context = itemView.context
-            index.text = context.getString(R.string.position_placeholder, position)
-            title.text = wrapper.lesson.title
-            subtitle.text = context.resources.getQuantityString(R.plurals.page, wrapper.lesson.steps.size, wrapper.lesson.steps.size)
         }
     }
 }
