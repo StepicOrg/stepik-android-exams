@@ -60,7 +60,7 @@ constructor(
                     val lessons = lessonIds.map { id ->
                         lessonWrappers.first { it.lesson.id == id }
                     }
-                    lessonDao.insertLessons(lessonWrappers.map { LessonInfo(theoryId, it.lesson.id, it) })
+                    lessonDao.insertLessons(lessons.map { LessonInfo(theoryId, it.lesson.id, it) })
                     Observable.fromIterable(lessons.map { Type.Theory(LessonTheoryWrapper(theoryId, it)) })
                 }
     }
