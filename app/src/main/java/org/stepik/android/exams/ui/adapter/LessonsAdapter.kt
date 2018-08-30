@@ -11,8 +11,7 @@ import kotlinx.android.synthetic.main.header_lessons.view.*
 import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.core.presenter.contracts.LessonsView.Type
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.Topic
 
 class LessonsAdapter(
@@ -27,7 +26,7 @@ class LessonsAdapter(
 
     private val inflater = LayoutInflater.from(context)
 
-    private var lessons: List<Type> = listOf()
+    private var lessons: List<LessonType> = listOf()
 
     override fun getItemViewType(position: Int) =
             if (position == 0) {
@@ -59,7 +58,7 @@ class LessonsAdapter(
         }
     }
 
-    fun setLessons(lessons: List<Type>) {
+    fun setLessons(lessons: List<LessonType>) {
         this.lessons = lessons
         notifyDataSetChanged()
     }
@@ -82,23 +81,23 @@ class LessonsAdapter(
         init {
             root.setOnClickListener {
                 when (lessons[adapterPosition - 1]) {
-                    is Type.Theory -> screenManager.showStepsList(topic.id, (lessons[position - 1] as Type.Theory).lessonTheoryWrapper.lesson, context)
+                    is LessonType.Theory -> screenManager.showStepsList(topic.id, (lessons[position - 1] as LessonType.Theory).lessonTheoryWrapper.lesson, context)
                     else -> screenManager.continueAdaptiveCourse(topic.id, context as Activity)
                 }
             }
         }
 
-        fun bind(type: Type, position: Int) {
+        fun bind(type: LessonType, position: Int) {
             val context = itemView.context
             index.text = context.getString(R.string.position_placeholder, position)
 
             when (type) {
-                is Type.Theory -> {
+                is LessonType.Theory -> {
                     val lesson = type.lessonTheoryWrapper.lesson.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
                 }
-                is Type.Practice -> {
+                is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
                 }
