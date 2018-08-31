@@ -37,6 +37,9 @@ class TopicsAdapter(
         private val topicTimeToComplete: TextView = root.topicTimeToComplete
         private val topicCompletionRate: TextView = root.topicCompletionRate
 
+        private val topicLockedOverlay: View = root.topicLockedOverlay
+        private val topicLockedDescription: TextView = root.topicLockedDescription
+
         init {
             topicContainer.setOnClickListener {
                 if (adapterPosition !in topics.indices) return@setOnClickListener
