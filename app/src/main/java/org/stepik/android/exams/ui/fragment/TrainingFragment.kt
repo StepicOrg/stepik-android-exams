@@ -16,6 +16,10 @@ import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
 import javax.inject.Inject
+import android.support.v7.widget.PagerSnapHelper
+import android.support.v7.widget.SnapHelper
+
+
 
 class TrainingFragment : Fragment(), TrainingView {
 
@@ -39,9 +43,9 @@ class TrainingFragment : Fragment(), TrainingView {
         trainingTheoryAdapter = TrainingAdapter(context, screenManager)
         trainingPracticeAdapter = TrainingAdapter(context, screenManager)
         theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+        theoryLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
         practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+        practiceLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
     }
 
     override fun onStart() {

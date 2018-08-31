@@ -7,7 +7,6 @@ import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
-import java.util.function.BiFunction
 import javax.inject.Inject
 
 class TrainingPresenter
@@ -28,25 +27,20 @@ constructor(
     }
 
     private fun loadAllTheoryLessons() {
-        Observable.fromIterable(
-                topicsList
-                        .map { stepsRepository.loadTheoryLesson(it) })
-                .flatMap { it.toList().toObservable() }
+        Observable.merge(topicsList.map { stepsRepository.loadTheoryLesson(it) })
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
+                .toList()
                 .subscribe({
                     view?.showTheoryLessons(it)
                 }, {})
     }
 
     private fun loadAllPracticeLessons(){
-        Observable.fromIterable(
-                topicsList
-                        .map { stepsRepository.getPracticeCoursesId(it) })
-                .flatMap { it.toObservable() }
-                .toList()
+        Observable.merge(topicsList.map { stepsRepository.getPracticeCoursesId(it).toObservable() })
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
+                .toList()
                 .subscribe({
                     view?.showPracticeLessons(it)
                 }, {})
