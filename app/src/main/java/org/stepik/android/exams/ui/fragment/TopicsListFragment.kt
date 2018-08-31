@@ -1,15 +1,14 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_topics_list.*
+import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
-import org.stepik.android.exams.api.Errors
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
@@ -17,6 +16,8 @@ import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.exams.util.hideAllChildren
+import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -28,32 +29,44 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
 
     @Inject
     lateinit var topicsListPresenterProvider: Provider<TopicsListPresenter>
+
     @Inject
     lateinit var screenManager: ScreenManager
+
     private lateinit var topicsAdapter: TopicsAdapter
 
     override fun injectComponent() {
         App.component().inject(this)
     }
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            LayoutInflater.from(context).inflate(R.layout.fragment_topics_list, container, false)
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initCenteredToolbar(R.string.study)
+
         topicsAdapter = TopicsAdapter(activity, screenManager)
+
         recycler.adapter = topicsAdapter
         recycler.layoutManager = LinearLayoutManager(activity)
+
         swipeRefresh.setOnRefreshListener {
+            presenter?.getGraphData()
+        }
+
+        tryAgain.setOnClickListener {
             presenter?.getGraphData()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            LayoutInflater.from(context).inflate(R.layout.fragment_topics_list, container, false)
-
     override fun showGraphData(graphData: GraphData) {
-        topicsAdapter.updateData(graphData.topics)
+        topicsAdapter.topics = graphData.topics
     }
 
-    override fun getPresenterProvider(): Provider<TopicsListPresenter> = topicsListPresenterProvider
+    override fun getPresenterProvider(): Provider<TopicsListPresenter> =
+            topicsListPresenterProvider
 
     override fun onStart() {
         super.onStart()
@@ -66,44 +79,30 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
     }
 
     override fun setState(state: TopicsListView.State) = when (state) {
-        is TopicsListView.State.Idle -> {
+        is TopicsListView.State.Idle -> {}
+
+        is TopicsListView.State.Loading -> {
+            content.hideAllChildren()
+            loadingPlaceholder.changeVisibillity(true)
         }
 
-        is TopicsListView.State.Loading ->
-            showRefreshView()
-
         is TopicsListView.State.NetworkError -> {
-            hideRefreshView()
-            onError(Errors.ConnectionProblem)
+            content.hideAllChildren()
+            error.changeVisibillity(true)
         }
 
         is TopicsListView.State.Success -> {
-            hideRefreshView()
-            hideErrorMessage()
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = false
+            topicsAdapter.topics = state.topics
         }
-    }
 
-    private fun onError(error: Errors) {
-        @StringRes val messageResId = when (error) {
-            Errors.ConnectionProblem -> R.string.auth_error_connectivity
+        is TopicsListView.State.Refreshing -> {
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = true
+            topicsAdapter.topics = state.topics
         }
-        showErrorMessage(messageResId)
-    }
-
-    private fun showRefreshView() {
-        swipeRefresh.isRefreshing = true
-    }
-
-    private fun hideRefreshView() {
-        swipeRefresh.isRefreshing = false
-    }
-
-    private fun showErrorMessage(messageResId: Int) {
-        errorText.setText(messageResId)
-        errorText.changeVisibillity(true)
-    }
-
-    private fun hideErrorMessage() {
-        errorText.changeVisibillity(false)
     }
 }

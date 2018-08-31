@@ -13,6 +13,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.ui.util.TopicColorResolver
 
 class LessonsAdapter(
         private val context: Context,
@@ -69,6 +70,7 @@ class LessonsAdapter(
 
         fun bind(topic: Topic, itemCount: Int) {
             topicTitle.text = topic.title
+            itemView.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic))
             lessonsCount.text = itemView.context.resources.getQuantityString(R.plurals.lesson, itemCount, itemCount)
         }
     }
@@ -103,7 +105,7 @@ class LessonsAdapter(
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
-                    subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                    subtitle.text = context.getString(R.string.lesson_item_practice_subtitle)
                 }
             }
         }
