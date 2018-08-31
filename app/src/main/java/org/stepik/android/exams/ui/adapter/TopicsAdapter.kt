@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.item_topic.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.ui.util.TopicColorResolver
 
 class TopicsAdapter(
         private val context: Activity,
@@ -44,6 +45,7 @@ class TopicsAdapter(
 
         fun bind(topic: Topic) {
             topicTitle.text = topic.title
+            topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic))
         }
     }
 }

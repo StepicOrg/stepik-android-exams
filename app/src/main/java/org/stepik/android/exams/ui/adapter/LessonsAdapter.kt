@@ -70,7 +70,7 @@ class LessonsAdapter(
 
         fun bind(topic: Topic, itemCount: Int) {
             topicTitle.text = topic.title
-            itemView.setBackgroundResource(TopicColorResolver.resolveTopicBackgroundColor(topic))
+            itemView.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic))
             lessonsCount.text = itemView.context.resources.getQuantityString(R.plurals.lesson, itemCount, itemCount)
         }
     }
