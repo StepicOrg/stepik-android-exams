@@ -15,6 +15,7 @@ import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class TopicsListPresenter
 @Inject
@@ -32,20 +33,22 @@ constructor(
 
     private var graphData: GraphData
 
-    private var viewState: TopicsListView.State = TopicsListView.State.Idle
-        set(value) {
-            field = value
-            view?.setState(value)
-        }
+    private var viewState by Delegates.observable(TopicsListView.State.Idle as TopicsListView.State) { _, _, newState ->
+        view?.setState(newState)
+    }
 
     init {
         graphData = GraphData()
         getGraphData()
     }
 
-
     fun getGraphData() {
-        viewState = TopicsListView.State.Loading
+        val oldState = viewState
+        viewState = if (oldState is TopicsListView.State.Success) {
+            TopicsListView.State.Refreshing(oldState.topics)
+        } else {
+            TopicsListView.State.Loading
+        }
         compositeDisposable.add(graphService
                 .getPosts()
                 .subscribeOn(backgroundScheduler)
@@ -54,10 +57,9 @@ constructor(
                     graphData = data
                     addDataToGraph(graphData)
                     checkIfJoined()
-                    view?.showGraphData(graphData)
-                    viewState = TopicsListView.State.Success
+                    viewState = TopicsListView.State.Success(graphData.topics)
                 }, {
-                    viewState = TopicsListView.State.NetworkError
+                    onError()
                 }))
     }
 
@@ -103,6 +105,7 @@ constructor(
         for (m in 0..minOf(lessonsList.size - 1, typesList.size - 1))
             for (k in 0..minOf(lessonsList[m].size - 1, typesList[m].size - 1))
                 list.add(TopicInfo(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
+
         Completable.fromAction { topicDao.insertCourseInfo(list) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)

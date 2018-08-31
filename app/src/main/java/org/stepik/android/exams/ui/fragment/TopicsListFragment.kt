@@ -16,6 +16,7 @@ import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
+import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
@@ -78,35 +79,30 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
     }
 
     override fun setState(state: TopicsListView.State) = when (state) {
-        is TopicsListView.State.Idle -> { }
+        is TopicsListView.State.Idle -> {}
 
-        is TopicsListView.State.Loading ->
-            showRefreshView()
+        is TopicsListView.State.Loading -> {
+            content.hideAllChildren()
+            loadingPlaceholder.changeVisibillity(true)
+        }
 
         is TopicsListView.State.NetworkError -> {
-            hideRefreshView()
-            showErrorMessage()
+            content.hideAllChildren()
+            error.changeVisibillity(true)
         }
 
         is TopicsListView.State.Success -> {
-            hideRefreshView()
-            hideErrorMessage()
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = false
+            topicsAdapter.topics = state.topics
         }
-    }
 
-    private fun showRefreshView() {
-        swipeRefresh.isRefreshing = true
-    }
-
-    private fun hideRefreshView() {
-        swipeRefresh.isRefreshing = false
-    }
-
-    private fun showErrorMessage() {
-        error.changeVisibillity(true)
-    }
-
-    private fun hideErrorMessage() {
-        error.changeVisibillity(false)
+        is TopicsListView.State.Refreshing -> {
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = true
+            topicsAdapter.topics = state.topics
+        }
     }
 }
