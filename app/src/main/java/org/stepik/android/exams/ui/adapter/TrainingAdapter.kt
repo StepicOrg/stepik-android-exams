@@ -7,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.header_lessons.view.*
-import kotlinx.android.synthetic.main.item_lesson.view.*
+import kotlinx.android.synthetic.main.grid_item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
-import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.ui.util.TopicColorResolver
 
 class TrainingAdapter(
         private val context: Context,
@@ -25,7 +24,7 @@ class TrainingAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
-            LessonViewHolder(inflater.inflate(R.layout.item_lesson, parent, false))
+            LessonViewHolder(inflater.inflate(R.layout.grid_item_lesson, parent, false))
 
 
     override fun getItemCount() = lessons.size
@@ -41,9 +40,9 @@ class TrainingAdapter(
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         private val title: TextView = root.lessonTitle
-        private val index: TextView = root.lessonIndex
         private val subtitle: TextView = root.lessonSubtitle
-
+        private val lessonContainer: View = root.lessonContainer
+        private val lessonDescription : TextView = root.lessonDescription
         init {
             root.setOnClickListener {
                 val lessonType = lessons[adapterPosition]
@@ -59,17 +58,18 @@ class TrainingAdapter(
 
         fun bind(type: LessonType, position: Int) {
             val context = itemView.context
-            index.text = context.getString(R.string.position_placeholder, position)
-
+            lessonDescription.text = context.resources.getString(R.string.lesson_description)
             when (type) {
                 is LessonType.Theory -> {
                     val lesson = type.lessonTheoryWrapper.lesson.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.theoryId))
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.theoryId))
                 }
             }
         }

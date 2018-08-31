@@ -16,9 +16,6 @@ import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
 import javax.inject.Inject
-import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.SnapHelper
-
 
 
 class TrainingFragment : Fragment(), TrainingView {

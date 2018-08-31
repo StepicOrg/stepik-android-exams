@@ -55,7 +55,7 @@ class TopicsAdapter(
 
         fun bind(topic: Topic) {
             topicTitle.text = topic.title
-            topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic))
+            topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
         }
     }
 }

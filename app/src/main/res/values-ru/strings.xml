@@ -60,4 +60,5 @@
     <string name="topic">Тема</string>
     <string name="lesson_item_practice_title">Практические задания</string>
     <string name="lesson_item_practice_subtitle">Закрепите полученные знания</string>
+    <string name="lesson_description">Описание того, что мы можем изучить и обязательно изучим в этой теме</string>
 </resources>
