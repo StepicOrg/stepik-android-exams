@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:drawablePadding="8dp"
             android:textColor="@color/white" />
 
         <TextView
@@ -44,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:drawablePadding="8dp"
             android:textColor="@color/white" />
 
     </LinearLayout>

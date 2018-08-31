@@ -105,7 +105,7 @@ class LessonsAdapter(
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
-                    subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                    subtitle.text = context.getString(R.string.lesson_item_practice_subtitle)
                 }
             }
         }
