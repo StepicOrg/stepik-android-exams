@@ -10,13 +10,13 @@
     <item
         android:id="@+id/training"
         android:enabled="true"
-        android:icon="@drawable/ic_training"
+        android:icon="@drawable/ic_train"
         android:title="@string/training"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/testing"
         android:enabled="true"
-        android:icon="@drawable/ic_testing"
+        android:icon="@drawable/ic_test"
         android:title="@string/testing"
         app:showAsAction="ifRoom" />
 </menu>
