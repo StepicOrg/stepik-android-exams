@@ -19,7 +19,11 @@
             android:id="@+id/loadingPlaceholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:padding="8dp">
+            <include layout="@layout/item_topic_placeholder" />
+            <include layout="@layout/item_topic_placeholder" />
+        </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
