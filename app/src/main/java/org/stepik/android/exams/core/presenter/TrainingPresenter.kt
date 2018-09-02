@@ -6,9 +6,11 @@ import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.StepsRepository
+import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.Graph
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 
 class TrainingPresenter
@@ -18,17 +20,32 @@ constructor(
         private var mainScheduler: Scheduler,
         @BackgroundScheduler
         private var backgroundScheduler: Scheduler,
-        private val graph: Graph<String>,
-        private val stepsRepository: StepsRepository
+        private val stepsRepository: StepsRepository,
+        private val topicsRepository : TopicsRepository
 ) : PresenterBase<TrainingView>() {
     private val compositeDisposable = CompositeDisposable()
     private var theoryLessons : List<LessonType.Theory> = listOf()
     private var practiceLessons : List<LessonType.Practice> = listOf()
-    val topicsList = graph.getAllTopics()
+    private lateinit var topicsList : List<String>
 
     init {
-        loadAllTheoryLessons()
-        loadAllPracticeLessons()
+        loadTopics()
+    }
+
+    private fun loadTopics(){
+        topicsRepository.getGraphData()
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe { data ->
+                    topicsRepository.joinCourse(data)
+                            .subscribeOn(backgroundScheduler)
+                            .observeOn(mainScheduler)
+                            .subscribe{
+                                topicsList = topicsRepository.getTopicsList()
+                                loadAllTheoryLessons()
+                                loadAllPracticeLessons()
+                            }
+                }
     }
 
     private fun loadAllTheoryLessons() {
