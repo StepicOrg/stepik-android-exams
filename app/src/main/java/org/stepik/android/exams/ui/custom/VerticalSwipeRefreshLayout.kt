@@ -10,7 +10,7 @@ import android.view.ViewConfiguration
 class VerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : SwipeRefreshLayout(context, attrs) {
 
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
-    private var prevX: Float = 0.toFloat()
+    private var prevX: Float = 0f
     private var declined: Boolean = false
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {

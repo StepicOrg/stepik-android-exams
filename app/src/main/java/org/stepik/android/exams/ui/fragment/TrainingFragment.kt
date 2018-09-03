@@ -48,6 +48,13 @@ class TrainingFragment : Fragment(), TrainingView {
         practiceLessonRecycler.adapter = trainingPracticeAdapter
         practiceLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
         initCenteredToolbar(R.string.training)
+        swipeRefresh.setOnRefreshListener {
+            trainingPresenter.loadTopics()
+        }
+
+        tryAgain.setOnClickListener {
+            trainingPresenter.loadTopics()
+        }
     }
 
     override fun onStart() {

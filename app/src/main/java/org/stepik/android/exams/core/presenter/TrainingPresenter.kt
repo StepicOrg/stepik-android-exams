@@ -36,7 +36,7 @@ constructor(
         loadTopics()
     }
 
-    private fun loadTopics() {
+    fun loadTopics() {
         val oldState = viewState
         viewState = if (oldState is TrainingView.State.Success) {
             TrainingView.State.Refreshing(oldState.theory, oldState.practice)
