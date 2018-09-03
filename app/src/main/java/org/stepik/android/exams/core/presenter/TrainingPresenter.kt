@@ -44,16 +44,12 @@ constructor(
             TrainingView.State.Loading
         }
         topicsRepository.getGraphData()
+                .flatMapMaybe { data -> topicsRepository.checkIfJoinedCourse(data) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe { data ->
-                    topicsRepository.joinCourse(data)
-                            .subscribeOn(backgroundScheduler)
-                            .observeOn(mainScheduler)
-                            .subscribe {
-                                topicsList = topicsRepository.getTopicsList()
-                                loadAllLessons()
-                            }
+                .subscribe {
+                    topicsList = topicsRepository.getTopicsList()
+                    loadAllLessons()
                 }
     }
 

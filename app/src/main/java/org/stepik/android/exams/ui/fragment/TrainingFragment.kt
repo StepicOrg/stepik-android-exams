@@ -59,8 +59,7 @@ class TrainingFragment : Fragment(), TrainingView {
         super.onStop()
     }
 
-    override fun setState(state: TrainingView.State) {
-        when (state){
+    override fun setState(state: TrainingView.State) = when (state){
             is TrainingView.State.Idle -> {}
 
             is TrainingView.State.Loading -> {
@@ -89,7 +88,6 @@ class TrainingFragment : Fragment(), TrainingView {
                 trainingTheoryAdapter.lessons = state.theory
             }
         }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             LayoutInflater.from(context).inflate(R.layout.fragment_training, container, false)

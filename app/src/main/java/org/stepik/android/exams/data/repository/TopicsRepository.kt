@@ -24,7 +24,7 @@ constructor(
                         addDataToGraph(graphData)
                     }
 
-    fun joinCourse(graphData: GraphData) =
+    fun checkIfJoinedCourse(graphData: GraphData) =
             checkIfJoined().switchIfEmpty(saveAndJoin(graphData).toMaybe())
 
     fun getTopicsList() =
@@ -40,9 +40,9 @@ constructor(
     }
 
     private fun tryJoinCourse(lessons: Set<Long>) =
-            Completable.concat(lessons.map { joinCourse(it) })
+            Completable.concat(lessons.map { checkIfJoinedCourse(it) })
 
-    private fun joinCourse(id: Long) =
+    private fun checkIfJoinedCourse(id: Long) =
             api.joinCourse(id)
 
     private fun addDataToGraph(graphData: GraphData) {

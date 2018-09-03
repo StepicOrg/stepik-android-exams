@@ -41,18 +41,17 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({ data ->
-                    graphData = data
-                    topicsRepository.joinCourse(graphData)
-                            .subscribeOn(backgroundScheduler)
-                            .observeOn(mainScheduler)
-                            .subscribe()
-                    viewState = TopicsListView.State.Success(graphData.topics)
-                }, {
-                    onError()
-                }))
+                        .flatMapMaybe { data ->
+                            graphData = data
+                            topicsRepository.checkIfJoinedCourse(graphData)
+                        }
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe({ _ ->
+                            viewState = TopicsListView.State.Success(graphData.topics)
+                        }, {
+                            onError()
+                        }))
     }
 
     override fun attachView(view: TopicsListView) {
