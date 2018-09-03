@@ -12,16 +12,17 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.util.TopicColorResolver
+import kotlin.properties.Delegates
 
 class TrainingAdapter(
         private val context: Context,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
+    var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
+        notifyDataSetChanged()
+    }
 
     private val inflater = LayoutInflater.from(context)
-
-    private var lessons: List<LessonType> = listOf()
-
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.grid_item_lesson, parent, false))
@@ -31,11 +32,6 @@ class TrainingAdapter(
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         holder.bind(lessons[position], position)
-    }
-
-    fun setLessons(lessons: List<LessonType>) {
-        this.lessons = lessons
-        notifyDataSetChanged()
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {

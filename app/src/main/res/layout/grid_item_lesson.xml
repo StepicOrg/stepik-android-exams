@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            style="@android:style/TextAppearance.Large"
+            style="@android:style/TextAppearance.Medium"
             tools:text="Теоритеческий урок" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
-            style="@android:style/TextAppearance.Medium"
+            style="@android:style/TextAppearance.Small"
             tools:text="Теоритеческий урок" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:layout_gravity="end"
+            android:layout_gravity="bottom"
             tools:text="15 шагов" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

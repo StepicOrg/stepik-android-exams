@@ -1,21 +1,12 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
-import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
-import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.data.TopicInfo
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
-import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
