@@ -1,6 +1,7 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
+import io.reactivex.Observable
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -25,7 +26,7 @@ constructor(
                     }
 
     fun checkIfJoinedCourse(graphData: GraphData) =
-            checkIfJoined().switchIfEmpty(saveAndJoin(graphData).toMaybe())
+            Observable.concat(checkIfJoined().toObservable(), saveAndJoin(graphData).toObservable()).take(1)
 
     fun getTopicsList() =
             graph.getAllTopics()

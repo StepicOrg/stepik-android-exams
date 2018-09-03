@@ -73,7 +73,7 @@ class TrainingFragment : Fragment(), TrainingView {
             }
 
             is TrainingView.State.Success -> {
-                content.hideAllChildren()
+                loadingPlaceholder.changeVisibillity(false)
                 swipeRefresh.changeVisibillity(true)
                 swipeRefresh.isRefreshing = false
                 trainingPracticeAdapter.lessons = state.practice
@@ -81,7 +81,7 @@ class TrainingFragment : Fragment(), TrainingView {
             }
 
             is TrainingView.State.Refreshing -> {
-                content.hideAllChildren()
+                loadingPlaceholder.changeVisibillity(false)
                 swipeRefresh.changeVisibillity(true)
                 swipeRefresh.isRefreshing = true
                 trainingPracticeAdapter.lessons = state.practice

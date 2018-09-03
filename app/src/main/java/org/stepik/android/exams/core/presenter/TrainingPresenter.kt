@@ -44,7 +44,7 @@ constructor(
             TrainingView.State.Loading
         }
         topicsRepository.getGraphData()
-                .flatMapMaybe { data -> topicsRepository.checkIfJoinedCourse(data) }
+                .flatMapObservable { data -> topicsRepository.checkIfJoinedCourse(data) }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe {
