@@ -36,8 +36,8 @@ constructor(
         val lessonsList = graphData.topicsMap.map { it.graphLessons.map { it.id }.toLongArray() }
         val courseList = graphData.topicsMap.map { it.graphLessons.map { it.course } }
         val typesList = graphData.topicsMap.map { it.graphLessons.map { it.type } }
-        return saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList)
-                .andThen(joinAllCourses(courseList.flatMap { it }))
+        return joinAllCourses(courseList.flatMap { it })
+                .andThen(saveTopicInfoToDb(topicsList, lessonsList, typesList, courseList))
     }
 
     private fun tryJoinCourse(lessons: Set<Long>) =

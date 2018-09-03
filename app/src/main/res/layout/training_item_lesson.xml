@@ -18,6 +18,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+
         <TextView
             android:id="@+id/lessonTitle"
             style="@android:style/TextAppearance.Medium"
@@ -54,8 +55,9 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.833"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lessonDescription"
+            app:layout_constraintVertical_bias="1.0"
             tools:text="15 шагов" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
