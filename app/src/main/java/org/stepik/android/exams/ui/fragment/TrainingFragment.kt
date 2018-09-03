@@ -31,12 +31,13 @@ class TrainingFragment : Fragment(), TrainingView {
     init {
         App.component().inject(this)
     }
+
     @Inject
-    lateinit var trainingPresenter : TrainingPresenter
+    lateinit var trainingPresenter: TrainingPresenter
     @Inject
-    lateinit var screenManager : ScreenManager
-    private lateinit var trainingTheoryAdapter : TrainingAdapter
-    private lateinit var trainingPracticeAdapter : TrainingAdapter
+    lateinit var screenManager: ScreenManager
+    private lateinit var trainingTheoryAdapter: TrainingAdapter
+    private lateinit var trainingPracticeAdapter: TrainingAdapter
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,35 +60,36 @@ class TrainingFragment : Fragment(), TrainingView {
         super.onStop()
     }
 
-    override fun setState(state: TrainingView.State) = when (state){
-            is TrainingView.State.Idle -> {}
-
-            is TrainingView.State.Loading -> {
-                content.hideAllChildren()
-                loadingPlaceholder.changeVisibillity(true)
-            }
-
-            is TrainingView.State.NetworkError -> {
-                content.hideAllChildren()
-                error.changeVisibillity(true)
-            }
-
-            is TrainingView.State.Success -> {
-                loadingPlaceholder.changeVisibillity(false)
-                swipeRefresh.changeVisibillity(true)
-                swipeRefresh.isRefreshing = false
-                trainingPracticeAdapter.lessons = state.practice
-                trainingTheoryAdapter.lessons = state.theory
-            }
-
-            is TrainingView.State.Refreshing -> {
-                loadingPlaceholder.changeVisibillity(false)
-                swipeRefresh.changeVisibillity(true)
-                swipeRefresh.isRefreshing = true
-                trainingPracticeAdapter.lessons = state.practice
-                trainingTheoryAdapter.lessons = state.theory
-            }
+    override fun setState(state: TrainingView.State) = when (state) {
+        is TrainingView.State.Idle -> {
         }
+
+        is TrainingView.State.Loading -> {
+            content.hideAllChildren()
+            loadingPlaceholder.changeVisibillity(true)
+        }
+
+        is TrainingView.State.NetworkError -> {
+            content.hideAllChildren()
+            error.changeVisibillity(true)
+        }
+
+        is TrainingView.State.Success -> {
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = false
+            trainingPracticeAdapter.lessons = state.practice
+            trainingTheoryAdapter.lessons = state.theory
+        }
+
+        is TrainingView.State.Refreshing -> {
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = true
+            trainingPracticeAdapter.lessons = state.practice
+            trainingTheoryAdapter.lessons = state.theory
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             LayoutInflater.from(context).inflate(R.layout.fragment_training, container, false)

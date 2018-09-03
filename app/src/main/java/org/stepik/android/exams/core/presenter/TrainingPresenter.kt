@@ -43,28 +43,34 @@ constructor(
         } else {
             TrainingView.State.Loading
         }
-        topicsRepository.getGraphData()
-                .flatMapObservable { data -> topicsRepository.checkIfJoinedCourse(data) }
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe {
-                    topicsList = topicsRepository.getTopicsList()
-                    loadAllLessons()
-                }
+        compositeDisposable.add(
+                topicsRepository.getGraphData()
+                        .flatMap { data -> topicsRepository.joinCourse(data) }
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe({
+                            topicsList = topicsRepository.getTopicsList()
+                            loadAllLessons()
+                        }, {
+                            onError()
+                        }))
     }
 
     private fun loadAllLessons() {
-        zip<List<LessonType.Theory>, List<LessonType.Practice>, Pair<List<LessonType.Theory>, List<LessonType.Practice>>>(
-                loadTheoryLessons(),
-                loadPracticeLessons(),
-                BiFunction { t1, t2 -> Pair(t1, t2) })
-                .subscribeOn(backgroundScheduler)
-                .observeOn(mainScheduler)
-                .subscribe({ lessons ->
-                    theoryLessons = lessons.first
-                    practiceLessons = lessons.second
-                    viewState = TrainingView.State.Success(theoryLessons, practiceLessons)
-                }, { onError() })
+        compositeDisposable.add(
+                zip<List<LessonType.Theory>, List<LessonType.Practice>, Pair<List<LessonType.Theory>, List<LessonType.Practice>>>(
+                        loadTheoryLessons(),
+                        loadPracticeLessons(),
+                        BiFunction { t1, t2 -> Pair(t1, t2) })
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe({ lessons ->
+                            theoryLessons = lessons.first
+                            practiceLessons = lessons.second
+                            viewState = TrainingView.State.Success(theoryLessons, practiceLessons)
+                        }, {
+                            onError()
+                        }))
     }
 
     private fun loadTheoryLessons() =
@@ -74,8 +80,8 @@ constructor(
             Observable.merge(topicsList.map { stepsRepository.getPracticeCoursesId(it).toObservable() }).toList().toObservable()
 
     override fun attachView(view: TrainingView) {
-        view.setState(viewState)
         super.attachView(view)
+        view.setState(viewState)
     }
 
     private fun onError() {

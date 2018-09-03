@@ -41,9 +41,9 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .flatMapObservable { data ->
+                        .flatMap { data ->
                             graphData = data
-                            topicsRepository.checkIfJoinedCourse(data)
+                            topicsRepository.joinCourse(data)
                         }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)

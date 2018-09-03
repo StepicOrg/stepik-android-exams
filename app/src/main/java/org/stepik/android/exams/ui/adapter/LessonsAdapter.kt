@@ -101,7 +101,7 @@ class LessonsAdapter(
                 is LessonType.Theory -> {
                     val lesson = type.lessonTheoryWrapper.lesson.lesson
                     title.text = lesson.title
-                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
+                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)

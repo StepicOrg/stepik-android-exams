@@ -4,7 +4,6 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -12,6 +11,7 @@ import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.data.StepInfo
 import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
@@ -30,7 +30,7 @@ constructor(
     fun getPracticeCoursesId(theoryId: String): Maybe<LessonType.Practice> =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.PRACTICE)
                     .filter { it.isNotEmpty() }
-                    .map { topics -> LessonType.Practice(LessonPracticeWrapper(theoryId, topics.first()))  }
+                    .map { topics -> LessonType.Practice(LessonPracticeWrapper(theoryId, topics.first())) }
 
     fun loadTheoryLesson(theoryId: String) =
             loadTheoryLessonsLocal(theoryId)
@@ -39,7 +39,7 @@ constructor(
 
     fun tryLoadLessons(theoryId: String): Observable<LessonType> =
             Observable.merge(loadTheoryLesson(theoryId),
-                            getPracticeCoursesId(theoryId).toObservable())
+                    getPracticeCoursesId(theoryId).toObservable())
 
     fun findLessonInDb(topicId: String, nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
@@ -72,5 +72,5 @@ constructor(
     private fun loadTheoryLessonsLocal(theoryId: String): Observable<LessonType.Theory> =
             lessonDao.findAllLessonsByTopicId(theoryId)
                     .filter { it.isNotEmpty() }
-                    .flatMapObservable { list -> Observable.fromIterable(list.map { LessonType.Theory(LessonTheoryWrapper(theoryId, it)) })}
+                    .flatMapObservable { list -> Observable.fromIterable(list.map { LessonType.Theory(LessonTheoryWrapper(theoryId, it)) }) }
 }

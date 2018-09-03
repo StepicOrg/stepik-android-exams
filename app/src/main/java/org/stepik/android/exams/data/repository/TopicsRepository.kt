@@ -1,7 +1,7 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Single
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -19,14 +19,14 @@ constructor(
         private val graphService: GraphService,
         private val topicDao: TopicDao
 ) {
-    fun getGraphData() =
+    fun getGraphData(): Single<GraphData> =
             graphService.getPosts()
                     .doOnSuccess { graphData ->
                         addDataToGraph(graphData)
                     }
 
-    fun checkIfJoinedCourse(graphData: GraphData) =
-            Observable.concat(checkIfJoined().toObservable(), saveAndJoin(graphData).toObservable()).take(1)
+    fun joinCourse(graphData: GraphData): Single<Boolean> =
+            checkIfJoined().switchIfEmpty(saveAndJoin(graphData).toSingleDefault(false))
 
     fun getTopicsList() =
             graph.getAllTopics()
@@ -41,9 +41,9 @@ constructor(
     }
 
     private fun tryJoinCourse(lessons: Set<Long>) =
-            Completable.concat(lessons.map { checkIfJoinedCourse(it) })
+            Completable.concat(lessons.map { joinCourse(it) })
 
-    private fun checkIfJoinedCourse(id: Long) =
+    private fun joinCourse(id: Long) =
             api.joinCourse(id)
 
     private fun addDataToGraph(graphData: GraphData) {

@@ -38,7 +38,8 @@ class TrainingAdapter(
         private val title: TextView = root.lessonTitle
         private val subtitle: TextView = root.lessonSubtitle
         private val lessonContainer: View = root.lessonContainer
-        private val lessonDescription : TextView = root.lessonDescription
+        private val lessonDescription: TextView = root.lessonDescription
+
         init {
             root.setOnClickListener {
                 val lessonType = lessons[adapterPosition]
@@ -59,7 +60,7 @@ class TrainingAdapter(
                 is LessonType.Theory -> {
                     val lesson = type.lessonTheoryWrapper.lesson.lesson
                     title.text = lesson.title
-                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size,lesson.steps.size)
+                    subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
                     lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.theoryId))
                 }
                 is LessonType.Practice -> {

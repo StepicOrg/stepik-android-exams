@@ -54,7 +54,8 @@ class MainMenuActivity : AppCompatActivity() {
 
     private inline fun getNextFragmentOrNull(currentFragmentTag: String?, nextFragmentTag: String, nextFragmentCreation: () -> Fragment) =
             if (currentFragmentTag != nextFragmentTag) {
-                supportFragmentManager.findFragmentByTag(nextFragmentTag) ?: nextFragmentCreation.invoke()
+                supportFragmentManager.findFragmentByTag(nextFragmentTag)
+                        ?: nextFragmentCreation.invoke()
             } else {
                 null
             }
