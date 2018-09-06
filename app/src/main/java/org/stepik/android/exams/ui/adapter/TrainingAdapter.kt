@@ -15,14 +15,14 @@ import org.stepik.android.exams.ui.util.TopicColorResolver
 import kotlin.properties.Delegates
 
 class TrainingAdapter(
-        private val context: Context,
+        private val activity : Activity,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
     }
 
-    private val inflater = LayoutInflater.from(context)
+    private val inflater = LayoutInflater.from(activity)
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
@@ -31,7 +31,7 @@ class TrainingAdapter(
     override fun getItemCount() = lessons.size
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
-        holder.bind(lessons[position], position)
+        holder.bind(lessons[position])
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -45,15 +45,15 @@ class TrainingAdapter(
                 val lessonType = lessons[adapterPosition]
                 when (lessonType) {
                     is LessonType.Theory ->
-                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.theoryId, lessonType.lessonTheoryWrapper.lesson, context)
+                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.topicId, lessonType.lessonTheoryWrapper.lesson, activity)
 
                     is LessonType.Practice ->
-                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.theoryId, context as Activity)
+                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
                 }
             }
         }
 
-        fun bind(type: LessonType, position: Int) {
+        fun bind(type: LessonType) {
             val context = itemView.context
             lessonDescription.text = context.resources.getString(R.string.lesson_description)
             when (type) {
@@ -61,12 +61,12 @@ class TrainingAdapter(
                     val lesson = type.lessonTheoryWrapper.lesson.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.theoryId))
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topicId))
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.theoryId))
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topicId))
                 }
             }
         }

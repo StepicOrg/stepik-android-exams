@@ -1,16 +1,15 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Observable
-import io.reactivex.Observable.zip
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.Observables.zip
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
-import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -25,9 +24,6 @@ constructor(
         private val topicsRepository: TopicsRepository
 ) : PresenterBase<TrainingView>() {
     private val compositeDisposable = CompositeDisposable()
-    private var theoryLessons: List<LessonType.Theory> = listOf()
-    private var practiceLessons: List<LessonType.Practice> = listOf()
-    private lateinit var topicsList: List<String>
     private var viewState by Delegates.observable(TrainingView.State.Idle as TrainingView.State) { _, _, newState ->
         view?.setState(newState)
     }
@@ -45,38 +41,27 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .flatMap { data -> topicsRepository.joinCourse(data) }
+                        .flatMapObservable { data ->
+                            topicsRepository.joinCourse(data)
+                            loadAllLessons(topicsRepository.getTopicsList())
+                        }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({
-                            topicsList = topicsRepository.getTopicsList()
-                            loadAllLessons()
-                        }, {
-                            onError()
-                        }))
-    }
-
-    private fun loadAllLessons() {
-        compositeDisposable.add(
-                zip<List<LessonType.Theory>, List<LessonType.Practice>, Pair<List<LessonType.Theory>, List<LessonType.Practice>>>(
-                        loadTheoryLessons(),
-                        loadPracticeLessons(),
-                        BiFunction { t1, t2 -> Pair(t1, t2) })
-                        .subscribeOn(backgroundScheduler)
-                        .observeOn(mainScheduler)
-                        .subscribe({ lessons ->
-                            theoryLessons = lessons.first
-                            practiceLessons = lessons.second
+                            (theoryLessons, practiceLessons) ->
                             viewState = TrainingView.State.Success(theoryLessons, practiceLessons)
                         }, {
                             onError()
                         }))
     }
 
-    private fun loadTheoryLessons() =
+    private fun loadAllLessons(topicsList : List<String>) =
+                zip(loadTheoryLessons(topicsList), loadPracticeLessons(topicsList))
+
+    private fun loadTheoryLessons(topicsList : List<String>) =
             Observable.merge(topicsList.map { stepsRepository.loadTheoryLesson(it) }).toList().toObservable()
 
-    private fun loadPracticeLessons() =
+    private fun loadPracticeLessons(topicsList : List<String>) =
             Observable.merge(topicsList.map { stepsRepository.getPracticeCoursesId(it).toObservable() }).toList().toObservable()
 
     override fun attachView(view: TrainingView) {

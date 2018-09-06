@@ -61,10 +61,6 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
         }
     }
 
-    override fun showGraphData(graphData: GraphData) {
-        topicsAdapter.topics = graphData.topics
-    }
-
     override fun getPresenterProvider(): Provider<TopicsListPresenter> =
             topicsListPresenterProvider
 

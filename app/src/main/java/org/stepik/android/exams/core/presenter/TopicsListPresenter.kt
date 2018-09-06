@@ -1,6 +1,7 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.repository.TopicsRepository
@@ -21,14 +22,11 @@ constructor(
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
-    private var graphData: GraphData
-
     private var viewState by Delegates.observable(TopicsListView.State.Idle as TopicsListView.State) { _, _, newState ->
         view?.setState(newState)
     }
 
     init {
-        graphData = GraphData()
         getGraphData()
     }
 
@@ -41,14 +39,14 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .flatMap { data ->
-                            graphData = data
+                        .map { data ->
                             topicsRepository.joinCourse(data)
+                            data
                         }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe({ _ ->
-                            viewState = TopicsListView.State.Success(graphData.topics)
+                        .subscribe({ data ->
+                            viewState = TopicsListView.State.Success(data.topics)
                         }, {
                             onError()
                         }))
@@ -57,9 +55,6 @@ constructor(
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
         view.setState(viewState)
-        if (graphData.topics.isNotEmpty()) {
-            view.showGraphData(graphData)
-        }
     }
 
     private fun onError() {

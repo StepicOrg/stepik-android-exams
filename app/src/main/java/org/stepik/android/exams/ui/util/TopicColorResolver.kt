@@ -15,8 +15,8 @@ object TopicColorResolver {
      * returns @DrawableRes for topic background
      */
     @DrawableRes
-    fun resolveTopicBackground(topic: String): Int =
-            gradients[hash(Math.abs(topic.hashCode()))]
+    fun resolveTopicBackground(topicId: String): Int =
+            gradients[hash(Math.abs(topicId.hashCode()))]
 
     private fun hash(x: Int): Int {
         var h = x

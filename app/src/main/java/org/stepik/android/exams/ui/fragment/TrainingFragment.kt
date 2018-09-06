@@ -1,7 +1,6 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -12,6 +11,7 @@ import kotlinx.android.synthetic.main.fragment_training.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
+import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
@@ -19,51 +19,53 @@ import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
+import javax.inject.Provider
 
 
-class TrainingFragment : Fragment(), TrainingView {
+class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(), TrainingView {
 
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
     }
 
-    init {
+    override fun injectComponent() {
         App.component().inject(this)
     }
-
     @Inject
-    lateinit var trainingPresenter: TrainingPresenter
+    lateinit var trainingPresenterProvider: Provider<TrainingPresenter>
     @Inject
     lateinit var screenManager: ScreenManager
     private lateinit var trainingTheoryAdapter: TrainingAdapter
     private lateinit var trainingPracticeAdapter: TrainingAdapter
 
+    override fun getPresenterProvider(): Provider<TrainingPresenter> = trainingPresenterProvider
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        trainingTheoryAdapter = TrainingAdapter(context, screenManager)
-        trainingPracticeAdapter = TrainingAdapter(context, screenManager)
+        trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
+        trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
         theoryLessonRecycler.adapter = trainingTheoryAdapter
         theoryLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
         practiceLessonRecycler.adapter = trainingPracticeAdapter
         practiceLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
         initCenteredToolbar(R.string.training)
         swipeRefresh.setOnRefreshListener {
-            trainingPresenter.loadTopics()
+            presenter?.loadTopics()
         }
 
         tryAgain.setOnClickListener {
-            trainingPresenter.loadTopics()
+            presenter?.loadTopics()
         }
     }
 
     override fun onStart() {
         super.onStart()
-        trainingPresenter.attachView(this)
+        presenter?.attachView(this)
     }
 
     override fun onStop() {
-        trainingPresenter.detachView(this)
+        presenter?.detachView(this)
         super.onStop()
     }
 

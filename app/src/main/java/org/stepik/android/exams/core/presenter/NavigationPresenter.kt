@@ -40,7 +40,7 @@ constructor(
                 .subscribe({ wrappers ->
                     val lessonWrapper = wrappers.last()
                     view?.showNextButton()
-                    if (move) view?.moveToLesson(lessonWrapper.theoryId, lessonWrapper.lesson)
+                    if (move) view?.moveToLesson(lessonWrapper.topicId, lessonWrapper.lesson)
                 }, {
                     view?.hideNextButton()
                 }))
@@ -54,7 +54,7 @@ constructor(
                 .subscribe({ wrappers ->
                     val lessonWrapper = wrappers.first()
                     view?.showPrevButton()
-                    if (move) view?.moveToLesson(lessonWrapper.theoryId, lessonWrapper.lesson)
+                    if (move) view?.moveToLesson(lessonWrapper.topicId, lessonWrapper.lesson)
                 }, {
                     view?.hidePrevButton()
                 }))
