@@ -20,6 +20,10 @@ import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
+import android.support.v7.widget.LinearSnapHelper
+import android.support.v7.widget.SnapHelper
+
+
 
 
 class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(), TrainingView {
@@ -43,12 +47,16 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val theoryHelper = LinearSnapHelper()
+        val practiceHelper = LinearSnapHelper()
         trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
         theoryLessonRecycler.adapter = trainingTheoryAdapter
         theoryLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
         practiceLessonRecycler.adapter = trainingPracticeAdapter
         practiceLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
+        theoryHelper.attachToRecyclerView(theoryLessonRecycler)
+        practiceHelper.attachToRecyclerView(practiceLessonRecycler)
         initCenteredToolbar(R.string.training)
         swipeRefresh.setOnRefreshListener {
             presenter?.loadTopics()

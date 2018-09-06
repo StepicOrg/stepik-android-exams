@@ -24,7 +24,7 @@ constructor(
         private val stepDao: StepDao,
         private val topicsDao: TopicDao
 ) {
-    private fun getTheoryCoursesId(theoryId: String) =
+    private fun getTheoryCoursesId(theoryId: String) : Maybe<List<Long>> =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
     fun getPracticeCoursesId(theoryId: String): Maybe<LessonType.Practice> =
@@ -32,7 +32,7 @@ constructor(
                     .filter { it.isNotEmpty() }
                     .map { topics -> LessonType.Practice(LessonPracticeWrapper(theoryId, topics.first())) }
 
-    fun loadTheoryLesson(theoryId: String) =
+    fun loadTheoryLesson(theoryId: String) : Observable<LessonType.Theory> =
             loadTheoryLessonsLocal(theoryId)
                     .switchIfEmpty(getTheoryCoursesId(theoryId)
                             .flatMapObservable { loadTheoryLessons(theoryId, it.toLongArray()) })
