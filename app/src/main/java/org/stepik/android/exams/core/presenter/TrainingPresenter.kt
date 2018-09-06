@@ -41,8 +41,10 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .flatMapObservable { data ->
+                        .flatMap{ data ->
                             topicsRepository.joinCourse(data)
+                        }
+                        .flatMapObservable {
                             loadAllLessons(topicsRepository.getTopicsList())
                         }
                         .subscribeOn(backgroundScheduler)
