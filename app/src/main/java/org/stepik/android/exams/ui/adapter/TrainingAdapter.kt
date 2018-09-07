@@ -31,13 +31,18 @@ class TrainingAdapter(
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
 
-    private fun setItemWidth(recyclerWidth : Int): Int =
-         (recyclerWidth - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
+
+    private fun setItemWidth(recyclerHeight : Int): Int =
+         (recyclerHeight - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
 
     override fun getItemCount() = lessons.size
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         holder.bind(lessons[position])
+        val displayMetrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        holder.itemView.layoutParams.width = setItemWidth(displayMetrics.widthPixels)
+        holder.itemView.requestLayout()
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {
@@ -56,9 +61,6 @@ class TrainingAdapter(
                         screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
                 }
             }
-            val displayMetrics = DisplayMetrics()
-            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            itemView.layoutParams.width = setItemWidth(displayMetrics.widthPixels)
         }
 
         fun bind(type: LessonType) {

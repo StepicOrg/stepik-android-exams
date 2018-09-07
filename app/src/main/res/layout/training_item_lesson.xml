@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
+    android:orientation="vertical"
     app:cardCornerRadius="8dp">
 
     <android.support.constraint.ConstraintLayout
@@ -21,9 +20,9 @@
             android:id="@+id/lessonTitle"
             style="@android:style/TextAppearance.Medium"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="0dp"
             android:textColor="@color/white"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Теоритеческий урок" />
@@ -32,29 +31,29 @@
             android:id="@+id/lessonDescription"
             style="@android:style/TextAppearance.Small"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_below="@id/lessonTitle"
-            android:layout_marginTop="8dp"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/lessonTitle"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintBottom_toTopOf="@+id/lessonSubtitle"
+            app:layout_constraintEnd_toEndOf="@+id/lessonSubtitle"
+            app:layout_constraintStart_toStartOf="@+id/lessonSubtitle"
             app:layout_constraintTop_toBottomOf="@+id/lessonTitle"
+            app:layout_constraintVertical_bias="0"
             tools:text="Описание" />
 
         <TextView
             android:id="@+id/lessonSubtitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_below="@id/lessonDescription"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/lessonDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lessonDescription"
-            app:layout_constraintVertical_bias="1"
             tools:text="15 шагов" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
