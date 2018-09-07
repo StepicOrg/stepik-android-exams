@@ -60,4 +60,5 @@
     <string name="lesson_item_practice_title">Practice</string>
     <string name="lesson_item_practice_subtitle">Reinforce the knowledge</string>
     <string name="lesson_description">Description of that we will definitely learn in this topic</string>
+    <string name="see_all">See All</string>
 </resources>
