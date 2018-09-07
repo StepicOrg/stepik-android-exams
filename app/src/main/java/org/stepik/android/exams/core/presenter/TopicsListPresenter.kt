@@ -39,10 +39,8 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .map { data ->
-                            topicsRepository.joinCourse(data)
-                            data
-                        }
+                        .toObservable()
+                        .doOnNext {data -> topicsRepository.joinCourse(data) }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->

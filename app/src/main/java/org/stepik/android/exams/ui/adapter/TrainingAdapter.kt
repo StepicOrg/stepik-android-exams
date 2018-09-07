@@ -15,7 +15,7 @@ import org.stepik.android.exams.ui.util.TopicColorResolver
 import kotlin.properties.Delegates
 
 class TrainingAdapter(
-        private val activity : Activity,
+        private val activity: Activity,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
     companion object {
@@ -31,11 +31,8 @@ class TrainingAdapter(
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
 
-    private fun setItemWidth() : Int {
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return (displayMetrics.widthPixels - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
-    }
+    private fun setItemWidth(recyclerWidth : Int): Int =
+         (recyclerWidth - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
 
     override fun getItemCount() = lessons.size
 
@@ -59,7 +56,9 @@ class TrainingAdapter(
                         screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
                 }
             }
-            itemView.layoutParams.width = setItemWidth()
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            itemView.layoutParams.width = setItemWidth(displayMetrics.widthPixels)
         }
 
         fun bind(type: LessonType) {
