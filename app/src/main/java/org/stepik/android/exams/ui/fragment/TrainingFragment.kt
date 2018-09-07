@@ -15,15 +15,12 @@ import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
+import org.stepik.android.exams.ui.custom.CoursesSnapHelper
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
-import android.support.v7.widget.LinearSnapHelper
-import android.support.v7.widget.SnapHelper
-
-
 
 
 class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(), TrainingView {
@@ -47,8 +44,8 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val theoryHelper = LinearSnapHelper()
-        val practiceHelper = LinearSnapHelper()
+        val theoryHelper = CoursesSnapHelper(1)
+        val practiceHelper = CoursesSnapHelper(1)
         trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
         theoryLessonRecycler.adapter = trainingTheoryAdapter

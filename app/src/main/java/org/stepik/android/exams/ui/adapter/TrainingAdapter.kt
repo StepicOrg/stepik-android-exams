@@ -1,8 +1,8 @@
 package org.stepik.android.exams.ui.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +18,10 @@ class TrainingAdapter(
         private val activity : Activity,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
+    companion object {
+        const val ITEM_PADDING = 60
+    }
+
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
     }
@@ -27,6 +31,11 @@ class TrainingAdapter(
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
 
+    private fun setItemWidth() : Int {
+        val displayMetrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return (displayMetrics.widthPixels - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
+    }
 
     override fun getItemCount() = lessons.size
 
@@ -39,7 +48,6 @@ class TrainingAdapter(
         private val subtitle: TextView = root.lessonSubtitle
         private val lessonContainer: View = root.lessonContainer
         private val lessonDescription: TextView = root.lessonDescription
-
         init {
             root.setOnClickListener {
                 val lessonType = lessons[adapterPosition]
@@ -51,6 +59,7 @@ class TrainingAdapter(
                         screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
                 }
             }
+            itemView.layoutParams.width = setItemWidth()
         }
 
         fun bind(type: LessonType) {
