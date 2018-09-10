@@ -12,6 +12,7 @@
         android:text="@string/practice" />
 
     <Button
+        android:id="@+id/buttonSeeAllPractice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent"

@@ -27,13 +27,16 @@
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.IntroActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.activity.LessonsActivity" />
+            android:name=".ui.activity.TopicLessonsActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.StepsListActivity"/>
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.activity.MainMenuActivity" />
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.ListLessonActivity" />
+
         <service android:name=".core.services.ViewPushService" />
     </application>
 

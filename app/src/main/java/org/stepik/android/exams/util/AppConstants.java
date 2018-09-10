@@ -30,6 +30,7 @@ public final class AppConstants {
     public static final String TYPE_SQL = "sql";
     public static final String TYPE_LINUX_CODE = "linux-code";
 
+    public static final String TYPE_LESSONS_LIST = "type";
     public static final String lesson = "lesson";
     public static final String lessonId = "lessonId";
     public static final String topicId = "topicId";

@@ -30,8 +30,8 @@ constructor(
     }
 
     override fun showLessons(context: Context, topic: Topic) {
-        val intent = Intent(context, LessonsActivity::class.java)
-        intent.putExtra(LessonsActivity.EXTRA_TOPIC, topic)
+        val intent = Intent(context, TopicLessonsActivity::class.java)
+        intent.putExtra(TopicLessonsActivity.EXTRA_TOPIC, topic)
         context.startActivity(intent)
     }
 
@@ -75,5 +75,11 @@ constructor(
         val intent = Intent(context, ViewPushService::class.java)
         intent.putExtra(AppConstants.viewPush, viewAssignment)
         context.startService(intent)
+    }
+
+    override fun showLessonsList(context: Context, type: String) {
+        val intent = Intent(context, ListLessonActivity::class.java)
+        intent.putExtra(AppConstants.type, type)
+        context.startActivity(intent)
     }
 }

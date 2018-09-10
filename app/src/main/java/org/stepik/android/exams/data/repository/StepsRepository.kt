@@ -35,7 +35,7 @@ constructor(
                     .filter { it.isNotEmpty() }
                     .map { topics -> LessonType.Practice(LessonPracticeWrapper(theoryId, topics.first())) }
 
-    private fun loadTheoryLessonByTopicId(theoryId: String): Observable<LessonType.Theory> =
+    fun loadTheoryLessonByTopicId(theoryId: String): Observable<LessonType.Theory> =
             loadTheoryLessonsDb(theoryId)
                     .switchIfEmpty(getTheoryCoursesId(theoryId)
                             .flatMapObservable { loadTheoryLessonsApi(theoryId, it.toLongArray()) })
@@ -44,10 +44,10 @@ constructor(
             Observable.merge(loadTheoryLessonByTopicId(topicId),
                     getPracticeCoursesId(topicId).toObservable())
 
-    fun loadAllTheoryLessons() : Observable<List<LessonType.Theory>> =
+    fun loadAllTheoryLessons() =
             Observable.merge(topicsList.map { loadTheoryLessonByTopicId(it) }).toList().toObservable()
 
-    fun loadAllPracticeLessons() : Observable<List<LessonType.Practice>> =
+    fun loadAllPracticeLessons() =
             Observable.merge(topicsList.map { getPracticeCoursesId(it).toObservable() }).toList().toObservable()
 
     fun loadAllLessons() =

@@ -21,7 +21,7 @@ import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LessonsActivity : BasePresenterActivity<TopicLessonsPresenter, LessonsView>(), LessonsView {
+class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, LessonsView>(), LessonsView {
     companion object {
         const val EXTRA_TOPIC = "topic"
     }

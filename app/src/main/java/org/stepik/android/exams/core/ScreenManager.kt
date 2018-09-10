@@ -19,4 +19,5 @@ interface ScreenManager {
     fun continueAdaptiveCourse(topicId: String, activity: Activity)
     fun openImage(context: Context, path: String)
     fun pushToViewedQueue(viewAssignment: ViewAssignment)
+    fun showLessonsList(context: Context, type : String)
 }

@@ -1,5 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
@@ -18,6 +19,10 @@ constructor(
         private val mainScheduler: Scheduler,
         private val stepsRepository: StepsRepository
 ) : PresenterBase<LessonsView>() {
+    companion object {
+        const val THEORY_TYPE = "theory"
+        const val PRACTICE_TYPE = "practice"
+    }
     private var viewState by Delegates.observable(LessonsView.State.Idle as LessonsView.State) { _, _, newState ->
         view?.setState(newState)
     }
@@ -32,8 +37,9 @@ constructor(
             LessonsView.State.Loading
         }
         val lessonObservable = when (type) {
-            "theory" -> loadTheoryLessons()
-            else -> loadPracticeLessons()
+            THEORY_TYPE -> loadTheoryLessons()
+            PRACTICE_TYPE -> loadPracticeLessons()
+            else -> Observable.empty()
         }
         disposable.add(lessonObservable
                 .subscribeOn(backgroundScheduler)

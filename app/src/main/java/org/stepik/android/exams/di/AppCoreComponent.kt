@@ -10,7 +10,8 @@ import org.stepik.android.exams.di.network.GraphModule
 import org.stepik.android.exams.di.network.NetworkModule
 import org.stepik.android.exams.di.network.RoomModule
 import org.stepik.android.exams.di.network.StepsModule
-import org.stepik.android.exams.ui.activity.LessonsActivity
+import org.stepik.android.exams.ui.activity.ListLessonActivity
+import org.stepik.android.exams.ui.activity.TopicLessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity
 import org.stepik.android.exams.ui.fragment.OnboardingFragment
 import org.stepik.android.exams.ui.fragment.TopicsListFragment
@@ -43,11 +44,13 @@ interface AppCoreComponent {
 
     fun inject(fragmentTopics: TopicsListFragment)
 
-    fun inject(lessonsActivity: LessonsActivity)
+    fun inject(topicLessonsActivity: TopicLessonsActivity)
 
     fun inject(quizCardViewHolder: QuizCardViewHolder)
 
     fun inject(trainingFragment: TrainingFragment)
 
     fun inject(viewPushService: ViewPushService)
+
+    fun inject(listLessonActivity: ListLessonActivity)
 }

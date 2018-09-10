@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import kotlinx.android.synthetic.main.fragment_training.*
+import kotlinx.android.synthetic.main.view_see_all_practice.*
+import kotlinx.android.synthetic.main.view_see_all_theory.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
@@ -28,6 +30,8 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
+        const val TYPE_THEORY = "theory"
+        const val TYPE_PRACTICE = "practice"
     }
 
     override fun injectComponent() {
@@ -61,6 +65,14 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
 
         tryAgain.setOnClickListener {
             presenter?.loadTopics()
+        }
+
+        buttonSeeAllTheory.setOnClickListener {
+            screenManager.showLessonsList(context, TYPE_THEORY)
+        }
+
+        buttonSeeAllPractice.setOnClickListener {
+            screenManager.showLessonsList(context, TYPE_PRACTICE)
         }
     }
 
