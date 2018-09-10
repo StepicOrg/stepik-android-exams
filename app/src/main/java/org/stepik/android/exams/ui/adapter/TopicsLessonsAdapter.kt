@@ -8,14 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.header_lessons.view.*
-import kotlinx.android.synthetic.main.item_lesson.view.*
+import kotlinx.android.synthetic.main.item_topic_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.util.TopicColorResolver
 
-class LessonsAdapter(
+class TopicsLessonsAdapter(
         private val context: Context,
         private val screenManager: ScreenManager,
         private val topic: Topic
@@ -42,7 +42,7 @@ class LessonsAdapter(
                     HeaderViewHolder(inflater.inflate(R.layout.header_lessons, parent, false))
 
                 VIEW_TYPE_LESSON ->
-                    LessonViewHolder(inflater.inflate(R.layout.item_lesson, parent, false))
+                    LessonViewHolder(inflater.inflate(R.layout.item_topic_lesson, parent, false))
 
                 else -> throw IllegalStateException("unknown viewType = $viewType")
             }

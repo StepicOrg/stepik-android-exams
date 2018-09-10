@@ -26,14 +26,14 @@ constructor(
                     nextLesson = iterator.next()
             }
             if (nextLesson != 0L && move) {
-                return stepsRepository.findLessonInDb(topicId, nextLesson)
+                return stepsRepository.findLessonDb(topicId, nextLesson)
                         .toList()
                         .toObservable()
             }
         } else {
             val nextTopic = graph[topicId]?.parent?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
-                return stepsRepository.tryLoadLessons(nextTopic)
+                return stepsRepository.loadLessonsByTopicId(nextTopic)
                         .ofType(LessonTheoryWrapper::class.java)
                         .toList()
                         .toObservable()
@@ -58,14 +58,14 @@ constructor(
                 }
             }
             if (nextLesson != 0L && move) {
-                return stepsRepository.findLessonInDb(topicId, nextLesson)
+                return stepsRepository.findLessonDb(topicId, nextLesson)
                         .toList()
                         .toObservable()
             }
         } else {
             val nextTopic = graph[topicId]?.children?.first()?.id ?: ""
             if (nextTopic.isNotEmpty() && move) {
-                return stepsRepository.tryLoadLessons(nextTopic)
+                return stepsRepository.loadLessonsByTopicId(nextTopic)
                         .ofType(LessonTheoryWrapper::class.java)
                         .toList()
                         .toObservable()

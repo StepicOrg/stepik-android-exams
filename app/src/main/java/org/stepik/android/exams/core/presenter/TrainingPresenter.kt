@@ -1,15 +1,12 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Observables.zip
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.repository.StepsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -41,30 +38,20 @@ constructor(
         }
         compositeDisposable.add(
                 topicsRepository.getGraphData()
-                        .flatMap{ data ->
+                        .flatMap { data ->
                             topicsRepository.joinCourse(data)
                         }
                         .flatMapObservable {
-                            loadAllLessons(topicsRepository.getTopicsList())
+                            stepsRepository.loadAllLessons()
                         }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe({
-                            (theoryLessons, practiceLessons) ->
+                        .subscribe({ (theoryLessons, practiceLessons) ->
                             viewState = TrainingView.State.Success(theoryLessons, practiceLessons)
                         }, {
                             onError()
                         }))
     }
-
-    private fun loadAllLessons(topicsList : List<String>) =
-                zip(loadTheoryLessons(topicsList), loadPracticeLessons(topicsList))
-
-    private fun loadTheoryLessons(topicsList : List<String>) =
-            Observable.merge(topicsList.map { stepsRepository.loadTheoryLesson(it) }).toList().toObservable()
-
-    private fun loadPracticeLessons(topicsList : List<String>) =
-            Observable.merge(topicsList.map { stepsRepository.getPracticeCoursesId(it).toObservable() }).toList().toObservable()
 
     override fun attachView(view: TrainingView) {
         super.attachView(view)

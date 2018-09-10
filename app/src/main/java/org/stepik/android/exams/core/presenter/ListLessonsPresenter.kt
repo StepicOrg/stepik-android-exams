@@ -9,7 +9,7 @@ import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class LessonsPresenter
+class ListLessonsPresenter
 @Inject
 constructor(
         @BackgroundScheduler
@@ -24,15 +24,18 @@ constructor(
 
     private val disposable = CompositeDisposable()
 
-    fun tryLoadLessons(topicId: String) {
+    fun loadAllTypedLessons(type: String) {
         val oldViewState = viewState
         viewState = if (oldViewState is LessonsView.State.Success) {
             LessonsView.State.Refreshing(oldViewState.lessons)
         } else {
             LessonsView.State.Loading
         }
-        disposable.add(stepsRepository.tryLoadLessons(theoryId = topicId)
-                .toList()
+        val lessonObservable = when (type) {
+            "theory" -> loadTheoryLessons()
+            else -> loadPracticeLessons()
+        }
+        disposable.add(lessonObservable
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ lessons ->
@@ -41,6 +44,12 @@ constructor(
                     viewState = LessonsView.State.NetworkError
                 }))
     }
+
+    private fun loadTheoryLessons() =
+            stepsRepository.loadAllTheoryLessons()
+
+    private fun loadPracticeLessons() =
+            stepsRepository.loadAllPracticeLessons()
 
     override fun attachView(view: LessonsView) {
         super.attachView(view)
