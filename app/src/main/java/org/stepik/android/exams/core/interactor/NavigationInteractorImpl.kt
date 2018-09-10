@@ -46,7 +46,7 @@ constructor(
 
     private fun getLessonInCurrentTopic(lesson: Long, move: Boolean, topicId: String): Observable<List<LessonTheoryWrapper>> {
         return if (lesson != 0L && move) {
-            lessonsRepository.findLessonDb(topicId, lesson)
+            lessonsRepository.findLessonInDb(topicId, lesson)
                     .toList()
                     .toObservable()
         } else Observable.just(listOf(LessonTheoryWrapper()))
