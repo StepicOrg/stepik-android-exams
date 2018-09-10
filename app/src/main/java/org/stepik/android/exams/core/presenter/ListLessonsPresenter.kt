@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.data.repository.StepsRepository
+import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import javax.inject.Inject
@@ -17,7 +17,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val stepsRepository: StepsRepository
+        private val lessonsRepository: LessonsRepository
 ) : PresenterBase<LessonsView>() {
     companion object {
         const val THEORY_TYPE = "theory"
@@ -52,10 +52,10 @@ constructor(
     }
 
     private fun loadTheoryLessons() =
-            stepsRepository.loadAllTheoryLessons()
+            lessonsRepository.loadAllTheoryLessons()
 
     private fun loadPracticeLessons() =
-            stepsRepository.loadAllPracticeLessons()
+            lessonsRepository.loadAllPracticeLessons()
 
     override fun attachView(view: LessonsView) {
         super.attachView(view)

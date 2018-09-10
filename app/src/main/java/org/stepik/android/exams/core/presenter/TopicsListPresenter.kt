@@ -1,13 +1,12 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import org.stepik.android.exams.core.interactor.GraphInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.graph.model.GraphData
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -18,7 +17,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val topicsRepository: TopicsRepository
+        private val topicsRepository: TopicsRepository,
+        private val graphInteractor: GraphInteractor
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -38,7 +38,7 @@ constructor(
             TopicsListView.State.Loading
         }
         compositeDisposable.add(
-                topicsRepository.getGraphData()
+                graphInteractor.getGraphData()
                         .toObservable()
                         .doOnNext {data -> topicsRepository.joinCourse(data) }
                         .subscribeOn(backgroundScheduler)

@@ -5,6 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.Api
+import org.stepik.android.exams.core.interactor.GraphInteractor
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -17,16 +18,16 @@ import org.stepik.android.exams.data.model.LessonWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 
-class StepsRepository
+class LessonsRepository
 @Inject
 constructor(
         private val api: Api,
         private val lessonDao: LessonDao,
         private val stepDao: StepDao,
         private val topicsDao: TopicDao,
-        private val topicsRepository: TopicsRepository
+        private val graphInteractor: GraphInteractor
 ) {
-    private val topicsList = topicsRepository.getTopicsList()
+    private val topicsList = graphInteractor.getTopicsList()
     private fun getTheoryCoursesId(theoryId: String): Maybe<List<Long>> =
             topicsDao.getTopicInfoByType(theoryId, GraphLesson.Type.THEORY)
 
@@ -44,10 +45,10 @@ constructor(
             Observable.merge(loadTheoryLessonByTopicId(topicId),
                     getPracticeCoursesId(topicId).toObservable())
 
-    fun loadAllTheoryLessons() =
+    fun loadAllTheoryLessons() : Observable<List<LessonType.Theory>> =
             Observable.merge(topicsList.map { loadTheoryLessonByTopicId(it) }).toList().toObservable()
 
-    fun loadAllPracticeLessons() =
+    fun loadAllPracticeLessons() : Observable<List<LessonType.Practice>> =
             Observable.merge(topicsList.map { getPracticeCoursesId(it).toObservable() }).toList().toObservable()
 
     fun loadAllLessons() =

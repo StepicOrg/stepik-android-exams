@@ -15,21 +15,11 @@ class TopicsRepository
 @Inject
 constructor(
         private val api: Api,
-        private val graph: Graph<String>,
-        private val graphService: GraphService,
         private val topicDao: TopicDao
 ) {
-    fun getGraphData(): Single<GraphData> =
-            graphService.getPosts()
-                    .doOnSuccess { graphData ->
-                        addDataToGraph(graphData)
-                    }
 
     fun joinCourse(graphData: GraphData): Single<Boolean> =
             checkIfJoined().switchIfEmpty(saveAndJoin(graphData).toSingleDefault(false))
-
-    fun getTopicsList() =
-            graph.getAllTopics()
 
     private fun saveAndJoin(graphData: GraphData): Completable {
         val topicsList = graphData.topicsMap.map { it.id }
@@ -45,17 +35,6 @@ constructor(
 
     private fun joinCourse(id: Long) =
             api.joinCourse(id)
-
-    private fun addDataToGraph(graphData: GraphData) {
-        for (topic in graphData.topics) {
-            graph.createVertex(topic.id, topic.title)
-            if (topic.requiredFor != null)
-                graph.addEdge(topic.id, topic.requiredFor)
-        }
-        for (maps in graphData.topicsMap) {
-            graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
-        }
-    }
 
     private fun checkIfJoined() =
             topicDao.isJoinedToCourses()
