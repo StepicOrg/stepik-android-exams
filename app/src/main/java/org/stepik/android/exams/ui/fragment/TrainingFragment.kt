@@ -1,7 +1,6 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
 import org.stepik.android.exams.ui.custom.CoursesSnapHelper
+import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
@@ -53,9 +53,9 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
         theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
+        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = LinearLayoutManager(context, GridLayoutManager.HORIZONTAL, false)
+        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         theoryHelper.attachToRecyclerView(theoryLessonRecycler)
         practiceHelper.attachToRecyclerView(practiceLessonRecycler)
         initCenteredToolbar(R.string.training)
