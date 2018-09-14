@@ -1,66 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <android.support.v7.widget.CardView
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/lessonContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:orientation="vertical"
-        app:cardCornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:foreground="?selectableItemBackground"
+        android:padding="24dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/lessonContainer"
+        <TextView
+            android:id="@+id/lessonTitle"
+            style="@android:style/TextAppearance.Medium"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:foreground="?selectableItemBackground"
-            android:padding="24dp">
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Теоритеческий урок" />
 
-            <TextView
-                android:id="@+id/lessonTitle"
-                style="@android:style/TextAppearance.Medium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Теоритеческий урок" />
+        <TextView
+            android:id="@+id/lessonDescription"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/lessonSubtitle"
+            app:layout_constraintEnd_toEndOf="@+id/lessonTitle"
+            app:layout_constraintStart_toStartOf="@+id/lessonTitle"
+            app:layout_constraintTop_toBottomOf="@+id/lessonTitle"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:text="Описание" />
 
-            <TextView
-                android:id="@+id/lessonDescription"
-                style="@android:style/TextAppearance.Small"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/lessonTitle"
-                app:layout_constraintStart_toStartOf="@+id/lessonTitle"
-                app:layout_constraintTop_toBottomOf="@+id/lessonTitle"
-                tools:text="Описание" />
-
-            <android.support.constraint.Barrier
-                android:id="@+id/barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="lessonTitle,lessonDescription" />
-
-            <TextView
-                android:id="@+id/lessonSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/barrier"
-                app:layout_constraintVertical_bias="1.0"
-                tools:text="15 шагов" />
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
-</FrameLayout>
+        <TextView
+            android:id="@+id/lessonSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lessonDescription"
+            tools:text="15 шагов" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
