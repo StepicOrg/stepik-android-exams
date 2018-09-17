@@ -3,6 +3,7 @@ package org.stepik.android.exams.core.interactor
 import io.reactivex.Observable
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.LessonsRepository
 import javax.inject.Inject
 
@@ -39,7 +40,8 @@ constructor(
     private fun getTopic(topicId: String, move: Boolean): Observable<List<LessonTheoryWrapper>> {
         return if (topicId.isNotEmpty() && move) {
             lessonsRepository.loadLessonsByTopicId(topicId)
-                    .ofType(LessonTheoryWrapper::class.java)
+                    .ofType(LessonType.Theory::class.java)
+                    .map { t: LessonType.Theory ->  t.lessonTheoryWrapper }
                     .toList()
                     .toObservable()
         } else Observable.just(listOf(LessonTheoryWrapper()))

@@ -32,8 +32,8 @@ class TrainingAdapter(
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
 
 
-    private fun setItemWidth(recyclerHeight : Int): Int =
-         (recyclerHeight - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
+    private fun setItemWidth(recyclerWidth : Int): Int =
+         (recyclerWidth - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
 
     override fun getItemCount() = lessons.size
 
