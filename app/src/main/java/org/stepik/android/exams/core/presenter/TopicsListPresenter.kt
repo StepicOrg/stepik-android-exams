@@ -40,7 +40,7 @@ constructor(
         compositeDisposable.add(
                 graphInteractor.getGraphData()
                         .toObservable()
-                        .doOnNext {data -> topicsRepository.joinCourse(data) }
+                        .flatMapMaybe {data -> topicsRepository.joinCourse(data).map { data } }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->

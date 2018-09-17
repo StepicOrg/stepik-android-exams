@@ -40,7 +40,7 @@ constructor(
         }
         compositeDisposable.add(
                 graphInteractor.getGraphData()
-                        .flatMap { data ->
+                        .flatMapMaybe { data ->
                             topicsRepository.joinCourse(data)
                         }
                         .flatMapObservable {

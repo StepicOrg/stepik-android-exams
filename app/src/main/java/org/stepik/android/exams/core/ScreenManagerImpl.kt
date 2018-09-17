@@ -7,7 +7,7 @@ import android.content.Intent
 import org.stepik.android.exams.App
 import org.stepik.android.exams.adaptive.ui.activity.AdaptiveCourseActivity
 import org.stepik.android.exams.core.services.ViewPushService
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.graph.model.Topic
@@ -21,10 +21,10 @@ class ScreenManagerImpl
 constructor(
         private val context: Context
 ) : ScreenManager {
-    override fun showStepsList(topicId: String, lesson: LessonWrapper, context: Context) {
+    override fun showStepsList(topicId: String, lessonTheory: LessonTheoryWrapper, context: Context) {
         val intent = Intent(context, StepsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra(StepsListActivity.EXTRA_LESSON, lesson)
+        intent.putExtra(StepsListActivity.EXTRA_LESSON, lessonTheory)
         intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
         context.startActivity(intent)
     }

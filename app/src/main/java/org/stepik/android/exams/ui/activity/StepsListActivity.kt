@@ -10,7 +10,7 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.ProgressPresenter
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.ui.adapter.StepPagerAdapter
 import org.stepik.android.exams.ui.listeners.RoutingViewListener
 import org.stepik.android.exams.util.initCenteredToolbar
@@ -49,9 +49,9 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
 
         initCenteredToolbar(R.string.theory, showHomeButton = true)
 
-        val lesson: LessonWrapper = intent.getParcelableExtra(EXTRA_LESSON)
+        val lessonTheory: LessonTheoryWrapper = intent.getParcelableExtra(EXTRA_LESSON)
         val topicId: String = intent.getStringExtra(EXTRA_TOPIC_ID)
-        steps = lesson.stepsList
+        steps = lessonTheory.stepsList
 
         adapter = StepPagerAdapter(supportFragmentManager, topicId, steps, stepTypeResolver)
         pagers.adapter = adapter

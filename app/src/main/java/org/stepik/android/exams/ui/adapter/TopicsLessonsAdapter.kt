@@ -14,6 +14,7 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.util.TopicColorResolver
+import kotlin.properties.Delegates
 
 class TopicsLessonsAdapter(
         private val context: Context,
@@ -25,9 +26,11 @@ class TopicsLessonsAdapter(
         private const val VIEW_TYPE_LESSON = 2
     }
 
-    private val inflater = LayoutInflater.from(context)
+    var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
+        notifyDataSetChanged()
+    }
 
-    private var lessons: List<LessonType> = listOf()
+    private val inflater = LayoutInflater.from(context)
 
     override fun getItemViewType(position: Int) =
             if (position == 0) {
@@ -59,11 +62,6 @@ class TopicsLessonsAdapter(
         }
     }
 
-    fun setLessons(lessons: List<LessonType>) {
-        this.lessons = lessons
-        notifyDataSetChanged()
-    }
-
     class HeaderViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         private val topicTitle = root.topicTitle
         private val lessonsCount = root.lessonsCount
@@ -85,7 +83,7 @@ class TopicsLessonsAdapter(
                 val lessonType = lessons[adapterPosition - 1]
                 when (lessonType) {
                     is LessonType.Theory ->
-                        screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper.lesson, context)
+                        screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper, context)
 
                     is LessonType.Practice ->
                         screenManager.continueAdaptiveCourse(topic.id, context as Activity)
@@ -99,7 +97,7 @@ class TopicsLessonsAdapter(
 
             when (type) {
                 is LessonType.Theory -> {
-                    val lesson = type.lessonTheoryWrapper.lesson.lesson
+                    val lesson = type.lessonTheoryWrapper.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
                 }

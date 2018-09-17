@@ -55,10 +55,10 @@ class TrainingAdapter(
                 val lessonType = lessons[adapterPosition]
                 when (lessonType) {
                     is LessonType.Theory ->
-                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.topic, lessonType.lessonTheoryWrapper.lesson, activity)
+                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.topicId, lessonType.lessonTheoryWrapper, activity)
 
                     is LessonType.Practice ->
-                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topic, activity)
+                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
                 }
             }
         }
@@ -68,15 +68,15 @@ class TrainingAdapter(
             lessonDescription.text = context.resources.getString(R.string.lesson_description)
             when (type) {
                 is LessonType.Theory -> {
-                    val lesson = type.lessonTheoryWrapper.lesson.lesson
+                    val lesson = type.lessonTheoryWrapper.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topic))
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topicId))
                 }
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topic))
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topicId))
                 }
             }
         }

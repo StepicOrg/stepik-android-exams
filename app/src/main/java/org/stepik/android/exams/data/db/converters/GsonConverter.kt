@@ -3,7 +3,7 @@ package org.stepik.android.exams.data.db.converters
 
 import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.model.Reply
 import org.stepik.android.model.Submission
@@ -36,12 +36,12 @@ class GsonConverter {
     }
 
     @TypeConverter
-    fun stringToLesson(data: String?): LessonWrapper? {
-        return gson.fromJson<LessonWrapper>(data, LessonWrapper::class.java)
+    fun stringToLesson(data: String?): LessonTheoryWrapper? {
+        return gson.fromJson<LessonTheoryWrapper>(data, LessonTheoryWrapper::class.java)
     }
 
     @TypeConverter
-    fun lessonToString(obj: LessonWrapper?): String? {
+    fun lessonToString(obj: LessonTheoryWrapper?): String? {
         return gson.toJson(obj)
     }
 

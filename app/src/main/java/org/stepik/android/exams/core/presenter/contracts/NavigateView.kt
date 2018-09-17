@@ -1,9 +1,9 @@
 package org.stepik.android.exams.core.presenter.contracts
 
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 
 interface NavigateView {
-    fun moveToLesson(id: String, lesson: LessonWrapper?)
+    fun moveToLesson(id: String, lessonTheory: LessonTheoryWrapper?)
     fun showNextButton()
     fun hideNextButton()
     fun showPrevButton()

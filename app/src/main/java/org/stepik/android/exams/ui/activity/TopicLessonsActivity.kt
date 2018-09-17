@@ -100,7 +100,7 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = true
-            topicsLessonsAdapter.setLessons(state.lessons)
+            topicsLessonsAdapter.lessons = state.lessons
         }
 
         is LessonsView.State.NetworkError -> {
@@ -112,7 +112,7 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = false
-            topicsLessonsAdapter.setLessons(state.lessons)
+            topicsLessonsAdapter.lessons = state.lessons
         }
     }
 

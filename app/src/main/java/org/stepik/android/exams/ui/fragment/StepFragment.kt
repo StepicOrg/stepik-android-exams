@@ -18,7 +18,7 @@ import org.stepik.android.exams.core.presenter.StepAttemptPresenter
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.util.argument
 import org.stepik.android.exams.util.resolvers.StepTypeResolver
 import org.stepik.android.exams.util.resolvers.StepTypeResolverImpl
@@ -102,8 +102,8 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         progressPresenter.detachView(this)
     }
 
-    override fun moveToLesson(id: String, lesson: LessonWrapper?) =
-            screenManager.showStepsList(id, lesson!!, context)
+    override fun moveToLesson(id: String, lessonTheory: LessonTheoryWrapper?) =
+            screenManager.showStepsList(id, lessonTheory!!, context)
 
     override fun showNextButton() {
         previousLesson.visibility = View.VISIBLE
