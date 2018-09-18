@@ -12,6 +12,7 @@ import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.util.transformets.transformToViewModel
 import org.stepik.android.model.Progress
 import org.stepik.android.model.Step
 import java.util.concurrent.TimeUnit
@@ -49,6 +50,7 @@ constructor(
     fun isAllStepsPassed(steps: List<Step>) {
         val progresses = steps.mapNotNull(Step::progress).toTypedArray()
         service.getProgresses(progresses)
+                .doOnSuccess { response -> response.progresses.mapNotNull { it.transformToViewModel() }.associateBy { it.progressId } }
                 .flatMapObservable { it.progresses.toObservable() }
                 .flatMap { progress ->
                     val step = steps.find { it.progress == progress.id }
