@@ -23,7 +23,8 @@ ext.versions = [
         butterKnife          : '8.8.1',
         room                 : '1.1.1',
         roomRx               : '1.1.1',
-        lifecycleExt         : '1.1.1'
+        lifecycleExt         : '1.1.1',
+        amplitude            : '2.14.1'
 ]
 
 ext.gradlePlugins = [
@@ -62,5 +63,6 @@ ext.libraries = [
         roomRx               : "android.arch.persistence.room:rxjava2:$versions.roomRx",
         lifecycleExtensions  : "android.arch.lifecycle:extensions:$versions.lifecycleExt",
         lifecycleCompiler    : "android.arch.lifecycle:compiler:$versions.lifecycleExt",
-        coreTesting          : "android.arch.core:core-testing:$versions.lifecycleExt"
+        coreTesting          : "android.arch.core:core-testing:$versions.lifecycleExt",
+        amplitude            : "com.amplitude:android-sdk:$versions.amplitude"
 ]

@@ -65,4 +65,5 @@ dependencies {
     api libraries.lifecycleExtensions
     kapt libraries.lifecycleCompiler
     testImplementation libraries.coreTesting
+    implementation libraries.amplitude
 }

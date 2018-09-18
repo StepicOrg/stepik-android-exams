@@ -8,7 +8,7 @@ import org.stepik.android.exams.di.DaggerAppCoreComponent
 
 open class App : Application() {
     companion object {
-        private lateinit var app: App
+        lateinit var app: App
 
         fun component() = app.component
         fun componentManager() = app.componentManager
