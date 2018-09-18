@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.ViewAssignment
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.graph.model.Topic
 
 interface ScreenManager {
@@ -17,5 +18,5 @@ interface ScreenManager {
     fun continueAdaptiveCourse(topicId: String, activity: Activity)
     fun openImage(context: Context, path: String)
     fun pushToViewedQueue(viewAssignment: ViewAssignment)
-    fun showLessonsList(context: Context, type : String)
+    fun showLessonsList(context: Context, type : GraphLesson.Type)
 }

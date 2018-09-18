@@ -13,8 +13,8 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.ListLessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.ListLessonAdapter
-import org.stepik.android.exams.ui.adapter.TrainingAdapter
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
@@ -31,11 +31,7 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var type: String
-    companion object {
-        const val THEORY_TYPE = "theory"
-        const val PRACTICE_TYPE = "practice"
-    }
+    private lateinit var type: GraphLesson.Type
     override fun injectComponent() {
         App.component().inject(this)
     }
@@ -43,14 +39,10 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lessons)
-        type = intent.getStringExtra(AppConstants.TYPE_LESSONS_LIST)
+        type = intent.getSerializableExtra(AppConstants.TYPE_LESSONS_LIST) as GraphLesson.Type
         when (type) {
-            THEORY_TYPE -> {
-                initCenteredToolbar(R.string.theory, showHomeButton = true)
-            }
-            PRACTICE_TYPE -> {
-                initCenteredToolbar(R.string.practice, showHomeButton = true)
-            }
+            GraphLesson.Type.THEORY -> initCenteredToolbar(R.string.theory, showHomeButton = true)
+            GraphLesson.Type.PRACTICE -> initCenteredToolbar(R.string.practice, showHomeButton = true)
         }
         topicsLessonsAdapter = ListLessonAdapter(this, screenManager)
         recyclerLesson.adapter = topicsLessonsAdapter

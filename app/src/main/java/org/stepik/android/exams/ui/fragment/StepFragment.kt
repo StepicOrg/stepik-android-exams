@@ -11,11 +11,9 @@ import kotlinx.android.synthetic.main.step_text_header.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.core.presenter.BasePresenterFragment
-import org.stepik.android.exams.core.presenter.NavigationPresenter
-import org.stepik.android.exams.core.presenter.ProgressPresenter
-import org.stepik.android.exams.core.presenter.StepAttemptPresenter
+import org.stepik.android.exams.core.presenter.*
 import org.stepik.android.exams.core.presenter.contracts.AttemptView
+import org.stepik.android.exams.core.presenter.contracts.LessonTrackingView
 import org.stepik.android.exams.core.presenter.contracts.NavigateView
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
@@ -26,7 +24,7 @@ import org.stepik.android.model.Step
 import javax.inject.Inject
 import javax.inject.Provider
 
-open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptView>(), NavigateView, ProgressView {
+open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptView>(), NavigateView, ProgressView, LessonTrackingView {
     companion object {
         fun newInstance(step: Step, topicId: String, lastPosition: Long): StepFragment =
                 StepFragment().apply {
@@ -47,6 +45,9 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
 
     @Inject
     protected lateinit var progressPresenter: ProgressPresenter
+
+    @Inject
+    protected lateinit var stepsTrackingPresenter : StepsTrackingPresenter
 
     private var step: Step by argument()
     private var topicId: String by argument()
@@ -86,6 +87,7 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         attemptContainer = attempt_container
         showHeader()
         loadNavigation()
+        stepsTrackingPresenter.trackStepType(step)
         swipeRefreshAttempt.isEnabled = false
         swipeRefreshAttempt.isRefreshing = false
     }
@@ -94,12 +96,14 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         super.onStart()
         navigationPresenter.attachView(this)
         progressPresenter.attachView(this)
+        stepsTrackingPresenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         navigationPresenter.detachView(this)
         progressPresenter.detachView(this)
+        stepsTrackingPresenter.detachView(this)
     }
 
     override fun moveToLesson(id: String, lessonTheory: LessonTheoryWrapper?) =

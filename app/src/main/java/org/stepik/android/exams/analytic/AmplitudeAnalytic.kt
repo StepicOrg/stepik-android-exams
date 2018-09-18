@@ -2,8 +2,6 @@ package org.stepik.android.exams.analytic
 
 interface AmplitudeAnalytic {
     object Properties {
-        const val STEPIK_ID = "stepik_id"
-        const val SUBMISSIONS_COUNT = "submissions_count"
         const val SCREEN_ORIENTATION = "screen_orientation"
         const val APPLICATION_ID = "application_id"
         const val PUSH_PERMISSION = "push_permission"
@@ -31,20 +29,14 @@ interface AmplitudeAnalytic {
         }
     }
 
-    object Page {
-        const val PAGE_OPENED = "Page opened"
+    object Steps {
+        const val SUBMISSION_MADE = "Submission made"
+        const val STEP_OPENED = "Page opened"
         object Params {
             const val POSITION = "position"
             const val LESSON = "lesson"
             const val STEP = "step"
-        }
-    }
-
-    object Submission {
-        const val SUBMISSION_MADE = "Submission made"
-        object Params {
             const val TYPE = "type"
-            const val STEP = "step"
         }
     }
 }
