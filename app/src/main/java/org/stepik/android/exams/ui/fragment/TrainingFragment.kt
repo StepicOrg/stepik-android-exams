@@ -15,6 +15,7 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
 import org.stepik.android.exams.ui.custom.CoursesSnapHelper
 import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
@@ -30,8 +31,6 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
-        const val TYPE_THEORY = "theory"
-        const val TYPE_PRACTICE = "practice"
     }
 
     override fun injectComponent() {
@@ -68,11 +67,11 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         }
 
         buttonSeeAllTheory.setOnClickListener {
-            screenManager.showLessonsList(context, TYPE_THEORY)
+            screenManager.showLessonsList(context, GraphLesson.Type.THEORY)
         }
 
         buttonSeeAllPractice.setOnClickListener {
-            screenManager.showLessonsList(context, TYPE_PRACTICE)
+            screenManager.showLessonsList(context, GraphLesson.Type.PRACTICE)
         }
     }
 

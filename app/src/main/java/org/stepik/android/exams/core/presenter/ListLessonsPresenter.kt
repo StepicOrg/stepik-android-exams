@@ -7,6 +7,7 @@ import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -19,17 +20,13 @@ constructor(
         private val mainScheduler: Scheduler,
         private val lessonsRepository: LessonsRepository
 ) : PresenterBase<LessonsView>() {
-    companion object {
-        const val THEORY_TYPE = "theory"
-        const val PRACTICE_TYPE = "practice"
-    }
     private var viewState by Delegates.observable(LessonsView.State.Idle as LessonsView.State) { _, _, newState ->
         view?.setState(newState)
     }
 
     private val disposable = CompositeDisposable()
 
-    fun loadAllTypedLessons(type: String) {
+    fun loadAllTypedLessons(type: GraphLesson.Type) {
         val oldViewState = viewState
         viewState = if (oldViewState is LessonsView.State.Success) {
             LessonsView.State.Refreshing(oldViewState.lessons)
@@ -37,9 +34,8 @@ constructor(
             LessonsView.State.Loading
         }
         val lessonObservable = when (type) {
-            THEORY_TYPE -> loadTheoryLessons()
-            PRACTICE_TYPE -> loadPracticeLessons()
-            else -> Observable.empty()
+            GraphLesson.Type.THEORY -> loadTheoryLessons()
+            GraphLesson.Type.PRACTICE -> loadPracticeLessons()
         }
         disposable.add(lessonObservable
                 .subscribeOn(backgroundScheduler)
