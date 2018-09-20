@@ -13,8 +13,9 @@ data class StepInfo(
         @ColumnInfo(name = "attempt") val attempt: Attempt?,
         @TypeConverters(GsonConverter::class)
         @ColumnInfo(name = "submission") val submission: Submission?,
-        @ColumnInfo(name = "isPassed") val isPassed: Boolean
+        @ColumnInfo(name = "isPassed") val isPassed: Boolean,
+        @ColumnInfo(name = "topic") val topic: String
 ) {
     @Ignore
-    constructor(id: Long) : this(id, null, null, false)
+    constructor(id: Long, topic: String) : this(id, null, null, false, topic)
 }

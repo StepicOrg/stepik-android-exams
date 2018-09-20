@@ -4,16 +4,17 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function3
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.core.interactor.GraphInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
+import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.model.TopicAdapterItem
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
-import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.util.PercentUtil
 import org.stepik.android.exams.util.then
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -27,7 +28,8 @@ constructor(
         private val mainScheduler: Scheduler,
         private val topicsRepository: TopicsRepository,
         private val graphInteractor: GraphInteractor,
-        private val lessonsRepository: LessonsRepository
+        private val lessonsRepository: LessonsRepository,
+        private val stepDao: StepDao
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -50,12 +52,17 @@ constructor(
                 graphInteractor.getGraphData()
                         .flatMap { data -> topicsRepository.joinCourse(data).then(Single.just(data)) }
                         .flatMapObservable { it.topics.toObservable() }
-                        .flatMap {
+                        .flatMap { topic ->
                             Observable.zip(
-                                    lessonsRepository.resolveTimeToComplete(it.id),
-                                    Observable.just(it),
-                                    Observable.just(0),
-                                    Function3 { time: Long, topic: Topic, progress: Int -> TopicAdapterItem(topic, time, 0) })
+                                    lessonsRepository.resolveTimeToComplete(topic.id),
+                                    stepDao.findPassedStepsByTopicId(topic.id)
+                                            .flatMap { passed ->
+                                                stepDao.findAllProgressByTopicId(topic.id)
+                                                        .map { all -> PercentUtil.formatPercent(passed, all) }
+                                            }
+                                            .toObservable()
+                                            .onErrorReturn { "0" },
+                                    BiFunction { time: Long, progress: String -> TopicAdapterItem(topic, time, progress) })
                         }
                         .toList()
                         .subscribeOn(backgroundScheduler)

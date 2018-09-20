@@ -53,7 +53,7 @@ constructor(
                 }
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
-                        stepDao.insertSteps(response.steps!!.map { StepInfo(it.id) })
+                        stepDao.insertSteps(response.steps!!.map { StepInfo(id = it.id, topic = topicId) })
                     }.toObservable()
                 }, { a, b -> a to b })
                 .map { (lesson, stepResponse) ->
@@ -93,8 +93,4 @@ constructor(
                     .toList()
                     .map { it.sum() }
                     .toObservable()
-
-    fun resolveProgress(topicId: String) : Observable<String> =
-            loadTheoryLessonByTopicId(topicId)
-                    .map { it.lessonTheoryWrapper.lesson.progress }
 }

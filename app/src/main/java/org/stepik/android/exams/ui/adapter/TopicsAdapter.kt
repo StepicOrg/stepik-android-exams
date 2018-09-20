@@ -61,6 +61,7 @@ class TopicsAdapter(
             topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
             topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
             topicDescription.text = item.topic.description
+            topicCompletionRate.text = item.progress
         }
     }
 }
