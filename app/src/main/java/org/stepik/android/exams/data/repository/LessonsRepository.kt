@@ -85,4 +85,12 @@ constructor(
             lessonDao.findAllLessonsByTopicId(topicId)
                     .filter { lessonList -> lessonList.isNotEmpty() }
                     .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it) } }
+
+    fun resolveTimeToComplete(topicId: String) : Observable<Long> =
+            loadTheoryLessonByTopicId(topicId)
+                    .map { it.lessonTheoryWrapper.lesson.timeToComplete }
+
+    fun resolveProgress(topicId: String) : Observable<String> =
+            loadTheoryLessonByTopicId(topicId)
+                    .map { it.lessonTheoryWrapper.lesson.progress }
 }

@@ -10,6 +10,7 @@ import org.stepik.android.exams.core.services.ViewPushService
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.AppSingleton
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.activity.*
 import org.stepik.android.exams.util.AppConstants
@@ -77,7 +78,7 @@ constructor(
         context.startService(intent)
     }
 
-    override fun showLessonsList(context: Context, type: String) {
+    override fun showLessonsList(context: Context, type: GraphLesson.Type) {
         val intent = Intent(context, ListLessonActivity::class.java)
         intent.putExtra(AppConstants.TYPE_LESSONS_LIST, type)
         context.startActivity(intent)

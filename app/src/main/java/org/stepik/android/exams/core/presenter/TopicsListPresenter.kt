@@ -1,12 +1,20 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function3
+import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.core.interactor.GraphInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
+import org.stepik.android.exams.data.model.TopicAdapterItem
+import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.util.then
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -18,7 +26,8 @@ constructor(
         @MainScheduler
         private val mainScheduler: Scheduler,
         private val topicsRepository: TopicsRepository,
-        private val graphInteractor: GraphInteractor
+        private val graphInteractor: GraphInteractor,
+        private val lessonsRepository: LessonsRepository
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -39,12 +48,20 @@ constructor(
         }
         compositeDisposable.add(
                 graphInteractor.getGraphData()
-                        .toObservable()
-                        .flatMapMaybe {data -> topicsRepository.joinCourse(data).map { data } }
+                        .flatMap { data -> topicsRepository.joinCourse(data).then(Single.just(data)) }
+                        .flatMapObservable { it.topics.toObservable() }
+                        .flatMap {
+                            Observable.zip(
+                                    lessonsRepository.resolveTimeToComplete(it.id),
+                                    Observable.just(it),
+                                    Observable.just("Description"),
+                                    Function3 { time: Long, topic: Topic, description: String -> TopicAdapterItem(topic, time, description, 0) })
+                        }
+                        .toList()
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->
-                            viewState = TopicsListView.State.Success(data.topics)
+                            viewState = TopicsListView.State.Success(data)
                         }, {
                             onError()
                         }))
