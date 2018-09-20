@@ -38,6 +38,7 @@ class TopicsAdapter(
         private val topicContainer: View = root.topicContainer
         private val topicTimeToComplete: TextView = root.topicTimeToComplete
         private val topicCompletionRate: TextView = root.topicCompletionRate
+        private val topicDescription: TextView = root.topicDescription
 
         private val topicLockedOverlay: View = root.topicLockedOverlay
         private val topicLockedDescription: TextView = root.topicLockedDescription
@@ -59,6 +60,7 @@ class TopicsAdapter(
             topicTitle.text = item.topic.title
             topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
             topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
+            topicDescription.text = item.topic.description
         }
     }
 }

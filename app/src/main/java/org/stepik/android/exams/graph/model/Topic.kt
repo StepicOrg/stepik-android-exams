@@ -10,24 +10,36 @@ data class Topic(
         @SerializedName("title")
         val title: String,
         @SerializedName("required-for")
-        val requiredFor: String?
+        val requiredFor: String?,
+        @SerializedName("description")
+        val description : String?
 ) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString()) {
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(title)
         parcel.writeString(requiredFor)
+        parcel.writeString(description)
     }
 
-    override fun describeContents(): Int = 0
+    override fun describeContents(): Int {
+        return 0
+    }
 
     companion object CREATOR : Parcelable.Creator<Topic> {
-        override fun createFromParcel(parcel: Parcel) = Topic(
-                parcel.readString()!!,
-                parcel.readString()!!,
-                parcel.readString()
-        )
+        override fun createFromParcel(parcel: Parcel): Topic {
+            return Topic(parcel)
+        }
 
-        override fun newArray(size: Int): Array<Topic?> =
-                arrayOfNulls(size)
+        override fun newArray(size: Int): Array<Topic?> {
+            return arrayOfNulls(size)
+        }
     }
+
 }

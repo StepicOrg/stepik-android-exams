@@ -54,8 +54,8 @@ constructor(
                             Observable.zip(
                                     lessonsRepository.resolveTimeToComplete(it.id),
                                     Observable.just(it),
-                                    Observable.just("Description"),
-                                    Function3 { time: Long, topic: Topic, description: String -> TopicAdapterItem(topic, time, description, 0) })
+                                    Observable.just(0),
+                                    Function3 { time: Long, topic: Topic, progress: Int -> TopicAdapterItem(topic, time, 0) })
                         }
                         .toList()
                         .subscribeOn(backgroundScheduler)
