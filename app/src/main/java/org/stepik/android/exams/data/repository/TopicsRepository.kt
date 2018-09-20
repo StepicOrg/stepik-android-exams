@@ -17,16 +17,17 @@ constructor(
 ) {
     data class TopicsData(val topics: List<String>, val lessonsList: List<LongArray>, val typesList: List<List<GraphLesson.Type>>, val courseList: List<List<Long>>)
 
-    fun joinCourse(graphData: GraphData): Maybe<Boolean> =
-            checkIfJoined()
-                    .switchIfEmpty(
-                            Maybe.just(parseTopicsData(graphData)).flatMapCompletable { topicsData ->
-                                val courseList = topicsData.courseList
-                                joinAllCourses(courseList.flatMap { it })
-                                        .andThen(saveTopicInfoToDb(topicsData))
-                            }
-                                    .toSingleDefault(true)
-                                    .toMaybe())
+    fun joinCourse(graphData: GraphData): Completable =
+            topicDao.isJoinedToCourses().flatMapCompletable {
+                                if (it) {
+                                    Completable.complete()
+                                } else {
+                                    val topicsData = parseTopicsData(graphData)
+                                    val courseList = topicsData.courseList
+                                    joinAllCourses(courseList.flatMap { it })
+                                            .andThen(saveTopicInfoToDb(topicsData))
+                               }
+                          }
 
     private fun parseTopicsData(graphData: GraphData): TopicsData {
         val topicsList = graphData.topicsMap.map { it.id }
@@ -41,9 +42,6 @@ constructor(
 
     private fun joinCourse(id: Long) =
             api.joinCourse(id)
-
-    private fun checkIfJoined() =
-            topicDao.isJoinedToCourses()
 
     private fun saveTopicInfoToDb(topicsData: TopicsData): Completable {
         val list = mutableListOf<TopicInfo>()

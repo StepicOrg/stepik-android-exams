@@ -8,6 +8,7 @@ import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.util.then
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -40,12 +41,9 @@ constructor(
         }
         compositeDisposable.add(
                 graphInteractor.getGraphData()
-                        .flatMapMaybe { data ->
+                        .flatMapCompletable { data ->
                             topicsRepository.joinCourse(data)
-                        }
-                        .flatMapObservable {
-                            lessonsRepository.loadAllLessons()
-                        }
+                        }.then(lessonsRepository.loadAllLessons())
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ (theoryLessons, practiceLessons) ->
