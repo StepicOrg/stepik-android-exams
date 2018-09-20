@@ -8,4 +8,8 @@
         <item quantity="one">%d page</item>
         <item quantity="other">%d pages</item>
     </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
 </resources>

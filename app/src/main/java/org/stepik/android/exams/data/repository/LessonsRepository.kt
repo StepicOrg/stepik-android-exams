@@ -87,8 +87,12 @@ constructor(
                     .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it) } }
 
     fun resolveTimeToComplete(topicId: String) : Observable<Long> =
-            loadTheoryLessonByTopicId(topicId)
+            loadLessonsByTopicId(topicId)
+                    .ofType(LessonType.Theory::class.java)
                     .map { it.lessonTheoryWrapper.lesson.timeToComplete }
+                    .toList()
+                    .map { it.sum() }
+                    .toObservable()
 
     fun resolveProgress(topicId: String) : Observable<String> =
             loadTheoryLessonByTopicId(topicId)

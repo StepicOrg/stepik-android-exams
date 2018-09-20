@@ -2,6 +2,7 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Maybe
+import io.reactivex.Single
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.data.TopicInfo
@@ -18,7 +19,9 @@ constructor(
     data class TopicsData(val topics: List<String>, val lessonsList: List<LongArray>, val typesList: List<List<GraphLesson.Type>>, val courseList: List<List<Long>>)
 
     fun joinCourse(graphData: GraphData): Completable =
-            topicDao.isJoinedToCourses().flatMapCompletable {
+            topicDao.isJoinedToCourses()
+                    .onErrorResumeNext(Single.just(false))
+                    .flatMapCompletable {
                                 if (it) {
                                     Completable.complete()
                                 } else {
