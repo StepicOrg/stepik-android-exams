@@ -31,7 +31,7 @@ constructor(
                 mapOf(
                         AmplitudeAnalytic.Lesson.Params.ID to lessonTheory.lesson.id,
                         AmplitudeAnalytic.Lesson.Params.TYPE to GraphLesson.Type.THEORY,
-                        AmplitudeAnalytic.Lesson.Params.COURSE to "",
+                        AmplitudeAnalytic.Lesson.Params.COURSE to lessonTheory.courseId,
                         AmplitudeAnalytic.Lesson.Params.TOPIC to topicId))
         val intent = Intent(context, StepsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
