@@ -55,14 +55,10 @@ constructor(
                         .flatMap { topic ->
                             Observable.zip(
                                     lessonsRepository.resolveTimeToComplete(topic.id),
-                                    stepDao.findPassedStepsByTopicId(topic.id)
-                                            .flatMap { passed ->
-                                                stepDao.findAllProgressByTopicId(topic.id)
-                                                        .map { all -> PercentUtil.formatPercent(passed, all) }
-                                            }
+                                    lessonsRepository.findPassedStepsByTopicId(topic.id)
                                             .toObservable()
-                                            .onErrorReturn { "0" },
-                                    BiFunction { time: Long, progress: String -> TopicAdapterItem(topic, time, progress) })
+                                            .onErrorReturn { 0 },
+                                    BiFunction { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) })
                         }
                         .toList()
                         .subscribeOn(backgroundScheduler)

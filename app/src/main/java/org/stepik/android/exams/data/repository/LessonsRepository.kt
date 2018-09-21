@@ -2,10 +2,13 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.toObservable
+import io.reactivex.rxkotlin.zipWith
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.core.interactor.GraphInteractor
+import org.stepik.android.exams.core.interactor.ProgressInteractor
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -15,6 +18,7 @@ import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.exams.util.PercentUtil
 import javax.inject.Inject
 
 class LessonsRepository
@@ -24,13 +28,14 @@ constructor(
         private val lessonDao: LessonDao,
         private val stepDao: StepDao,
         private val topicsDao: TopicDao,
-        private val graphInteractor: GraphInteractor
+        private val graphInteractor: GraphInteractor,
+        private val progressInteractor: ProgressInteractor
 ) {
     private val topicsList = graphInteractor.getTopicsList()
 
     private fun loadTheoryLessonByTopicId(topicId: String): Observable<LessonType.Theory> =
             loadTheoryLessonsFromDb(topicId)
-                    .switchIfEmpty(getTheoryCoursesIdFromDb(topicId)
+                    .switchIfEmpty(getAllTheoryCoursesIdFromDb(topicId)
                             .flatMapObservable { loadTheoryLessonsApi(topicId, it.toLongArray()) })
 
     fun loadLessonsByTopicId(topicId: String): Observable<LessonType> =
@@ -54,10 +59,10 @@ constructor(
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
                         stepDao.insertSteps(response.steps!!.map { StepInfo(id = it.id, topic = topicId) })
-                    }.toObservable()
+                    }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
-                .map { (lesson, stepResponse) ->
-                    LessonTheoryWrapper(lesson, stepResponse.steps!!, topicId)
+                .map { (lesson, response) ->
+                    LessonTheoryWrapper(lesson, response.first.steps!!, topicId, response.second)
                 }
                 .toList()
                 .flatMapObservable { lessonWrappers ->
@@ -73,7 +78,7 @@ constructor(
             lessonDao.findLessonById(nextLesson)
                     .toObservable()
 
-    private fun getTheoryCoursesIdFromDb(topicId: String): Maybe<List<Long>> =
+    private fun getAllTheoryCoursesIdFromDb(topicId: String): Maybe<List<Long>> =
             topicsDao.getTopicInfoByType(topicId, GraphLesson.Type.THEORY)
 
     private fun getPracticeCoursesIdFromDb(topicId: String): Maybe<LessonType.Practice> =
@@ -86,6 +91,9 @@ constructor(
                     .filter { lessonList -> lessonList.isNotEmpty() }
                     .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it) } }
 
+    private fun getTheoryCourseIdByLessonIdFromDb(lessonId: Long): Maybe<Long> =
+            topicsDao.getCourseInfoByLessonId(lessonId)
+
     fun resolveTimeToComplete(topicId: String) : Observable<Long> =
             loadTheoryLessonByTopicId(topicId)
                     .ofType(LessonType.Theory::class.java)
@@ -93,4 +101,13 @@ constructor(
                     .toList()
                     .map { it.sum() }
                     .toObservable()
+
+    fun findPassedStepsByTopicId(topicId: String) : Single<Int> =
+            loadLessonsByTopicId(topicId)
+                    .ofType(LessonType.Theory::class.java)
+                    .map { it.lessonTheoryWrapper.lesson.progress!! }
+                    .toList()
+                    .flatMap { progressInteractor.getProgress(it.toTypedArray()) }
+                    .map { it.progresses.map { it.nStepsPassed.toFloat()/it.nSteps } }
+                    .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
 }

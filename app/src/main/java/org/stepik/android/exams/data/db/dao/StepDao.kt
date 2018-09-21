@@ -25,6 +25,9 @@ interface StepDao {
     @Update(onConflict = REPLACE)
     fun updateStep(stepInfo: StepInfo)
 
+    @Query("SELECT isPassed FROM StepInfo WHERE id = :step AND isPassed=1")
+    fun getStepProgress(step : Long) : Boolean
+
     @Query("UPDATE StepInfo SET isPassed = :progress WHERE id = :id")
     fun updateStepProgress(id: Long, progress: Boolean)
 

@@ -8,8 +8,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
+import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
 import org.stepik.android.exams.data.db.dao.StepDao
+import org.stepik.android.exams.data.model.UnitMetaResponse
+import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.model.Progress
@@ -25,7 +28,9 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val stepDao: StepDao
+        private val stepDao: StepDao,
+        private val stepicRestService: StepicRestService,
+        private val screenManager: ScreenManager
 ) : PresenterBase<ProgressView>() {
 
     private val disposable = CompositeDisposable()
@@ -34,7 +39,6 @@ constructor(
         val progress = step.progress ?: ""
         service.getProgresses(arrayOf(progress))
                 .delay(400, TimeUnit.MILLISECONDS)
-
                 .map { it.progresses.first().isPassed }
                 .doOnSuccess {
                     stepDao.updateStepProgress(step.id, it)
@@ -75,15 +79,31 @@ constructor(
                 step.copy(isCustomPassed = it)
             }.toObservable()
 
-    fun stepPassedLocal(step: Step?) {
+    fun stepPassedLocal(step: Step?, course: Long) {
         if (step?.block?.name == "text") {
-            step.isCustomPassed = true
-            updateProgress(step.id, true)
-                    .subscribeOn(backgroundScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe {
-                        view?.markedAsView(step)
+            getStepProgress(step.id)
+                    .onErrorResumeNext { Single.just(false) }
+                    .flatMapCompletable { isPassed ->
+                        step.isCustomPassed = true
+                        if (isPassed) {
+                            Completable.complete()
+                        } else {
+                            stepicRestService.getUnits(course, step.lesson)
+                                    .flatMapCompletable { response ->
+                                        val unit = response.units?.firstOrNull()
+                                        val stepId = step.id
+                                        unit?.assignments?.get((step.position.toInt() - 1))?.let { assignmentId ->
+                                            screenManager.pushToViewedQueue((ViewAssignment(assignmentId, stepId)))
+                                        }
+                                        updateProgress(step.id, true)
+                                    }
+                        }
                     }
+                    .observeOn(mainScheduler)
+                    .subscribeOn(backgroundScheduler)
+                    .subscribe({
+                        view?.markedAsView(step)
+                    }, {})
         }
     }
 
@@ -92,6 +112,9 @@ constructor(
 
     private fun updateProgress(id: Long, progress: Boolean) =
             Completable.fromCallable { stepDao.updateStepProgress(id, progress) }
+
+    private fun getStepProgress(stepId: Long) =
+            Single.fromCallable { stepDao.getStepProgress(stepId) }
 
     override fun destroy() {
         disposable.clear()

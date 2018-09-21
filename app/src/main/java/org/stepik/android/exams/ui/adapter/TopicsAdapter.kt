@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.item_topic.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.TopicAdapterItem
-import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.util.TopicColorResolver
+import org.stepik.android.exams.util.PercentUtil
 import org.stepik.android.exams.util.TimeUtil
 import kotlin.properties.Delegates
 
@@ -61,7 +61,7 @@ class TopicsAdapter(
             topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
             topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
             topicDescription.text = item.topic.description
-            topicCompletionRate.text = item.progress
+            topicCompletionRate.text = PercentUtil.printPercent(item.progress)
         }
     }
 }

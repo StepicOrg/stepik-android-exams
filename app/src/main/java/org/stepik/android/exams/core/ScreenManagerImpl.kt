@@ -27,6 +27,7 @@ constructor(
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(StepsListActivity.EXTRA_LESSON, lessonTheory)
         intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
+        intent.putExtra(StepsListActivity.EXTRA_COURSE, lessonTheory.courseId)
         context.startActivity(intent)
     }
 

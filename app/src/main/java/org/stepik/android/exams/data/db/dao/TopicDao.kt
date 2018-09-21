@@ -17,6 +17,9 @@ interface TopicDao {
     @Query("SELECT isJoined FROM TopicInfo")
     fun isJoinedToCourses(): Single<Boolean>
 
+    @Query("SELECT course FROM TopicInfo WHERE lesson = :lesson")
+    fun getCourseInfoByLessonId(lesson: Long): Maybe<Long>
+
     @Query("SELECT lesson FROM TopicInfo WHERE topicId = :topicId AND type = :type")
     fun getTopicInfoByType(topicId: String, type: GraphLesson.Type): Maybe<List<Long>>
 

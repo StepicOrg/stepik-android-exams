@@ -23,6 +23,7 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
     companion object {
         const val EXTRA_LESSON = "lesson"
         const val EXTRA_TOPIC_ID = "topicId"
+        const val EXTRA_COURSE = "course"
     }
 
     private lateinit var adapter: StepPagerAdapter
@@ -51,6 +52,7 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
 
         val lessonTheory: LessonTheoryWrapper = intent.getParcelableExtra(EXTRA_LESSON)
         val topicId: String = intent.getStringExtra(EXTRA_TOPIC_ID)
+        val course = intent.getLongExtra(EXTRA_COURSE, 0L)
         steps = lessonTheory.stepsList
 
         adapter = StepPagerAdapter(supportFragmentManager, topicId, steps, stepTypeResolver)
@@ -59,7 +61,7 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                presenter?.stepPassedLocal(steps[position])
+                presenter?.stepPassedLocal(steps[position], course)
             }
         }
         pagers.addOnPageChangeListener(pageChangeListener)
