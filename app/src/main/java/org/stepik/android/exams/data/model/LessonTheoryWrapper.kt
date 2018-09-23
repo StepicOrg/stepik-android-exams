@@ -8,30 +8,23 @@ import org.stepik.android.model.Step
 class LessonTheoryWrapper
 @JvmOverloads
 constructor(val lesson: Lesson = Lesson(), var stepsList: List<Step> = listOf(), val topicId: String = "") : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readParcelable(Lesson::class.java.classLoader),
-            parcel.createTypedArrayList(Step),
-            parcel.readString()) {
-    }
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(lesson, flags)
         parcel.writeTypedList(stepsList)
         parcel.writeString(topicId)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<LessonTheoryWrapper> {
-        override fun createFromParcel(parcel: Parcel): LessonTheoryWrapper {
-            return LessonTheoryWrapper(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel) = LessonTheoryWrapper(
+                parcel.readParcelable(Lesson::class.java.classLoader)!!,
+                parcel.createTypedArrayList(Step)!!,
+                parcel.readString()!!
+        )
 
-        override fun newArray(size: Int): Array<LessonTheoryWrapper?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<LessonTheoryWrapper?> =
+                arrayOfNulls(size)
     }
 
 }

@@ -223,13 +223,9 @@ public final class SwipeableLayout extends FrameLayout {
 
     public static class SwipeListener {
         public void onSwiped() {}
-
         public void onFlingDown() {}
-
         public void onSwipeLeft() {}
-
         public void onSwipeRight() {}
-
         public void onSwipeDown() {}
 
         /**
