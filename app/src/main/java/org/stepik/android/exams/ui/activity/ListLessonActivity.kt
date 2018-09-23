@@ -41,10 +41,11 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lessons)
         type = intent.getSerializableExtra(AppConstants.TYPE_LESSONS_LIST)  as GraphLesson.Type
-        when (type) {
-            GraphLesson.Type.THEORY -> initCenteredToolbar(R.string.theory, showHomeButton = true)
-            GraphLesson.Type.PRACTICE -> initCenteredToolbar(R.string.practice, showHomeButton = true)
+        val title = when (type) {
+            GraphLesson.Type.THEORY -> R.string.theory
+            GraphLesson.Type.PRACTICE -> R.string.practice
         }
+        initCenteredToolbar(title, showHomeButton = true)
         topicsLessonsAdapter = ListLessonAdapter(this, screenManager)
         recyclerLesson.adapter = topicsLessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(this)
@@ -55,14 +56,8 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
         tryAgain.setOnClickListener {
             presenter?.loadAllTypedLessons(type)
         }
-
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
-        recyclerLesson.addItemDecoration(divider)
-
         content.hideAllChildren()
         loadingPlaceholder.changeVisibillity(true)
-
         initPlaceholders()
     }
 

@@ -39,10 +39,9 @@ class TrainingAdapter(
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         holder.bind(lessons[position])
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        holder.itemView.layoutParams.width = setItemWidth(displayMetrics.widthPixels)
-        holder.itemView.requestLayout()
+        holder.itemView.layoutParams = holder.itemView.layoutParams.apply {
+            width = setItemWidth(activity.resources.displayMetrics.widthPixels)
+        }
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {
