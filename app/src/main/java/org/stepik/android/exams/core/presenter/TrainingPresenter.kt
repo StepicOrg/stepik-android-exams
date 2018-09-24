@@ -51,17 +51,13 @@ constructor(
                         .subscribe({ (theoryLessons, practiceLessons) ->
                             viewState = TrainingView.State.Success(theoryLessons, practiceLessons)
                         }, {
-                            onError()
+                            viewState = TrainingView.State.NetworkError
                         }))
     }
 
     override fun attachView(view: TrainingView) {
         super.attachView(view)
         view.setState(viewState)
-    }
-
-    private fun onError() {
-        viewState = TrainingView.State.NetworkError
     }
 
     override fun destroy() {
