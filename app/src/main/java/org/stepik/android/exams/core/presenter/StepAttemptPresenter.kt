@@ -55,7 +55,7 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribe({
                     attemptLoaded(it)
-                    loadSubmission(it.id)
+                    loadSubmission(it.id, step)
                 }, { onError() })
     }
 
@@ -67,11 +67,11 @@ constructor(
                 .subscribeBy(onError = { onError() }, onSuccess = ::attemptLoaded)
     }
 
-    private fun loadSubmission(attemptId: Long) =
+    private fun loadSubmission(attemptId: Long, step : Step) =
             submissionRepository.getLatestSubmissionByAttemptId(attemptId)
                     .subscribeOn(backgroundScheduler)
                     .observeOn(mainScheduler)
-                    .subscribeBy(onError = { onError() }, onSuccess = ::onSubmissionLoaded)
+                    .subscribeBy(onError = { onError() }, onSuccess = {onSubmissionLoaded(it, step)})
 
     private fun attemptLoaded(attempt: Attempt) {
         this.attempt = attempt
@@ -87,7 +87,7 @@ constructor(
                 .andThen(getCompletedSubmission(step, attemptId))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribeBy(onError = { onError() }, onSuccess = ::onSubmissionLoaded))
+                .subscribeBy(onError = { onError() }, onSuccess = {onSubmissionLoaded(it, step)}))
     }
 
     private fun getCompletedSubmission(step: Step, attemptId: Long): Maybe<Submission> =
@@ -98,15 +98,15 @@ constructor(
                             getCompletedSubmission(step, attemptId)
                                     .delay(1, TimeUnit.SECONDS)
                         } else {
-                            analytic.reportAmplitudeEvent(AmplitudeAnalytic.Steps.SUBMISSION_MADE, mapOf(
-                                AmplitudeAnalytic.Steps.Params.TYPE to step.getStepType(),
-                                AmplitudeAnalytic.Steps.Params.STEP to (step.id.toString())
-                        ))
                             Maybe.just(it)
                         }
                     }
 
-    private fun onSubmissionLoaded(submission: Submission?) {
+    private fun onSubmissionLoaded(submission: Submission?, step : Step) {
+        analytic.reportAmplitudeEvent(AmplitudeAnalytic.Steps.SUBMISSION_MADE, mapOf(
+                AmplitudeAnalytic.Steps.Params.TYPE to step.getStepType(),
+                AmplitudeAnalytic.Steps.Params.STEP to (step.id.toString())
+        ))
         this.submission = submission
         viewState = AttemptView.State.Success
         view?.setSubmission(submission)
