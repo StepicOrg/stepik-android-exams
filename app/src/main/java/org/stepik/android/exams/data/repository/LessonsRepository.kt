@@ -87,8 +87,8 @@ constructor(
     private fun insertLessons(lessons : List<LessonTheoryWrapper>, topicId: String) =
             lessonDao.insertLessons(lessons.map { LessonInfo(topicId, it.lesson.id, it) })
 
-    private fun saveStepsToDb(steps: List<Step>) : Completable =
-            Completable.fromCallable { stepDao.insertSteps(steps.map { StepInfo(it.id) }) }
+    private fun saveStepsToDb(steps: List<Step>)  =
+            stepDao.insertSteps(steps.map { StepInfo(it.id) })
 
     fun findLessonInDb(nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
