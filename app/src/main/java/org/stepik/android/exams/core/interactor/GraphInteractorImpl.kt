@@ -2,23 +2,24 @@ package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Single
 import org.stepik.android.exams.api.graph.GraphService
+import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import javax.inject.Inject
 
 @AppSingleton
-class GraphInteractor
+class GraphInteractorImpl
 @Inject
 constructor(
         private val graphService: GraphService
-) {
+) : GraphInteractor {
     private var graph: Graph<String> = Graph()
 
-    fun getTopicsList() =
+    override fun getTopicsList() : List<String> =
             graph.getAllTopics()
 
-    fun getGraphData(): Single<GraphData> =
+    override fun getGraphData(): Single<GraphData> =
             graphService.getPosts()
                     .doOnSuccess { graphData ->
                         addDataToGraph(graphData)
@@ -35,23 +36,23 @@ constructor(
         }
     }
 
-    fun hasNextTopic(topicId: String, lessonId: Long) =
+    override fun hasNextTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.parent?.isEmpty() == true &&
                     graph[topicId]?.graphLessons?.last()?.id == lessonId
 
-    fun hasPreviousTopic(topicId: String, lessonId: Long) =
+    override fun hasPreviousTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.children?.isEmpty() == true &&
                     graph[topicId]?.graphLessons?.first()?.id == lessonId
 
-    fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) =
+    override fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.last()?.id == lessonId
 
-    fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) =
+    override fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.first()?.id == lessonId
 
-    fun getNextTopic(topicId: String) =
+    override fun getNextTopic(topicId: String) : String =
             graph[topicId]?.parent?.first()?.id ?: ""
 
-    fun getPreviousTopic(topicId: String) =
+    override fun getPreviousTopic(topicId: String): String =
             graph[topicId]?.parent?.first()?.id ?: ""
 }

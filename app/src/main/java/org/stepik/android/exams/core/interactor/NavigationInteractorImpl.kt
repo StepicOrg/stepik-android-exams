@@ -1,6 +1,7 @@
 package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Observable
+import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
