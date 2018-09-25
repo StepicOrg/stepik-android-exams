@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey
 class ProgressEntity(
         @PrimaryKey(autoGenerate = false)
         @ColumnInfo(name = "stepId") val stepId: Long,
+        @ColumnInfo(name = "lessonId") val lessonId: Long,
         @ColumnInfo(name = "isPassed") val isPassed: Boolean,
         @ColumnInfo(name = "progress") val progress: String
 )

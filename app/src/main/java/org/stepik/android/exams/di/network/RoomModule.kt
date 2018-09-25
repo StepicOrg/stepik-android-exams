@@ -19,12 +19,6 @@ class RoomModule {
 
     @Provides
     @AppSingleton
-    fun providesStepDao(app: AppDatabase): StepDao {
-        return app.stepDao()
-    }
-
-    @Provides
-    @AppSingleton
     fun providesNavigationDao(app: AppDatabase): LessonDao {
         return app.lessonDao()
     }

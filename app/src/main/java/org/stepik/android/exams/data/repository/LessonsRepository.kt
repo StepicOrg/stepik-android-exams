@@ -2,7 +2,6 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.rxkotlin.zipWith
@@ -11,11 +10,9 @@ import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.ProgressDao
-import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.entity.ProgressEntity
-import org.stepik.android.exams.data.db.mapping.toEntity
 import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
@@ -28,7 +25,6 @@ class LessonsRepository
 constructor(
         private val api: Api,
         private val lessonDao: LessonDao,
-        private val stepDao: StepDao,
         private val topicsDao: TopicDao,
         private val progressDao: ProgressDao,
         private val graphInteractor: GraphInteractor,
@@ -62,8 +58,7 @@ constructor(
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
                         val stepList = response.steps!!
-                        stepDao.insertSteps(stepList.map { it.toEntity() })
-                        progressDao.insertStepProgress(stepList.map { ProgressEntity(it.id, false, it.progress!!) })
+                        progressDao.insertStepProgress(stepList.map { ProgressEntity(it.id, lesson.id, false, it.progress!!) })
                     }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
                 .map { (lesson, response) ->
@@ -109,7 +104,7 @@ constructor(
 
     fun loadStepProgressByTopicId(topicId: String) : Observable<Int> =
             loadLessonsByTopicId(topicId)
-                    .flatMapSingle { stepDao.getAllStepsProgressByTopicId(topicId) }
+                    .flatMapSingle { progressDao.getAllStepsProgressByTopicId(topicId) }
                     .flatMapSingle { progressInteractor.getProgress(it.toTypedArray()) }
                     .map { it.progresses.map { it.nStepsPassed.toFloat()/it.nSteps } }
                     .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
