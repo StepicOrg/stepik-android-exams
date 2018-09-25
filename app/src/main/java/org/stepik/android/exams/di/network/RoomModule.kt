@@ -4,10 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import org.stepik.android.exams.data.db.AppDatabase
-import org.stepik.android.exams.data.db.dao.LessonDao
-import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.db.dao.SubmissionEntityDao
-import org.stepik.android.exams.data.db.dao.TopicDao
+import org.stepik.android.exams.data.db.dao.*
 import org.stepik.android.exams.di.AppSingleton
 
 
@@ -29,7 +26,7 @@ class RoomModule {
     @Provides
     @AppSingleton
     fun providesNavigationDao(app: AppDatabase): LessonDao {
-        return app.navigationDao()
+        return app.lessonDao()
     }
 
     @Provides
@@ -40,7 +37,12 @@ class RoomModule {
 
     @Provides
     @AppSingleton
-    fun providesSubmissionDao(app: AppDatabase): SubmissionEntityDao {
-        return app.submissionEntityDao()
-    }
+    fun providesSubmissionDao(app: AppDatabase): SubmissionEntityDao =
+            app.submissionEntityDao()
+
+
+    @Provides
+    @AppSingleton
+    fun provideProgressDao(app: AppDatabase) : ProgressDao =
+            app.progressDao()
 }

@@ -1,36 +1,29 @@
 package org.stepik.android.exams.data.db.dao
 
-import android.arch.persistence.room.*
-import android.arch.persistence.room.OnConflictStrategy.REPLACE
+import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Insert
+import android.arch.persistence.room.OnConflictStrategy
+import android.arch.persistence.room.Query
 import io.reactivex.Single
-import org.stepik.android.exams.data.db.data.StepInfo
+import org.stepik.android.exams.data.db.entity.StepEntity
 
 @Dao
 interface StepDao {
-    @Query("SELECT * FROM StepInfo WHERE id = :id")
-    fun findStepById(id: Long): StepInfo
+    @Query("SELECT * FROM StepEntity WHERE id = :id")
+    fun findStepById(id: Long): StepEntity
 
-    @Query("SELECT COUNT(isPassed) FROM StepInfo WHERE topic = :topicId AND isPassed=1")
-    fun findPassedStepsByTopicId(topicId: String): Single<Float>
+    @Query("SELECT ProgressEntity.progress FROM StepEntity JOIN TopicInfo ON StepEntity.lesson = TopicInfo.lesson JOIN ProgressEntity ON StepEntity.id = ProgressEntity.stepId WHERE TopicInfo.topicId = :topicId")
+    fun getAllStepsProgressByTopicId(topicId: String) : Single<List<String>>
 
-    @Query("SELECT COUNT(*) FROM StepInfo WHERE topic = :topicId")
-    fun findAllProgressByTopicId(topicId: String): Single<Float>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertStep(stepInfo: StepInfo)
+    @Query("SELECT ProgressEntity.isPassed FROM StepEntity JOIN TopicInfo ON StepEntity.lesson = TopicInfo.lesson JOIN ProgressEntity ON StepEntity.id = ProgressEntity.stepId WHERE TopicInfo.topicId = :topicId")
+    fun findPassedStepsByTopicId(topicId: String): Single<List<Long>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSteps(id: List<StepInfo>)
+    fun insertSteps(stepEntity: List<StepEntity>)
 
-    @Update(onConflict = REPLACE)
-    fun updateStep(stepInfo: StepInfo)
+    @Query("SELECT isPassed FROM StepEntity JOIN ProgressEntity ON id = stepId WHERE id = :stepId AND isPassed=1")
+    fun getStepProgress(stepId : Long) : Boolean
 
-    @Query("SELECT isPassed FROM StepInfo WHERE id = :step AND isPassed=1")
-    fun getStepProgress(step : Long) : Boolean
-
-    @Query("UPDATE StepInfo SET isPassed = :progress WHERE id = :id")
-    fun updateStepProgress(id: Long, progress: Boolean)
-
-    @Delete
-    fun deleteStep(stepInfo: StepInfo)
+    @Query("UPDATE ProgressEntity SET isPassed =:isPassed WHERE stepId=:id")
+    fun updateStepProgress(id: Long, isPassed: Boolean)
 }

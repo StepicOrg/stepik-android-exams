@@ -5,8 +5,7 @@ import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.model.Reply
-import org.stepik.android.model.Submission
+import org.stepik.android.model.*
 import org.stepik.android.model.attempts.Attempt
 import org.stepik.android.model.attempts.Dataset
 import java.util.*
@@ -86,6 +85,38 @@ class GsonConverter {
     @TypeConverter
     fun submissionStatusFromString(status: String): Submission.Status =
             gson.fromJson<Submission.Status>(status, Submission.Status::class.java)
+
+    @TypeConverter
+    fun submissionStepStatus(status: Step.Status): String =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun stepStatusFromString(status: String): Step.Status =
+            gson.fromJson<Step.Status>(status, Step.Status::class.java)
+
+    @TypeConverter
+    fun blockStatus(status: Block): String =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun blockFromString(status: String): Block =
+            gson.fromJson<Block>(status, Block::class.java)
+
+    @TypeConverter
+    fun actionStatus(status: Actions): String =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun actionFromString(status: String): Actions =
+            gson.fromJson<Actions>(status, Actions::class.java)
+
+    @TypeConverter
+    fun listStatus(status: List<String>): String =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun  listFromString(status: String): List<String> =
+            gson.fromJson<List<String>>(status, List::class.java)
 
     @TypeConverter
     fun dateToLong(date: Date?): Long? =

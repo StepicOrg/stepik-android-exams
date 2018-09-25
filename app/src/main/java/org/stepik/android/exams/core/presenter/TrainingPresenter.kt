@@ -2,7 +2,7 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.core.interactor.GraphInteractor
+import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository

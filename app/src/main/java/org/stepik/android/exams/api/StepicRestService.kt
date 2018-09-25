@@ -5,6 +5,7 @@ import io.reactivex.Single
 import org.stepik.android.exams.data.model.*
 import org.stepik.android.exams.web.AttemptRequest
 import org.stepik.android.exams.web.AttemptResponse
+import org.stepik.android.model.Assignment
 import org.stepik.android.model.EnrollmentWrapper
 import retrofit2.http.*
 
@@ -74,9 +75,14 @@ interface StepicRestService {
             @Query("lesson") lessonId: Long
     ): Single<UnitMetaResponse>
 
-    @Headers("Content-LessonType:application/json")
+    @Headers("Content-LessonType: application/json")
     @POST("api/views")
     fun postViewed(
             @Body stepAssignment: ViewAssignmentWrapper
     ): Completable
+
+    @GET("api/assignments")
+    fun getAssignments(
+            @Query("ids[]")assignmentsIds: LongArray
+    ): Single<AssignmentResponse>
 }

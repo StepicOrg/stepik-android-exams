@@ -10,8 +10,9 @@ import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
+import org.stepik.android.exams.data.db.dao.ProgressDao
 import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.model.UnitMetaResponse
+import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -28,8 +29,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
+        private val progressDao: ProgressDao,
         private val stepDao: StepDao,
-        private val stepicRestService: StepicRestService,
         private val screenManager: ScreenManager
 ) : PresenterBase<ProgressView>() {
 
@@ -41,12 +42,12 @@ constructor(
                 .delay(400, TimeUnit.MILLISECONDS)
                 .map { it.progresses.first().isPassed }
                 .doOnSuccess {
-                    stepDao.updateStepProgress(step.id, it)
+                    updateProgress(step, it)
                 }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribeBy({}) {
-                    view?.markedAsView(step.copy(isCustomPassed = it))
+                .subscribeBy({}) {isPassed ->
+                    view?.markedAsView(step.copy(isCustomPassed = isPassed))
                 }
     }
 
@@ -71,10 +72,10 @@ constructor(
     }
 
     private fun resolveStepProgress(step: Step, progress: Progress): Observable<Step> =
-            fetchProgressFromDb(step.id).map { info ->
-                info.isPassed || progress.isPassed
+            getStepProgress(step.id).map { isPassed ->
+                isPassed || progress.isPassed
             }.doOnSuccess {
-                updateProgress(step.id, it)
+                updateProgress(step, it)
             }.map {
                 step.copy(isCustomPassed = it)
             }.toObservable()
@@ -88,14 +89,13 @@ constructor(
                         if (isPassed) {
                             Completable.complete()
                         } else {
-                            stepicRestService.getUnits(course, step.lesson)
-                                    .flatMapCompletable { response ->
-                                        val unit = response.units?.firstOrNull()
+                            service.getUnits(course, step.lesson)
+                                    .flatMap {response -> service.getAssignments(response.units?.firstOrNull()?.assignments!!).map { it.assignments }}
+                                    .flatMapCompletable { assignments ->
                                         val stepId = step.id
-                                        unit?.assignments?.get((step.position.toInt() - 1))?.let { assignmentId ->
-                                            screenManager.pushToViewedQueue((ViewAssignment(assignmentId, stepId)))
-                                        }
-                                        updateProgress(step.id, true)
+                                        val assignment = assignments.first { it.step == stepId }
+                                        screenManager.pushToViewedQueue((ViewAssignment(assignment.id, stepId)))
+                                        updateProgress(step, true)
                                     }
                         }
                     }
@@ -107,11 +107,8 @@ constructor(
         }
     }
 
-    private fun fetchProgressFromDb(id: Long) =
-            Single.fromCallable { stepDao.findStepById(id) }
-
-    private fun updateProgress(id: Long, progress: Boolean) =
-            Completable.fromCallable { stepDao.updateStepProgress(id, progress) }
+    private fun updateProgress(step: Step, isPassed: Boolean) =
+            Completable.fromCallable { progressDao.insertStepProgress(ProgressEntity(step.id, isPassed, step.progress!!)) }
 
     private fun getStepProgress(stepId: Long) =
             Single.fromCallable { stepDao.getStepProgress(stepId) }
