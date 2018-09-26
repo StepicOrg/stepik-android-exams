@@ -45,16 +45,6 @@ class GsonConverter {
     }
 
     @TypeConverter
-    fun stringToArray(data: String?): LongArray {
-        return gson.fromJson<LongArray>(data, LongArray::class.java)
-    }
-
-    @TypeConverter
-    fun arrayToString(obj: LongArray?): String? {
-        return gson.toJson(obj)
-    }
-
-    @TypeConverter
     fun graphLessonTypeToString(type: GraphLesson.Type): String =
             type.name
 
@@ -79,44 +69,68 @@ class GsonConverter {
             gson.toJson(obj)
 
     @TypeConverter
-    fun submissionStatusToString(status: Submission.Status): String =
+    fun submissionStatusToString(status: Submission.Status?): String? =
             gson.toJson(status)
 
     @TypeConverter
-    fun submissionStatusFromString(status: String): Submission.Status =
+    fun submissionStatusFromString(status: String?): Submission.Status? =
             gson.fromJson<Submission.Status>(status, Submission.Status::class.java)
 
     @TypeConverter
-    fun submissionStepStatus(status: Step.Status): String =
+    fun submissionStepStatus(status: Step.Status?): String? =
             gson.toJson(status)
 
     @TypeConverter
-    fun stepStatusFromString(status: String): Step.Status =
+    fun stepStatusFromString(status: String?): Step.Status? =
             gson.fromJson<Step.Status>(status, Step.Status::class.java)
 
     @TypeConverter
-    fun blockStatus(status: Block): String =
+    fun blockStatus(status: Block?): String? =
             gson.toJson(status)
 
     @TypeConverter
-    fun blockFromString(status: String): Block =
+    fun blockFromString(status: String?): Block? =
             gson.fromJson<Block>(status, Block::class.java)
 
     @TypeConverter
-    fun actionStatus(status: Actions): String =
+    fun actionStatus(status: Actions?): String? =
             gson.toJson(status)
 
     @TypeConverter
-    fun actionFromString(status: String): Actions =
+    fun actionFromString(status: String?): Actions? =
             gson.fromJson<Actions>(status, Actions::class.java)
 
     @TypeConverter
-    fun listStatus(status: List<String>): String =
+    fun intArrayToJson(status: IntArray?): String? =
             gson.toJson(status)
 
     @TypeConverter
-    fun  listFromString(status: String): List<String> =
+    fun jsonToIntString(status: String?): IntArray? =
+            gson.fromJson<IntArray>(status, IntArray::class.java)
+
+    @TypeConverter
+    fun longArrayToJson(status: LongArray?): String? =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun jsonToListString(status: String?): List<String>? =
             gson.fromJson<List<String>>(status, List::class.java)
+
+    @TypeConverter
+    fun stringListToJson(status: List<String>?): String? =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun jsonToLongString(status: String?): LongArray? =
+            gson.fromJson<LongArray>(status, LongArray::class.java)
+
+    @TypeConverter
+    fun stringArrayToJson(status: Array<String>?): String? =
+            gson.toJson(status)
+
+    @TypeConverter
+    fun jsonToArrayString(status: String?): Array<String>? =
+            gson.fromJson<Array<String>>(status, Array<String>::class.java)
 
     @TypeConverter
     fun dateToLong(date: Date?): Long? =

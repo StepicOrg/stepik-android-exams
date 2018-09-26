@@ -39,4 +39,9 @@ class RoomModule {
     @AppSingleton
     fun provideProgressDao(app: AppDatabase) : ProgressDao =
             app.progressDao()
+
+    @Provides
+    @AppSingleton
+    fun provideStepDao(app: AppDatabase) : StepDao =
+            app.stepDao()
 }

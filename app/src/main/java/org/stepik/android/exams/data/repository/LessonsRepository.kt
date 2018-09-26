@@ -10,14 +10,17 @@ import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.ProgressDao
+import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.data.LessonInfo
 import org.stepik.android.exams.data.db.entity.ProgressEntity
+import org.stepik.android.exams.data.db.mapping.toEntity
+import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.util.PercentUtil
+import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class LessonsRepository
@@ -26,6 +29,7 @@ constructor(
         private val api: Api,
         private val lessonDao: LessonDao,
         private val topicsDao: TopicDao,
+        private val stepsDao: StepDao,
         private val progressDao: ProgressDao,
         private val graphInteractor: GraphInteractor,
         private val progressInteractor: ProgressInteractor
@@ -58,6 +62,7 @@ constructor(
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
                         val stepList = response.steps!!
+                        stepsDao.insertSteps(stepList.map { it.toEntity() })
                         progressDao.insertStepProgress(stepList.map { ProgressEntity(it.id, lesson.id, false, it.progress!!) })
                     }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
@@ -69,13 +74,14 @@ constructor(
                     val lessons = lessonIds.map { id ->
                         lessonWrappers.first { it.lesson.id == id }
                     }
-                    lessonDao.insertLessons(lessons.map { LessonInfo(topicId, it.lesson.id, it) })
+                    lessonDao.insertLessons(lessons.map { it.lesson.toEntity() })
                     Observable.fromIterable(lessons.map { LessonType.Theory(it) })
                 }
     }
 
     fun findLessonInDb(nextLesson: Long): Observable<LessonTheoryWrapper> =
             lessonDao.findLessonById(nextLesson)
+                    .map { it.toObject() }
                     .toObservable()
 
     private fun getAllTheoryCoursesIdFromDb(topicId: String): Maybe<List<Long>> =
@@ -88,8 +94,8 @@ constructor(
 
     private fun loadTheoryLessonsFromDb(topicId: String): Observable<LessonType.Theory> =
             lessonDao.findAllLessonsByTopicId(topicId)
-                    .filter { lessonList -> lessonList.isNotEmpty() }
-                    .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it) } }
+                    .filter { lessonList ->  lessonList.isNotEmpty() }
+                    .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it.toObject()) } }
 
     private fun getTheoryCourseIdByLessonIdFromDb(lessonId: Long): Maybe<Long> =
             topicsDao.getCourseInfoByLessonId(lessonId)
