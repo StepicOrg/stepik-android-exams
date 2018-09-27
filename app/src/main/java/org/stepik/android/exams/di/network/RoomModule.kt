@@ -19,9 +19,12 @@ class RoomModule {
 
     @Provides
     @AppSingleton
-    fun providesNavigationDao(app: AppDatabase): LessonDao {
-        return app.lessonDao()
-    }
+    fun providesLessonDao(app: AppDatabase): LessonDao =
+            app.lessonDao()
+    @Provides
+    @AppSingleton
+    fun providesAssignmentDao(app: AppDatabase): AssignmentDao =
+            app.assignmentDao()
 
     @Provides
     @AppSingleton

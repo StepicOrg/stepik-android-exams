@@ -5,7 +5,6 @@ import io.reactivex.Single
 import org.stepik.android.exams.data.model.*
 import org.stepik.android.exams.web.AttemptRequest
 import org.stepik.android.exams.web.AttemptResponse
-import org.stepik.android.model.Assignment
 import org.stepik.android.model.EnrollmentWrapper
 import retrofit2.http.*
 
