@@ -104,14 +104,20 @@ constructor(
             loadTheoryLessonByTopicId(topicId)
                     .ofType(LessonType.Theory::class.java)
                     .map { it.lessonTheoryWrapper.lesson.timeToComplete }
-                    .toList()
-                    .map { it.sum() }
+                    .reduce(0L){
+                        t1, t2 -> t1+t2
+                    }
                     .toObservable()
 
-    fun loadStepProgressByTopicId(topicId: String) : Observable<Int> =
+    fun loadStepProgressApi(topicId: String) : Observable<Int> =
             loadLessonsByTopicId(topicId)
                     .flatMapSingle { progressDao.getAllStepsProgressByTopicId(topicId) }
                     .flatMapSingle { progressInteractor.getProgress(it.toTypedArray()) }
                     .map { it.progresses.map { it.nStepsPassed.toFloat()/it.nSteps } }
                     .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
+
+    fun loadStepProgressFromDb(topicId: String) : Observable<Int> =
+            loadLessonsByTopicId(topicId)
+                    .flatMapSingle { progressDao.getStepsLocalProgressByTopicId(topicId) }
+                    .map { progressList -> PercentUtil.formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 }

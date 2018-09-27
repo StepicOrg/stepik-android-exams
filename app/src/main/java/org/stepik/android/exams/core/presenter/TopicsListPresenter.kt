@@ -1,11 +1,9 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
@@ -54,7 +52,7 @@ constructor(
                         .flatMap { topic ->
                             Observable.zip(
                                     lessonsRepository.resolveTimeToComplete(topic.id),
-                                    lessonsRepository.loadStepProgressByTopicId(topic.id),
+                                    lessonsRepository.loadStepProgressApi(topic.id),
                                     BiFunction { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) })
                         }
                         .toList()
