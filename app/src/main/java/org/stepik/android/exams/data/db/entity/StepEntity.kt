@@ -1,9 +1,10 @@
 package org.stepik.android.exams.data.db.entity
 
+import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import org.stepik.android.model.Actions
-import org.stepik.android.model.Block
+import org.stepik.android.exams.data.db.pojo.ActionPojo
+import org.stepik.android.exams.data.db.pojo.BlockPojo
 import java.util.*
 
 @Entity
@@ -12,7 +13,8 @@ class StepEntity(
         val lesson: Long,
         val position: Long,
         val status: org.stepik.android.model.Step.Status?,
-        val block: Block?,
+        @Embedded
+        val block: BlockPojo?,
         val progress: String?,
         val subscriptions: List<String>?,
 
@@ -23,13 +25,14 @@ class StepEntity(
         val updateDate: Date?,
 
         var isCustomPassed: Boolean,
-        val actions: Actions?,
+        @Embedded
+        val actions: ActionPojo,
 
         val discussionsCount: Int,
         val discussionProxy: String?,
         val hasSubmissionRestriction: Boolean,
         val maxSubmissionCount: Int
-){
-        @PrimaryKey(autoGenerate = true)
-        var stepId: Long? = null
+) {
+    @PrimaryKey(autoGenerate = true)
+    var stepId: Long? = null
 }

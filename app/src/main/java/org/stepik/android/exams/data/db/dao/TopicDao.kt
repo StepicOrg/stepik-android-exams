@@ -6,24 +6,24 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.reactivex.Maybe
 import io.reactivex.Single
-import org.stepik.android.exams.data.db.data.TopicInfo
+import org.stepik.android.exams.data.db.entity.TopicEntity
 import org.stepik.android.exams.graph.model.GraphLesson
 
 @Dao
 interface TopicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCourseInfo(topicInfo: List<TopicInfo>)
+    fun insertCourseInfo(topicEntity: List<TopicEntity>)
 
-    @Query("SELECT isJoined FROM TopicInfo")
+    @Query("SELECT isJoined FROM TopicEntity")
     fun isJoinedToCourses(): Single<Boolean>
 
-    @Query("SELECT course FROM TopicInfo WHERE lesson = :lesson")
+    @Query("SELECT course FROM TopicEntity WHERE lesson = :lesson")
     fun getCourseInfoByLessonId(lesson: Long): Maybe<Long>
 
-    @Query("SELECT lesson FROM TopicInfo WHERE topicId = :topicId AND type = :type")
-    fun getTopicInfoByType(topicId: String, type: GraphLesson.Type): Maybe<List<Long>>
+    @Query("SELECT lesson FROM TopicEntity WHERE topicId = :topicId AND type = :type")
+    fun getTopicByType(topicId: String, type: GraphLesson.Type): Maybe<List<Long>>
 
     // TODO fix constant
-    @Query("SELECT course FROM TopicInfo WHERE topicId = :topicId AND type = 'PRACTICE'")
+    @Query("SELECT course FROM TopicEntity WHERE topicId = :topicId AND type = 'PRACTICE'")
     fun getAdaptiveCourseId(topicId: String): Maybe<Long>
 }

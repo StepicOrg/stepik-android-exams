@@ -1,11 +1,10 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.data.TopicInfo
+import org.stepik.android.exams.data.db.entity.TopicEntity
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
@@ -28,7 +27,7 @@ constructor(
                                     val topicsData = parseTopicsData(graphData)
                                     val courseList = topicsData.courseList
                                     joinAllCourses(courseList.flatMap { it })
-                                            .andThen(saveTopicInfoToDb(topicsData))
+                                            .andThen(saveTopicsToDb(topicsData))
                                }
                           }
 
@@ -46,13 +45,13 @@ constructor(
     private fun joinCourse(id: Long) =
             api.joinCourse(id)
 
-    private fun saveTopicInfoToDb(topicsData: TopicsData): Completable {
-        val list = mutableListOf<TopicInfo>()
+    private fun saveTopicsToDb(topicsData: TopicsData): Completable {
+        val list = mutableListOf<TopicEntity>()
         val (topics, lessonsList, typesList, courseList) = topicsData
 
         for (m in 0..minOf(lessonsList.size - 1, typesList.size - 1))
             for (k in 0..minOf(lessonsList[m].size - 1, typesList[m].size - 1))
-                list.add(TopicInfo(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
+                list.add(TopicEntity(topics[m], typesList[m][k], lessonsList[m][k], courseList[m][k], true))
 
         return Completable.fromAction { topicDao.insertCourseInfo(list) }
     }

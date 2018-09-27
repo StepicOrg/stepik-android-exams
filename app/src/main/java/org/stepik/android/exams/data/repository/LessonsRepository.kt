@@ -14,13 +14,13 @@ import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.db.mapping.toEntity
+import org.stepik.android.exams.data.db.mapping.toPojo
 import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.util.PercentUtil
-import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class LessonsRepository
@@ -85,10 +85,10 @@ constructor(
                     .toObservable()
 
     private fun getAllTheoryCoursesIdFromDb(topicId: String): Maybe<List<Long>> =
-            topicsDao.getTopicInfoByType(topicId, GraphLesson.Type.THEORY)
+            topicsDao.getTopicByType(topicId, GraphLesson.Type.THEORY)
 
     private fun getPracticeCoursesIdFromDb(topicId: String): Maybe<LessonType.Practice> =
-            topicsDao.getTopicInfoByType(topicId, GraphLesson.Type.PRACTICE)
+            topicsDao.getTopicByType(topicId, GraphLesson.Type.PRACTICE)
                     .filter { it.isNotEmpty() }
                     .map { topics -> LessonType.Practice(LessonPracticeWrapper(topicId, topics.first())) }
 

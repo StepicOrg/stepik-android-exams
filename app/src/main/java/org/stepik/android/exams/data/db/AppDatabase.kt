@@ -7,15 +7,12 @@ import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import org.stepik.android.exams.data.db.converters.GsonConverter
 import org.stepik.android.exams.data.db.dao.*
-import org.stepik.android.exams.data.db.data.TopicInfo
-import org.stepik.android.exams.data.db.entity.LessonEntity
-import org.stepik.android.exams.data.db.entity.ProgressEntity
-import org.stepik.android.exams.data.db.entity.StepEntity
-import org.stepik.android.exams.data.db.entity.SubmissionEntity
+import org.stepik.android.exams.data.db.entity.*
 
 @Database(
         entities = [
-            TopicInfo::class,
+            VideoEntity::class,
+            TopicEntity::class,
             SubmissionEntity::class,
             ProgressEntity::class,
             LessonEntity::class,
