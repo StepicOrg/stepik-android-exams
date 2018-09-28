@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.rxkotlin.zipWith
+import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
@@ -33,22 +34,26 @@ constructor(
         private val mainScheduler: Scheduler,
         private val progressDao: ProgressDao,
         private val screenManager: ScreenManager,
-        private val assignmentRepository: AssignmentRepository
+        private val assignmentRepository: AssignmentRepository,
+        private val subject : BehaviorSubject<Boolean>
 ) : PresenterBase<ProgressView>() {
 
     private val disposable = CompositeDisposable()
+    private var stepIsPassed = false
 
     fun isStepPassed(step: Step) {
         val progress = step.progress ?: ""
         service.getProgresses(arrayOf(progress))
                 .delay(400, TimeUnit.MILLISECONDS)
                 .map { it.progresses.first().isPassed }
-                .doOnSuccess {
-                    updateProgress(step, it)
+                .flatMap { isPassed ->
+                    updateProgress(step, isPassed)
+                            .andThen(Single.just(isPassed))
                 }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribeBy({}) { isPassed ->
+                    if (isPassed) stepIsPassed = true
                     view?.markedAsView(step.copy(isCustomPassed = isPassed))
                 }
     }
@@ -88,7 +93,6 @@ constructor(
             getStepProgress(step.id)
                     .onErrorResumeNext { Single.just(false) }
                     .flatMapCompletable { isPassed ->
-                        step.isCustomPassed = true
                         if (isPassed) {
                             Completable.complete()
                         } else {
@@ -98,6 +102,8 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribeOn(backgroundScheduler)
                     .subscribe({
+                        stepIsPassed = true
+                        step.isCustomPassed = true
                         view?.markedAsView(step)
                     }, {})
         }
@@ -132,6 +138,7 @@ constructor(
             progressDao.getStepProgress(stepId)
 
     override fun destroy() {
+        subject.onNext(stepIsPassed)
         disposable.clear()
     }
 }

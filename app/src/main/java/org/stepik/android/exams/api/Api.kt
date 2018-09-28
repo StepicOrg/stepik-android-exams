@@ -10,7 +10,7 @@ import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.data.model.AccountCredentials
 import org.stepik.android.exams.data.model.LessonStepicResponse
 import org.stepik.android.exams.data.model.StepResponse
-import org.stepik.android.exams.di.network.NetworkHelper
+import org.stepik.android.exams.di.modules.NetworkHelper
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.Util
 import org.stepik.android.exams.util.addUserAgent
