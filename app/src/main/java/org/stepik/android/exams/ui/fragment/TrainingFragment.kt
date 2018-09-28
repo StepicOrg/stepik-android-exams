@@ -53,10 +53,10 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
 
         theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
 
         practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
 
         initSnapHelper(theoryLessonRecycler)
         initSnapHelper(practiceLessonRecycler)
