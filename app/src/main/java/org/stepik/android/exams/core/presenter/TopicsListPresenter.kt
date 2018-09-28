@@ -7,8 +7,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.subjects.BehaviorSubject
-import org.stepik.android.exams.core.interactor.ProgressInteractor
-import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
+import org.stepik.android.exams.core.helper.GraphHelper
+import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.model.TopicAdapterItem
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
@@ -29,7 +29,7 @@ constructor(
         @MainScheduler
         private val mainScheduler: Scheduler,
         private val topicsRepository: TopicsRepository,
-        private val graphInteractor: GraphInteractor,
+        private val graphHelper: GraphHelper,
         private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
         private val subject: BehaviorSubject<Boolean>,
@@ -58,7 +58,7 @@ constructor(
             TopicsListView.State.Loading
         }
         compositeDisposable.add(
-                graphInteractor.getGraphData()
+                graphHelper.getGraphData()
                         .flatMap { data -> topicsRepository.joinCourse(data).then(Single.just(data)) }
                         .flatMapObservable { it.topics.toObservable() }
                         .flatMap { topic ->

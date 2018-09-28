@@ -3,6 +3,7 @@ package org.stepik.android.exams.core.interactor
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.zipWith
+import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.db.mapping.toObject
@@ -12,20 +13,20 @@ import org.stepik.android.model.Progress
 import org.stepik.android.model.Step
 import javax.inject.Inject
 
-class ProgressInteractor
+class ProgressInteractorImpl
 @Inject
 constructor(
         private val progressRepository: ProgressRepository,
         private val stepDao: StepDao
-) {
+) : ProgressInteractor{
     data class ProgressData(val ids: List<Long>, val lessonsList: List<Long>, val passedList: List<Boolean>, val progressList: List<String>)
 
-    fun loadStepProgressFromDb(topicId: String): Single<Int> =
+    override fun loadStepProgressFromDb(topicId: String): Single<Int> =
             stepDao.loadStepsByTopicId(topicId)
                     .flatMap { progressRepository.getStepsProgressLocalByTopic(topicId) }
                     .map { progressList -> PercentUtil.formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 
-    fun loadStepProgressFromApi(topicId: String) : Single<Int> =
+    override fun loadStepProgressFromApi(topicId: String) : Single<Int> =
             saveProgressToDb(topicId).andThen(countProgress(topicId))
 
     private fun loadStepsProgresses(topicId: String) =

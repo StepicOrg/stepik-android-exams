@@ -1,7 +1,7 @@
 package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Observable
-import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
+import org.stepik.android.exams.core.helper.GraphHelper
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
@@ -11,29 +11,29 @@ import javax.inject.Inject
 class NavigationInteractorImpl
 @Inject
 constructor(
-        private val graphInteractor: GraphInteractor,
+        private val graphHelper: GraphHelper,
         private val lessonsRepository: LessonsRepository
 ) : NavigationInteractor {
     override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graphInteractor.hasNextTopic(topicId, lessonId))
+        if (graphHelper.hasNextTopic(topicId, lessonId))
             return Observable.empty()
-        return if (!graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
+        return if (!graphHelper.isLastLessonInCurrentTopic(topicId, lessonId)) {
             val nextLesson = getNextLessonInTopic(lessonId, lessons)
             getLessonInCurrentTopic(nextLesson, move)
         } else {
-            val nextTopic = graphInteractor.getNextTopic(topicId)
+            val nextTopic = graphHelper.getNextTopic(topicId)
             getTopic(nextTopic, move)
         }
     }
 
     override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graphInteractor.hasPreviousTopic(topicId, lessonId))
+        if (graphHelper.hasPreviousTopic(topicId, lessonId))
             return Observable.empty()
-        return if (!graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
+        return if (!graphHelper.isFirstLessonInCurrentTopic(topicId, lessonId)) {
             val previousLesson = getPreviousLessonInTopic(lessonId, lessons)
             getLessonInCurrentTopic(previousLesson, move)
         } else {
-            val previousTopic = graphInteractor.getPreviousTopic(topicId)
+            val previousTopic = graphHelper.getPreviousTopic(topicId)
             getTopic(previousTopic, move)
         }
     }

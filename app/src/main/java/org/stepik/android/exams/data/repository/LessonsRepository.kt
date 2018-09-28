@@ -6,7 +6,7 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.rxkotlin.zipWith
 import org.stepik.android.exams.api.Api
-import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
+import org.stepik.android.exams.core.helper.GraphHelper
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
@@ -16,7 +16,6 @@ import org.stepik.android.exams.data.model.LessonPracticeWrapper
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.util.PercentUtil
 import javax.inject.Inject
 
 class LessonsRepository
@@ -26,10 +25,9 @@ constructor(
         private val lessonDao: LessonDao,
         private val topicsDao: TopicDao,
         private val stepsDao: StepDao,
-        private val graphInteractor: GraphInteractor,
-        private val progressRepository: ProgressRepository
+        private val graphHelper: GraphHelper
 ) {
-    private val topicsList = graphInteractor.getTopicsList()
+    private val topicsList = graphHelper.getTopicsList()
 
     private fun loadTheoryLessonByTopicId(topicId: String): Observable<LessonType.Theory> =
             loadTheoryLessonsFromDb(topicId)
@@ -56,8 +54,7 @@ constructor(
                 }
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
-                        val stepList = response.steps!!
-                        stepsDao.insertSteps(stepList.map { it.toEntity() })
+                        stepsDao.insertSteps(response.steps!!.map { it.toEntity() })
                     }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
                 .map { (lesson, response) ->
@@ -102,16 +99,4 @@ constructor(
                         t1, t2 -> t1 + t2
                     }
                     .toObservable()
-
-    fun loadStepProgressApi(topicId: String) : Observable<Int> =
-            loadLessonsByTopicId(topicId)
-                    .flatMapSingle { progressRepository.getStepsProgressByTopic(topicId) }
-                    .flatMapSingle { progressRepository.getProgressApi( it.toTypedArray()) }
-                    .map {progressResponse -> progressResponse.progresses.map { it.nStepsPassed.toFloat()/it.nSteps } }
-                    .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
-
-    fun loadStepProgressFromDb(topicId: String) : Observable<Int> =
-            loadLessonsByTopicId(topicId)
-                    .flatMapSingle { progressRepository.getStepsProgressLocalByTopic(topicId) }
-                    .map { progressList -> PercentUtil.formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 }

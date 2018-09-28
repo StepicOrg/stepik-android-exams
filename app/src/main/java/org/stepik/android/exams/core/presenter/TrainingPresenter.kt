@@ -2,7 +2,7 @@ package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
+import org.stepik.android.exams.core.helper.GraphHelper
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
@@ -21,7 +21,7 @@ constructor(
         private var backgroundScheduler: Scheduler,
         private val lessonsRepository: LessonsRepository,
         private val topicsRepository: TopicsRepository,
-        private val graphInteractor: GraphInteractor
+        private val graphHelper: GraphHelper
 ) : PresenterBase<TrainingView>() {
     private val compositeDisposable = CompositeDisposable()
     private var viewState by Delegates.observable(TrainingView.State.Idle as TrainingView.State) { _, _, newState ->
@@ -40,7 +40,7 @@ constructor(
             TrainingView.State.Loading
         }
         compositeDisposable.add(
-                graphInteractor.getGraphData()
+                graphHelper.getGraphData()
                         .flatMapCompletable { data ->
                             topicsRepository.joinCourse(data)
                         }.then(lessonsRepository.loadAllLessons())

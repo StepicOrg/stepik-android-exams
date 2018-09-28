@@ -14,8 +14,8 @@ import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.configuration.ConfigImpl
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.ScreenManagerImpl
-import org.stepik.android.exams.core.interactor.GraphInteractorImpl
-import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
+import org.stepik.android.exams.core.interactor.ProgressInteractorImpl
+import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -30,7 +30,7 @@ abstract class AppCoreModule {
 
     @AppSingleton
     @Binds
-    abstract fun provideGraphInteractor(graphInteractorImpl: GraphInteractorImpl): GraphInteractor
+    abstract fun provideProgressInteractor(progressInteractor: ProgressInteractorImpl): ProgressInteractor
 
     @Binds
     @AppSingleton
