@@ -7,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.subjects.BehaviorSubject
+import org.stepik.android.exams.core.interactor.ProgressInteractor
 import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.model.TopicAdapterItem
@@ -29,6 +30,7 @@ constructor(
         private val mainScheduler: Scheduler,
         private val topicsRepository: TopicsRepository,
         private val graphInteractor: GraphInteractor,
+        private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
         private val subject: BehaviorSubject<Boolean>,
         private val sharedPreferenceHelper: SharedPreferenceHelper
@@ -63,6 +65,7 @@ constructor(
                             loadTopicsAdapterInfo(topic)
                         }
                         .toList()
+                        .doOnSuccess { sharedPreferenceHelper.firstLoading = false }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->
@@ -84,11 +87,12 @@ constructor(
     }
 
     private fun loadProgressFromApi(topic: Topic): Observable<Int> =
-            lessonsRepository.loadStepProgressApi(topic.id)
-                    .doOnNext { sharedPreferenceHelper.firstLoading = false }
+            progressInteractor.loadStepProgressFromApi(topic.id)
+                    .toObservable()
 
     private fun loadProgressFromDb(topic: Topic): Observable<Int> =
-            lessonsRepository.loadStepProgressFromDb(topic.id)
+            progressInteractor.loadStepProgressFromDb(topic.id)
+                    .toObservable()
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)

@@ -68,7 +68,7 @@ class OnboardingFragment : Fragment(), AuthView {
                         screenManager.showMainMenu()
                         if (isFake) {
                             screenManager.showEmptyAuthScreen(context)
-                            sharedPreferenceHelper.firstLoading
+                            sharedPreferenceHelper.firstLoading = true
                         }
                     })
         }

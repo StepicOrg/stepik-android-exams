@@ -12,7 +12,6 @@ import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.contracts.ProgressView
-import org.stepik.android.exams.data.db.dao.ProgressDao
 import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.data.repository.AssignmentRepository
@@ -72,7 +71,6 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribeBy({
-                    // handle error
                 }) {
                     it.sortBy { step -> step.position }
                     view?.markedAsView(it)
@@ -103,7 +101,6 @@ constructor(
                     .observeOn(mainScheduler)
                     .subscribeOn(backgroundScheduler)
                     .subscribe({
-                        stepIsPassed = true
                         step.isCustomPassed = true
                         view?.markedAsView(step)
                     }, {})
@@ -122,6 +119,7 @@ constructor(
                         }
                     }.flatMapCompletable { assignment ->
                         val stepId = step.id
+                        stepIsPassed = true
                         screenManager.pushToViewedQueue((ViewAssignment(assignment, stepId)))
                         updateProgress(step, true)
                     }
@@ -136,7 +134,7 @@ constructor(
             Completable.fromCallable { progressRepository.insertProgresses(listOf(ProgressEntity(step.id, step.lesson, isPassed, step.progress!!))) }
 
     private fun getStepProgress(stepId: Long): Single<Boolean> =
-            progressRepository.getStepProgress(stepId)
+            progressRepository.getStepProgressLocal(stepId)
 
     override fun destroy() {
         subject.onNext(stepIsPassed)

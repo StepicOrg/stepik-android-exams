@@ -10,7 +10,6 @@ import org.stepik.android.exams.core.interactor.contacts.GraphInteractor
 import org.stepik.android.exams.data.db.dao.LessonDao
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.db.mapping.toEntity
 import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.data.model.LessonPracticeWrapper
@@ -59,7 +58,6 @@ constructor(
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
                         val stepList = response.steps!!
                         stepsDao.insertSteps(stepList.map { it.toEntity() })
-                        progressRepository.insertProgresses(stepList.map { ProgressEntity(it.id, lesson.id, false, it.progress!!) })
                     }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
                 .map { (lesson, response) ->
@@ -107,13 +105,13 @@ constructor(
 
     fun loadStepProgressApi(topicId: String) : Observable<Int> =
             loadLessonsByTopicId(topicId)
-                    .flatMapSingle { progressRepository.getStepProgressData(topicId) }
-                    .flatMapSingle { progressRepository.getProgress( it.toTypedArray()) }
+                    .flatMapSingle { progressRepository.getStepsProgressByTopic(topicId) }
+                    .flatMapSingle { progressRepository.getProgressApi( it.toTypedArray()) }
                     .map {progressResponse -> progressResponse.progresses.map { it.nStepsPassed.toFloat()/it.nSteps } }
                     .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
 
     fun loadStepProgressFromDb(topicId: String) : Observable<Int> =
             loadLessonsByTopicId(topicId)
-                    .flatMapSingle { progressRepository.getStepsProgressByTopic(topicId) }
+                    .flatMapSingle { progressRepository.getStepsProgressLocalByTopic(topicId) }
                     .map { progressList -> PercentUtil.formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 }

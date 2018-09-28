@@ -14,5 +14,5 @@ class TopicEntity(
         val isJoined: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
+     var id: Long? = null
 }

@@ -1,6 +1,5 @@
 package org.stepik.android.exams.data.repository
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.data.db.dao.ProgressDao
@@ -14,18 +13,18 @@ constructor(
         private val stepicRestService: StepicRestService,
         private val progressDao: ProgressDao
 ) {
-    fun getProgress(progress : Array<String>) : Single<ProgressesResponse> =
+    fun getProgressApi(progress : Array<String>) : Single<ProgressesResponse> =
             stepicRestService.getProgresses(progress)
 
     fun insertProgresses(progressEntity : List<ProgressEntity>)  =
            progressDao.insertStepProgress(progressEntity)
 
-    fun getStepProgressData(topicId : String) : Single<List<String>> =
+    fun getStepsProgressByTopic(topicId : String) : Single<List<String>> =
             progressDao.getAllStepsProgressDataByTopicId(topicId)
 
-    fun getStepsProgressByTopic(topicId : String) : Single<List<Boolean>> =
+    fun getStepsProgressLocalByTopic(topicId : String) : Single<List<Boolean>> =
             progressDao.getStepsLocalProgressByTopicId(topicId)
 
-    fun getStepProgress(stepId : Long) =
+    fun getStepProgressLocal(stepId : Long) : Single<Boolean> =
             progressDao.getStepProgress(stepId)
 }

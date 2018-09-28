@@ -12,7 +12,7 @@ interface ProgressDao {
     @Query("SELECT progress FROM ProgressEntity JOIN TopicEntity ON ProgressEntity.lessonId = TopicEntity.lesson WHERE TopicEntity.topicId = :topicId")
     fun getAllStepsProgressDataByTopicId(topicId: String) : Single<List<String>>
 
-    @Query("SELECT ProgressEntity.isPassed FROM ProgressEntity JOIN TopicEntity ON ProgressEntity.lessonId = TopicEntity.lesson WHERE TopicEntity.topicId = :topicId")
+    @Query("SELECT isPassed FROM ProgressEntity JOIN TopicEntity ON ProgressEntity.lessonId = TopicEntity.lesson WHERE TopicEntity.topicId = :topicId")
     fun getStepsLocalProgressByTopicId(topicId: String) : Single<List<Boolean>>
 
     @Query("SELECT isPassed FROM ProgressEntity WHERE stepId = :stepId")
