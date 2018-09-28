@@ -16,6 +16,7 @@ import org.stepik.android.exams.data.db.dao.ProgressDao
 import org.stepik.android.exams.data.db.entity.ProgressEntity
 import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.data.repository.AssignmentRepository
+import org.stepik.android.exams.data.repository.ProgressRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.model.Progress
@@ -32,7 +33,7 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-        private val progressDao: ProgressDao,
+        private val progressRepository: ProgressRepository,
         private val screenManager: ScreenManager,
         private val assignmentRepository: AssignmentRepository,
         private val subject : BehaviorSubject<Boolean>
@@ -132,10 +133,10 @@ constructor(
                     }
 
     private fun updateProgress(step: Step, isPassed: Boolean) =
-            Completable.fromCallable { progressDao.insertStepProgress(ProgressEntity(step.id, step.lesson, isPassed, step.progress!!)) }
+            Completable.fromCallable { progressRepository.insertProgresses(listOf(ProgressEntity(step.id, step.lesson, isPassed, step.progress!!))) }
 
     private fun getStepProgress(stepId: Long): Single<Boolean> =
-            progressDao.getStepProgress(stepId)
+            progressRepository.getStepProgress(stepId)
 
     override fun destroy() {
         subject.onNext(stepIsPassed)
