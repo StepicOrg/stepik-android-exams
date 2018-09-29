@@ -13,10 +13,10 @@ constructor(
         private val graphInteractor: GraphInteractor,
         private val lessonsRepository: LessonsRepository
 ) : NavigationInteractor {
+    //TODO rewrite navigation logic
     override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graphInteractor.hasNextTopic(topicId, lessonId))
-            return Observable.empty()
-        return if (!graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
+        return if (graphInteractor.hasNextTopic(topicId, lessonId)) Observable.empty()
+         else if (!graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
             val nextLesson = getNextLessonInTopic(lessonId, lessons)
             getLessonInCurrentTopic(nextLesson, move)
         } else {
@@ -26,9 +26,8 @@ constructor(
     }
 
     override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graphInteractor.hasPreviousTopic(topicId, lessonId))
-            return Observable.empty()
-        return if (!graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
+        return if (graphInteractor.hasPreviousTopic(topicId, lessonId)) Observable.empty()
+        else if (!graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
             val previousLesson = getPreviousLessonInTopic(lessonId, lessons)
             getLessonInCurrentTopic(previousLesson, move)
         } else {

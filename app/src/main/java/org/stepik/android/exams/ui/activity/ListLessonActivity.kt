@@ -13,7 +13,6 @@ import org.stepik.android.exams.core.presenter.ListLessonsPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.TrainingAdapter
-import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
@@ -47,16 +46,19 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
         initAdapter()
 
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.loadAllTypedLessons(type)
+            loadAllLessonsByType()
         }
 
         tryAgain.setOnClickListener {
-            presenter?.loadAllTypedLessons(type)
+            loadAllLessonsByType()
         }
         content.hideAllChildren()
-        loadingPlaceholder.changeVisibillity(true)
         initPlaceholders()
+        loadingPlaceholder.changeVisibillity(true)
     }
+
+    private fun loadAllLessonsByType() =
+            presenter?.loadAllTypedLessons(type)!!
 
     private fun initAdapter(){
         topicsLessonsAdapter = TrainingAdapter(this, screenManager)
@@ -83,7 +85,7 @@ class ListLessonActivity : BasePresenterActivity<ListLessonsPresenter, LessonsVi
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.Idle -> {
-            presenter?.loadAllTypedLessons(type) ?: Unit
+            loadAllLessonsByType()
         }
 
         is LessonsView.State.Loading -> {

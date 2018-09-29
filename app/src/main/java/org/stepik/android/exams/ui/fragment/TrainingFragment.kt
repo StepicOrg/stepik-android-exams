@@ -52,14 +52,12 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
 
-        theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
-
-        practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
+        initAdapter(theoryLessonRecycler, trainingTheoryAdapter)
+        initAdapter(practiceLessonRecycler, trainingPracticeAdapter)
 
         initSnapHelper(theoryLessonRecycler)
         initSnapHelper(practiceLessonRecycler)
+
         initCenteredToolbar(R.string.training)
         swipeRefresh.setOnRefreshListener {
             presenter?.loadTopics()
@@ -76,6 +74,11 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         buttonSeeAllPractice.setOnClickListener {
             screenManager.showLessonsList(context, GraphLesson.Type.PRACTICE)
         }
+    }
+
+    private fun initAdapter(recyclerView: RecyclerView, adapter: TrainingAdapter) {
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.span))
     }
 
     private fun initSnapHelper(recyclerView : RecyclerView){
