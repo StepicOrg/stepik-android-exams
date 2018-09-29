@@ -2,7 +2,6 @@ package org.stepik.android.exams.ui.adapter
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +17,6 @@ class TrainingAdapter(
         private val activity: Activity,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
-    companion object {
-        const val ITEM_PADDING = 60
-    }
 
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
@@ -31,17 +27,10 @@ class TrainingAdapter(
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
             LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
 
-
-    private fun setItemWidth(recyclerWidth : Int): Int =
-         (recyclerWidth - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
-
     override fun getItemCount() = lessons.size
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         holder.bind(lessons[position])
-        holder.itemView.layoutParams = holder.itemView.layoutParams.apply {
-            width = setItemWidth(activity.resources.displayMetrics.widthPixels)
-        }
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {

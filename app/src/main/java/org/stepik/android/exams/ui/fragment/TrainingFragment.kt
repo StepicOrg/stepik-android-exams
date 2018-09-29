@@ -2,6 +2,7 @@ package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,16 +48,18 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val theoryHelper = CoursesSnapHelper(1)
-        val practiceHelper = CoursesSnapHelper(1)
+
         trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
         trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
+
         theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
+
         practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        theoryHelper.attachToRecyclerView(theoryLessonRecycler)
-        practiceHelper.attachToRecyclerView(practiceLessonRecycler)
+        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, 2) // todo adjust number of columns
+
+        initSnapHelper(theoryLessonRecycler)
+        initSnapHelper(practiceLessonRecycler)
         initCenteredToolbar(R.string.training)
         swipeRefresh.setOnRefreshListener {
             presenter?.loadTopics()
@@ -73,6 +76,11 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         buttonSeeAllPractice.setOnClickListener {
             screenManager.showLessonsList(context, GraphLesson.Type.PRACTICE)
         }
+    }
+
+    private fun initSnapHelper(recyclerView : RecyclerView){
+        val snapHelper = CoursesSnapHelper(1)
+        snapHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onStart() {

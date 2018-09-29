@@ -8,7 +8,13 @@ import android.view.ViewGroup
 
 class WrappingLinearLayoutManager
 @JvmOverloads
-constructor(context: Context, orientation: Int = VERTICAL, reverseLayout: Boolean) : LinearLayoutManager(context, orientation, reverseLayout) {
+constructor(
+        context: Context,
+        orientation: Int = VERTICAL,
+        reverseLayout: Boolean,
+        private val columns: Int
+) : LinearLayoutManager(context, orientation, reverseLayout) {
+
     private val dimensions = intArrayOf(0, 0)
 
     init {
@@ -27,14 +33,16 @@ constructor(context: Context, orientation: Int = VERTICAL, reverseLayout: Boolea
         val verticalPadding = paddingTop + paddingBottom
         val horizontalPadding = paddingLeft + paddingEnd
 
-        for(i in 0 until itemCount) {
+        for(i in 0 until state.itemCount) {
             if (orientation == HORIZONTAL) {
-                measureChild(recycler, i, View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED), heightSpec, dimensions)
+                measureChild(recycler, i, View.MeasureSpec.makeMeasureSpec(widthSize / columns - horizontalPadding, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED), dimensions)
 
                 width += dimensions[0]
                 height = maxOf(height, dimensions[1])
             } else {
-                measureChild(recycler, i, widthSpec, View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED), dimensions)
+                measureChild(recycler, i, View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(heightSize / columns - verticalPadding, View.MeasureSpec.EXACTLY), dimensions)
 
                 width = maxOf(width, dimensions[0])
                 height += dimensions[1]
@@ -55,17 +63,55 @@ constructor(context: Context, orientation: Int = VERTICAL, reverseLayout: Boolea
         setMeasuredDimension(width, height)
     }
 
+    override fun addView(child: View) {
+        child.layoutParams = child.layoutParams.apply {
+            width = RecyclerView.LayoutParams.MATCH_PARENT
+            height = RecyclerView.LayoutParams.MATCH_PARENT
+        }
+        super.addView(child)
+    }
+
+    override fun addView(child: View, index: Int) {
+        child.layoutParams = child.layoutParams.apply {
+            width = RecyclerView.LayoutParams.MATCH_PARENT
+            height = RecyclerView.LayoutParams.MATCH_PARENT
+        }
+        super.addView(child, index)
+    }
+
+    override fun measureChildWithMargins(child: View, widthUsed: Int, heightUsed: Int) {
+        val lp = child.layoutParams as RecyclerView.LayoutParams
+
+        val widthSpec = getChildMeasureSpec(width / columns, widthMode,
+                paddingLeft + paddingRight
+                        + lp.leftMargin + lp.rightMargin + widthUsed, lp.width,
+                canScrollHorizontally())
+        val heightSpec = getChildMeasureSpec(height, heightMode,
+                (paddingTop + paddingBottom
+                        + lp.topMargin + lp.bottomMargin + heightUsed), lp.height,
+                canScrollVertically())
+
+        child.measure(widthSpec, heightSpec)
+    }
+
     private fun measureChild(recycler: RecyclerView.Recycler, position: Int, widthSpec: Int, heightSpec: Int, dimensions: IntArray) {
         val view = recycler.getViewForPosition(position) ?: return
         recycler.bindViewToPosition(view, position)
 
+        measure(view, widthSpec, heightSpec, dimensions)
+        recycler.recycleView(view)
+    }
+
+    private fun measure(view: View, widthSpec: Int, heightSpec: Int, dimensions: IntArray) {
         val params = view.layoutParams as RecyclerView.LayoutParams
-        val childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec, 0, params.width)
-        val childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec, 0, params.height)
+        val childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec, paddingLeft + paddingRight, params.width)
+        val childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec, paddingTop + paddingBottom, params.height)
         view.measure(childWidthSpec, childHeightSpec)
 
         dimensions[0] = view.measuredWidth + params.leftMargin + params.rightMargin
         dimensions[1] = view.measuredHeight + params.bottomMargin + params.topMargin
-        recycler.recycleView(view)
     }
+
+    override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams =
+            RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT)
 }
