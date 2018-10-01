@@ -13,10 +13,10 @@ import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.util.TopicColorResolver
 import kotlin.properties.Delegates
 
-class TrainingAdapter(
+class ListLessonAdapter(
         private val activity: Activity,
         private val screenManager: ScreenManager
-) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
+) : RecyclerView.Adapter<ListLessonAdapter.LessonViewHolder>() {
 
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()

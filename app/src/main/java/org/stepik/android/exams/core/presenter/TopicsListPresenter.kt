@@ -39,24 +39,19 @@ constructor(
         }
         compositeDisposable.add(
                 graphInteractor.getGraphData()
-                        .toObservable()
                         .flatMapMaybe {data -> topicsRepository.joinCourse(data).map { data } }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->
                             viewState = TopicsListView.State.Success(data.topics)
                         }, {
-                            onError()
+                            viewState = TopicsListView.State.NetworkError
                         }))
     }
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
         view.setState(viewState)
-    }
-
-    private fun onError() {
-        viewState = TopicsListView.State.NetworkError
     }
 
     override fun destroy() {

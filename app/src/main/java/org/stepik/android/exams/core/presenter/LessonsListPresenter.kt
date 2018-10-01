@@ -1,6 +1,5 @@
 package org.stepik.android.exams.core.presenter
 
-import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
@@ -11,7 +10,7 @@ import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class ListLessonsPresenter
+class LessonsListPresenter
 @Inject
 constructor(
         @BackgroundScheduler

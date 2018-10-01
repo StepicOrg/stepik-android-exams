@@ -17,7 +17,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.ui.adapter.TrainingAdapter
+import org.stepik.android.exams.ui.adapter.ListLessonAdapter
 import org.stepik.android.exams.ui.custom.CoursesSnapHelper
 import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
 import org.stepik.android.exams.util.changeVisibillity
@@ -41,19 +41,22 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     lateinit var trainingPresenterProvider: Provider<TrainingPresenter>
     @Inject
     lateinit var screenManager: ScreenManager
-    private lateinit var trainingTheoryAdapter: TrainingAdapter
-    private lateinit var trainingPracticeAdapter: TrainingAdapter
+    private lateinit var listLessonTheoryAdapter: ListLessonAdapter
+    private lateinit var listLessonPracticeAdapter: ListLessonAdapter
 
     override fun getPresenterProvider(): Provider<TrainingPresenter> = trainingPresenterProvider
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater?.inflate(R.layout.fragment_training, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
-        trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
+        listLessonTheoryAdapter = ListLessonAdapter(activity, screenManager)
+        listLessonPracticeAdapter = ListLessonAdapter(activity, screenManager)
 
-        initAdapter(theoryLessonRecycler, trainingTheoryAdapter)
-        initAdapter(practiceLessonRecycler, trainingPracticeAdapter)
+        initAdapter(theoryLessonRecycler, listLessonTheoryAdapter)
+        initAdapter(practiceLessonRecycler, listLessonPracticeAdapter)
 
         initSnapHelper(theoryLessonRecycler)
         initSnapHelper(practiceLessonRecycler)
@@ -76,9 +79,9 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         }
     }
 
-    private fun initAdapter(recyclerView: RecyclerView, adapter: TrainingAdapter) {
+    private fun initAdapter(recyclerView: RecyclerView, adapter: ListLessonAdapter) {
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.span))
+        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.columns))
     }
 
     private fun initSnapHelper(recyclerView : RecyclerView){
@@ -114,20 +117,16 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = false
-            trainingPracticeAdapter.lessons = state.practice
-            trainingTheoryAdapter.lessons = state.theory
+            listLessonPracticeAdapter.lessons = state.practice
+            listLessonTheoryAdapter.lessons = state.theory
         }
 
         is TrainingView.State.Refreshing -> {
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = true
-            trainingPracticeAdapter.lessons = state.practice
-            trainingTheoryAdapter.lessons = state.theory
+            listLessonPracticeAdapter.lessons = state.practice
+            listLessonTheoryAdapter.lessons = state.theory
         }
     }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            LayoutInflater.from(context).inflate(R.layout.fragment_training, container, false)
-
 }
