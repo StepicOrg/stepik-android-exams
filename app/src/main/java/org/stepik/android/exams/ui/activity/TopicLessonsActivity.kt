@@ -52,11 +52,11 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
         recyclerLesson.adapter = topicsLessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(this)
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.loadTopicsLessons(topic.id)
+            loadTopicLessons()
         }
 
         tryAgain.setOnClickListener {
-            presenter?.loadTopicsLessons(topic.id)
+            loadTopicLessons()
         }
 
         val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
@@ -67,6 +67,10 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
         loadingPlaceholder.changeVisibillity(true)
 
         initPlaceholders()
+    }
+
+    private fun loadTopicLessons() {
+        presenter?.loadTopicsLessons(topic.id)
     }
 
     private fun initPlaceholders() {
@@ -88,7 +92,7 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.Idle -> {
-            presenter?.loadTopicsLessons(topic.id) ?: Unit
+            loadTopicLessons()
         }
 
         is LessonsView.State.Loading -> {

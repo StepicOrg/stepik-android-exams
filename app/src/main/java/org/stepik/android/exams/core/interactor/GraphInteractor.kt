@@ -16,7 +16,7 @@ constructor(
     private var graph: Graph<String> = Graph()
 
     fun getTopicsList() =
-            graph.getAllTopics()
+            graph.getAllKeys()
 
     fun getGraphData(): Single<GraphData> =
             graphService.getPosts()
@@ -35,23 +35,21 @@ constructor(
         }
     }
 
-    fun hasNextTopic(topicId: String, lessonId: Long) =
-            graph[topicId]?.parent?.isEmpty() == true &&
-                    graph[topicId]?.graphLessons?.last()?.id == lessonId
+    fun hasNextTopic(topicId: String) : Boolean =
+            graph[topicId]?.parent?.isEmpty() == false
 
-    fun hasPreviousTopic(topicId: String, lessonId: Long) =
-            graph[topicId]?.children?.isEmpty() == true &&
-                    graph[topicId]?.graphLessons?.first()?.id == lessonId
+    fun hasPreviousTopic(topicId: String) : Boolean =
+            graph[topicId]?.children?.isEmpty() == false
 
-    fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) =
+    fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.last()?.id == lessonId
 
-    fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) =
+    fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.first()?.id == lessonId
 
-    fun getNextTopic(topicId: String) =
+    fun getNextTopic(topicId: String) : String =
             graph[topicId]?.parent?.first()?.id ?: ""
 
-    fun getPreviousTopic(topicId: String) =
-            graph[topicId]?.parent?.first()?.id ?: ""
+    fun getPreviousTopic(topicId: String) :String =
+            graph[topicId]?.children?.first()?.id ?: ""
 }

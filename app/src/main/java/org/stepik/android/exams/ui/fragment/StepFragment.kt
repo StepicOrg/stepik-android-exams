@@ -106,8 +106,8 @@ open class StepFragment : BasePresenterFragment<StepAttemptPresenter, AttemptVie
         stepsTrackingPresenter.detachView(this)
     }
 
-    override fun moveToLesson(id: String, lessonTheory: LessonTheoryWrapper?) =
-            screenManager.showStepsList(id, lessonTheory!!, context)
+    override fun moveToLesson(id: String, lessonTheory: LessonTheoryWrapper) =
+            screenManager.showStepsList(id, lessonTheory, context)
 
     override fun showNextButton() {
         previousLesson.visibility = View.VISIBLE

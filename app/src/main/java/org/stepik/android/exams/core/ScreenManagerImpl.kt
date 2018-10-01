@@ -95,7 +95,7 @@ constructor(
     }
 
     override fun showLessonsList(context: Context, type: GraphLesson.Type) {
-        val intent = Intent(context, ListLessonActivity::class.java)
+        val intent = Intent(context, LessonListActivity::class.java)
         intent.putExtra(AppConstants.TYPE_LESSONS_LIST, type)
         context.startActivity(intent)
     }
