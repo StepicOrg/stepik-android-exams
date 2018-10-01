@@ -57,14 +57,14 @@ constructor(
     }
 
     override fun showMainMenu() {
-        analytic.reportAmplitudeEvent(AmplitudeAnalytic.Launch.FIRST_TIME)
+        analytic.reportAmplitudeEvent(AmplitudeAnalytic.Launch.SESSION_START)
         val intent = Intent(context, MainMenuActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         context.startActivity(intent)
     }
 
     override fun showOnboardingScreen() {
-        analytic.reportAmplitudeEvent(AmplitudeAnalytic.Launch.SESSION_START)
+        analytic.reportAmplitudeEvent(AmplitudeAnalytic.Launch.FIRST_TIME)
         val intent = Intent(context, IntroActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
