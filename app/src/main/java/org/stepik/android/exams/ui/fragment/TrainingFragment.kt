@@ -17,7 +17,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.ui.adapter.ListLessonAdapter
+import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.ui.custom.CoursesSnapHelper
 import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
 import org.stepik.android.exams.util.changeVisibillity
@@ -28,7 +28,6 @@ import javax.inject.Provider
 
 
 class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(), TrainingView {
-
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
@@ -37,12 +36,15 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     override fun injectComponent() {
         App.component().inject(this)
     }
+
     @Inject
     lateinit var trainingPresenterProvider: Provider<TrainingPresenter>
+
     @Inject
     lateinit var screenManager: ScreenManager
-    private lateinit var listLessonTheoryAdapter: ListLessonAdapter
-    private lateinit var listLessonPracticeAdapter: ListLessonAdapter
+
+    private lateinit var theoryLessonsAdapter: LessonsAdapter
+    private lateinit var practiceLessonsAdapter: LessonsAdapter
 
     override fun getPresenterProvider(): Provider<TrainingPresenter> = trainingPresenterProvider
 
@@ -52,11 +54,11 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listLessonTheoryAdapter = ListLessonAdapter(activity, screenManager)
-        listLessonPracticeAdapter = ListLessonAdapter(activity, screenManager)
+        theoryLessonsAdapter = LessonsAdapter(activity, screenManager)
+        practiceLessonsAdapter = LessonsAdapter(activity, screenManager)
 
-        initAdapter(theoryLessonRecycler, listLessonTheoryAdapter)
-        initAdapter(practiceLessonRecycler, listLessonPracticeAdapter)
+        initAdapter(theoryLessonRecycler, theoryLessonsAdapter)
+        initAdapter(practiceLessonRecycler, practiceLessonsAdapter)
 
         initSnapHelper(theoryLessonRecycler)
         initSnapHelper(practiceLessonRecycler)
@@ -79,9 +81,9 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         }
     }
 
-    private fun initAdapter(recyclerView: RecyclerView, adapter: ListLessonAdapter) {
+    private fun initAdapter(recyclerView: RecyclerView, adapter: LessonsAdapter) {
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.columns))
+        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.training_columns))
     }
 
     private fun initSnapHelper(recyclerView : RecyclerView){
@@ -117,16 +119,16 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = false
-            listLessonPracticeAdapter.lessons = state.practice
-            listLessonTheoryAdapter.lessons = state.theory
+            practiceLessonsAdapter.lessons = state.practice
+            theoryLessonsAdapter.lessons = state.theory
         }
 
         is TrainingView.State.Refreshing -> {
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = true
-            listLessonPracticeAdapter.lessons = state.practice
-            listLessonTheoryAdapter.lessons = state.theory
+            practiceLessonsAdapter.lessons = state.practice
+            theoryLessonsAdapter.lessons = state.theory
         }
     }
 }

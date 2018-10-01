@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.training_item_lesson.view.*
+import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.util.TopicColorResolver
 import kotlin.properties.Delegates
 
-class ListLessonAdapter(
+class LessonsAdapter(
         private val activity: Activity,
         private val screenManager: ScreenManager
-) : RecyclerView.Adapter<ListLessonAdapter.LessonViewHolder>() {
-
+) : RecyclerView.Adapter<LessonsAdapter.LessonViewHolder>() {
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
     }
@@ -25,7 +24,7 @@ class ListLessonAdapter(
     private val inflater = LayoutInflater.from(activity)
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
-            LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
+            LessonViewHolder(inflater.inflate(R.layout.item_lesson, parent, false))
 
     override fun getItemCount() = lessons.size
 

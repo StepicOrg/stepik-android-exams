@@ -12,7 +12,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterActivity
 import org.stepik.android.exams.core.presenter.LessonsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.ui.adapter.ListLessonAdapter
+import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
@@ -20,8 +20,8 @@ import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ListLessonActivity : BasePresenterActivity<LessonsListPresenter, LessonsView>(), LessonsView {
-    private lateinit var listLessonsAdapter: ListLessonAdapter
+class LessonListActivity : BasePresenterActivity<LessonsListPresenter, LessonsView>(), LessonsView {
+    private lateinit var lessonsAdapter: LessonsAdapter
 
     @Inject
     lateinit var lessonsListPresenterProvider: Provider<LessonsListPresenter>
@@ -62,8 +62,8 @@ class ListLessonActivity : BasePresenterActivity<LessonsListPresenter, LessonsVi
     }
 
     private fun initAdapter(){
-        listLessonsAdapter = ListLessonAdapter(this, screenManager)
-        recyclerLesson.adapter = listLessonsAdapter
+        lessonsAdapter = LessonsAdapter(this, screenManager)
+        recyclerLesson.adapter = lessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 
@@ -98,7 +98,7 @@ class ListLessonActivity : BasePresenterActivity<LessonsListPresenter, LessonsVi
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = true
-            listLessonsAdapter.lessons = state.lessons
+            lessonsAdapter.lessons = state.lessons
         }
 
         is LessonsView.State.NetworkError -> {
@@ -110,7 +110,7 @@ class ListLessonActivity : BasePresenterActivity<LessonsListPresenter, LessonsVi
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = false
-            listLessonsAdapter.lessons = state.lessons
+            lessonsAdapter.lessons = state.lessons
         }
     }
 

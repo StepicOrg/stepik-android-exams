@@ -15,35 +15,29 @@ constructor(
 ) : NavigationInteractor {
     //TODO rewrite navigation logic
     override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
-            when (graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
-                true -> {
-                    if (graphInteractor.hasNextTopic(topicId)) {
-                        val nextTopic = graphInteractor.getNextTopic(topicId)
-                        getTopic(nextTopic, move)
-                    } else {
-                        Observable.empty()
-                    }
+            if (graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphInteractor.hasNextTopic(topicId)) {
+                    val nextTopic = graphInteractor.getNextTopic(topicId)
+                    getTopic(nextTopic, move)
+                } else {
+                    Observable.empty()
                 }
-                false -> {
-                    val nextLesson = getNextLessonInTopic(lessonId, lessons)
-                    getLessonInCurrentTopic(nextLesson, move)
-                }
+            } else {
+                val nextLesson = getNextLessonInTopic(lessonId, lessons)
+                getLessonInCurrentTopic(nextLesson, move)
             }
 
     override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
-            when (graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
-                true -> {
-                    if (graphInteractor.hasPreviousTopic(topicId)) {
-                        val nextTopic = graphInteractor.getPreviousTopic(topicId)
-                        getTopic(nextTopic, move)
-                    } else {
-                        Observable.empty()
-                    }
+            if (graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphInteractor.hasPreviousTopic(topicId)) {
+                    val nextTopic = graphInteractor.getPreviousTopic(topicId)
+                    getTopic(nextTopic, move)
+                } else {
+                    Observable.empty()
                 }
-                false -> {
-                    val previousLesson = getPreviousLessonInTopic(lessonId, lessons)
-                    getLessonInCurrentTopic(previousLesson, move)
-                }
+            } else {
+                val previousLesson = getPreviousLessonInTopic(lessonId, lessons)
+                getLessonInCurrentTopic(previousLesson, move)
             }
 
     private fun getTopic(topicId: String, move: Boolean): Observable<List<LessonTheoryWrapper>> =
@@ -53,14 +47,18 @@ constructor(
                         .map { t: LessonType.Theory -> t.lessonTheoryWrapper }
                         .toList()
                         .toObservable()
-            } else Observable.just(listOf(LessonTheoryWrapper()))
+            } else {
+                Observable.just(listOf(LessonTheoryWrapper()))
+            }
 
     private fun getLessonInCurrentTopic(lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> =
             if (lesson != 0L && move) {
                 lessonsRepository.findLessonInDb(lesson)
                         .toList()
                         .toObservable()
-            } else Observable.just(listOf(LessonTheoryWrapper()))
+            } else {
+                Observable.just(listOf(LessonTheoryWrapper()))
+            }
 
     private fun getNextLessonInTopic(lessonId: Long, lessons: LongArray): Long {
         lessons.forEachIndexed { index, lesson ->
