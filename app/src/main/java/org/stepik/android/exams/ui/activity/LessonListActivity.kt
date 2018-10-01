@@ -1,8 +1,6 @@
 package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_lessons.*
@@ -11,62 +9,62 @@ import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
-import org.stepik.android.exams.core.presenter.LessonsPresenter
+import org.stepik.android.exams.core.presenter.LessonsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
-import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.graph.model.GraphLesson
 import org.stepik.android.exams.ui.adapter.LessonsAdapter
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), LessonsView {
-    companion object {
-        const val EXTRA_TOPIC = "topic"
-    }
-
+class LessonListActivity : BasePresenterActivity<LessonsListPresenter, LessonsView>(), LessonsView {
     private lateinit var lessonsAdapter: LessonsAdapter
 
     @Inject
-    lateinit var lessonsPresenterProvider: Provider<LessonsPresenter>
+    lateinit var lessonsListPresenterProvider: Provider<LessonsListPresenter>
 
     @Inject
     lateinit var screenManager: ScreenManager
 
-    private lateinit var topic: Topic
-
+    private lateinit var type: GraphLesson.Type
     override fun injectComponent() {
         App.component().inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        topic = intent.getParcelableExtra(EXTRA_TOPIC)
         setContentView(R.layout.activity_lessons)
+        type = intent.getSerializableExtra(AppConstants.TYPE_LESSONS_LIST) as GraphLesson.Type
+        val title = when (type) {
+            GraphLesson.Type.THEORY -> R.string.theory
+            GraphLesson.Type.PRACTICE -> R.string.practice
+        }
+        initCenteredToolbar(title, showHomeButton = true)
+        initAdapter()
 
-        initCenteredToolbar(R.string.topic, showHomeButton = true)
-
-        lessonsAdapter = LessonsAdapter(this, screenManager, topic)
-
-        recyclerLesson.adapter = lessonsAdapter
-        recyclerLesson.layoutManager = LinearLayoutManager(this)
         swipeRefreshLessons.setOnRefreshListener {
-            presenter?.tryLoadLessons(topic.id)
+            loadAllLessonsByType()
         }
 
         tryAgain.setOnClickListener {
-            presenter?.tryLoadLessons(topic.id)
+            loadAllLessonsByType()
         }
-
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(this, R.drawable.list_divider_h))
-        recyclerLesson.addItemDecoration(divider)
-
         content.hideAllChildren()
-        loadingPlaceholder.changeVisibillity(true)
-
         initPlaceholders()
+        loadingPlaceholder.changeVisibillity(true)
+    }
+
+    private fun loadAllLessonsByType() {
+        presenter?.loadAllTypedLessons(type)
+    }
+
+    private fun initAdapter(){
+        lessonsAdapter = LessonsAdapter(this, screenManager)
+        recyclerLesson.adapter = lessonsAdapter
+        recyclerLesson.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun initPlaceholders() {
@@ -88,7 +86,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
 
     override fun setState(state: LessonsView.State): Unit = when (state) {
         is LessonsView.State.Idle -> {
-            presenter?.tryLoadLessons(topic.id) ?: Unit
+            loadAllLessonsByType()
         }
 
         is LessonsView.State.Loading -> {
@@ -100,7 +98,7 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = true
-            lessonsAdapter.setLessons(state.lessons)
+            lessonsAdapter.lessons = state.lessons
         }
 
         is LessonsView.State.NetworkError -> {
@@ -112,11 +110,11 @@ class LessonsActivity : BasePresenterActivity<LessonsPresenter, LessonsView>(), 
             content.hideAllChildren()
             swipeRefreshLessons.changeVisibillity(true)
             swipeRefreshLessons.isRefreshing = false
-            lessonsAdapter.setLessons(state.lessons)
+            lessonsAdapter.lessons = state.lessons
         }
     }
 
-    override fun getPresenterProvider() = lessonsPresenterProvider
+    override fun getPresenterProvider() = lessonsListPresenterProvider
 
     override fun onOptionsItemSelected(item: MenuItem?) =
             if (item?.itemId == android.R.id.home) {

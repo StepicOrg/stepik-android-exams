@@ -2,76 +2,75 @@ package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Observable
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
-import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
-import org.stepik.android.exams.data.repository.StepsRepository
-import org.stepik.android.exams.graph.Graph
+import org.stepik.android.exams.data.model.LessonType
+import org.stepik.android.exams.data.repository.LessonsRepository
 import javax.inject.Inject
 
 class NavigationInteractorImpl
 @Inject
 constructor(
-        val graph: Graph<String>,
-        private val stepsRepository: StepsRepository
+        private val graphInteractor: GraphInteractor,
+        private val lessonsRepository: LessonsRepository
 ) : NavigationInteractor {
-    override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graph[topicId]?.parent?.isEmpty() == true &&
-                graph[topicId]?.graphLessons?.last()?.id == lessonId)
-            return Observable.empty()
-        if (graph[topicId]?.graphLessons?.last()?.id != lessonId) {
-            val iterator = lessons.iterator()
-            var nextLesson = 0L
-            while (iterator.hasNext()) {
-                val next = iterator.next()
-                if (next == lessonId)
-                    nextLesson = iterator.next()
+    //TODO rewrite navigation logic
+    override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
+            if (graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphInteractor.hasNextTopic(topicId)) {
+                    val nextTopic = graphInteractor.getNextTopic(topicId)
+                    getTopic(nextTopic, move)
+                } else {
+                    Observable.empty()
+                }
+            } else {
+                val nextLesson = getNextLessonInTopic(lessonId, lessons)
+                getLessonInCurrentTopic(nextLesson, move)
             }
-            if (nextLesson != 0L && move) {
-                return stepsRepository.findLessonInDb(topicId, nextLesson)
+
+    override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
+            if (graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphInteractor.hasPreviousTopic(topicId)) {
+                    val nextTopic = graphInteractor.getPreviousTopic(topicId)
+                    getTopic(nextTopic, move)
+                } else {
+                    Observable.empty()
+                }
+            } else {
+                val previousLesson = getPreviousLessonInTopic(lessonId, lessons)
+                getLessonInCurrentTopic(previousLesson, move)
+            }
+
+    private fun getTopic(topicId: String, move: Boolean): Observable<List<LessonTheoryWrapper>> =
+            if (topicId.isNotEmpty() && move) {
+                lessonsRepository.loadLessonsByTopicId(topicId)
+                        .ofType(LessonType.Theory::class.java)
+                        .map { t: LessonType.Theory -> t.lessonTheoryWrapper }
                         .toList()
                         .toObservable()
+            } else {
+                Observable.just(listOf(LessonTheoryWrapper()))
             }
-        } else {
-            val nextTopic = graph[topicId]?.parent?.first()?.id ?: ""
-            if (nextTopic.isNotEmpty() && move) {
-                return stepsRepository.tryLoadLessons(nextTopic)
-                        .ofType(LessonTheoryWrapper::class.java)
+
+    private fun getLessonInCurrentTopic(lesson: Long, move: Boolean): Observable<List<LessonTheoryWrapper>> =
+            if (lesson != 0L && move) {
+                lessonsRepository.findLessonInDb(lesson)
                         .toList()
                         .toObservable()
+            } else {
+                Observable.just(listOf(LessonTheoryWrapper()))
             }
+
+    private fun getNextLessonInTopic(lessonId: Long, lessons: LongArray): Long {
+        lessons.forEachIndexed { index, lesson ->
+            if (lesson == lessonId) return lessons[index + 1]
         }
-        return Observable.just(listOf(LessonTheoryWrapper()))
+        return 0
     }
 
-    override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> {
-        if (graph[topicId]?.children?.isEmpty() == true &&
-                graph[topicId]?.graphLessons?.first()?.id == lessonId)
-            return Observable.empty()
-        if (graph[topicId]?.graphLessons?.first()?.id != lessonId) {
-            val iterator = lessons.asList().listIterator()
-            var nextLesson = 0L
-            while (iterator.hasNext()) {
-                val next = iterator.next()
-                if (next == lessonId) {
-                    iterator.previous()
-                    nextLesson = iterator.previous()
-                    break
-                }
-            }
-            if (nextLesson != 0L && move) {
-                return stepsRepository.findLessonInDb(topicId, nextLesson)
-                        .toList()
-                        .toObservable()
-            }
-        } else {
-            val nextTopic = graph[topicId]?.children?.first()?.id ?: ""
-            if (nextTopic.isNotEmpty() && move) {
-                return stepsRepository.tryLoadLessons(nextTopic)
-                        .ofType(LessonTheoryWrapper::class.java)
-                        .toList()
-                        .toObservable()
-            }
+    private fun getPreviousLessonInTopic(lessonId: Long, lessons: LongArray): Long {
+        lessons.forEachIndexed { index, lesson ->
+            if (lesson == lessonId) return lessons[index - 1]
         }
-        return Observable.just(listOf(LessonTheoryWrapper()))
+        return 0
     }
 }

@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v7.widget.CardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/lessonIndex"
-        android:minWidth="16dp"
-        android:gravity="end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:textSize="16sp"
-        android:textColor="@color/new_accent_color"
-        tools:text="1." />
-
-    <TextView
-        android:id="@+id/lessonTitle"
-        android:layout_toEndOf="@id/lessonIndex"
-        android:layout_height="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/lessonContainer"
         android:layout_width="match_parent"
-        android:textColor="@color/new_accent_color"
-        android:textSize="16sp"
-        tools:text="Теоритеческий урок" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:foreground="?selectableItemBackground"
+        android:padding="24dp">
 
-    <TextView
-        android:id="@+id/lessonSubtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@id/lessonIndex"
-        android:layout_below="@id/lessonTitle"
-        android:textColor="@color/stepic_weak_text"
-        tools:text="15 шагов" />
+        <TextView
+            android:id="@+id/lessonTitle"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Теоритеческий урок" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/lessonDescription"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/lessonSubtitle"
+            app:layout_constraintEnd_toEndOf="@+id/lessonTitle"
+            app:layout_constraintStart_toStartOf="@+id/lessonTitle"
+            app:layout_constraintTop_toBottomOf="@+id/lessonTitle"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:text="Описание" />
+
+        <TextView
+            android:id="@+id/lessonSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lessonDescription"
+            tools:text="15 шагов" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

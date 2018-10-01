@@ -53,4 +53,5 @@
 
     <color name="loading_view_base_color">#F6F7F9</color>
     <color name="loading_view_deep_color">#DBDBDB</color>
+    <color name="blue_button">#1E90FF</color>
 </resources>

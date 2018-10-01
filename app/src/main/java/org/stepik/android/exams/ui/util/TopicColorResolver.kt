@@ -2,7 +2,6 @@ package org.stepik.android.exams.ui.util
 
 import android.support.annotation.DrawableRes
 import org.stepik.android.exams.R
-import org.stepik.android.exams.graph.model.Topic
 
 object TopicColorResolver {
     private val gradients = arrayOf(
@@ -16,8 +15,8 @@ object TopicColorResolver {
      * returns @DrawableRes for topic background
      */
     @DrawableRes
-    fun resolveTopicBackground(topic: Topic): Int =
-        gradients[hash(Math.abs(topic.id.hashCode()))]
+    fun resolveTopicBackground(topicId: String): Int =
+            gradients[hash(Math.abs(topicId.hashCode()))]
 
     private fun hash(x: Int): Int {
         var h = x

@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_topics_list.*
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
+import kotlinx.android.synthetic.main.fragment_topics_list.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
@@ -61,10 +61,6 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
         }
     }
 
-    override fun showGraphData(graphData: GraphData) {
-        topicsAdapter.topics = graphData.topics
-    }
-
     override fun getPresenterProvider(): Provider<TopicsListPresenter> =
             topicsListPresenterProvider
 
@@ -79,7 +75,8 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
     }
 
     override fun setState(state: TopicsListView.State) = when (state) {
-        is TopicsListView.State.Idle -> {}
+        is TopicsListView.State.Idle -> {
+        }
 
         is TopicsListView.State.Loading -> {
             content.hideAllChildren()

@@ -6,16 +6,16 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.reactivex.Maybe
 import org.stepik.android.exams.data.db.data.LessonInfo
-import org.stepik.android.exams.data.model.LessonWrapper
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 
 @Dao
 interface LessonDao {
 
     @Query("SELECT lesson FROM LessonInfo WHERE topicId = :id")
-    fun findAllLessonsByTopicId(id: String): Maybe<List<LessonWrapper>>
+    fun findAllLessonsByTopicId(id: String): Maybe<List<LessonTheoryWrapper>>
 
     @Query("SELECT lesson FROM LessonInfo WHERE lessonId = :id")
-    fun findLessonById(id: Long): Maybe<LessonWrapper>
+    fun findLessonById(id: Long): Maybe<LessonTheoryWrapper>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLessons(lessonInfos: List<LessonInfo>)
