@@ -6,13 +6,10 @@ import dagger.Component
 import org.stepik.android.exams.App
 import org.stepik.android.exams.adaptive.ui.adapter.QuizCardViewHolder
 import org.stepik.android.exams.core.services.ViewPushService
+import org.stepik.android.exams.di.modules.BusModule
 import org.stepik.android.exams.di.modules.NetworkModule
 import org.stepik.android.exams.di.modules.RoomModule
 import org.stepik.android.exams.di.modules.StepsModule
-import org.stepik.android.exams.ui.activity.ListLessonActivity
-import org.stepik.android.exams.di.network.NetworkModule
-import org.stepik.android.exams.di.network.RoomModule
-import org.stepik.android.exams.di.network.StepsModule
 import org.stepik.android.exams.ui.activity.LessonListActivity
 import org.stepik.android.exams.ui.activity.TopicLessonsActivity
 import org.stepik.android.exams.ui.activity.SplashActivity

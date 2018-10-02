@@ -1,6 +1,7 @@
 package org.stepik.android.exams.core.interactor
 
 import io.reactivex.Observable
+import org.stepik.android.exams.core.helper.GraphHelper
 import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
@@ -10,14 +11,14 @@ import javax.inject.Inject
 class NavigationInteractorImpl
 @Inject
 constructor(
-        private val graphInteractor: GraphInteractor,
+        private val graphHelper: GraphHelper,
         private val lessonsRepository: LessonsRepository
 ) : NavigationInteractor {
     //TODO rewrite navigation logic
     override fun resolveNextLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
-            if (graphInteractor.isLastLessonInCurrentTopic(topicId, lessonId)) {
-                if (graphInteractor.hasNextTopic(topicId)) {
-                    val nextTopic = graphInteractor.getNextTopic(topicId)
+            if (graphHelper.isLastLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphHelper.hasNextTopic(topicId)) {
+                    val nextTopic = graphHelper.getNextTopic(topicId)
                     getTopic(nextTopic, move)
                 } else {
                     Observable.empty()
@@ -28,10 +29,10 @@ constructor(
             }
 
     override fun resolvePrevLesson(topicId: String, lessonId: Long, move: Boolean, lessons: LongArray): Observable<List<LessonTheoryWrapper>> =
-            if (graphInteractor.isFirstLessonInCurrentTopic(topicId, lessonId)) {
-                if (graphInteractor.hasPreviousTopic(topicId)) {
-                    val nextTopic = graphInteractor.getPreviousTopic(topicId)
-                    getTopic(nextTopic, move)
+            if (graphHelper.isFirstLessonInCurrentTopic(topicId, lessonId)) {
+                if (graphHelper.hasPreviousTopic(topicId)) {
+                    val prevTopic = graphHelper.getPreviousTopic(topicId)
+                    getTopic(prevTopic, move)
                 } else {
                     Observable.empty()
                 }

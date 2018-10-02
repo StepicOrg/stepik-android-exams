@@ -27,9 +27,9 @@ constructor(
     private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics)
             graph.createVertex(topic.id, topic.title)
-        for (topic in graphData.topics) {
-            if (topic.requiredFor != null)
-                graph.addEdge(topic.id, topic.requiredFor)
+        graphData.topics.forEachIndexed { index, topic ->
+            if (index + 1 < graphData.topics.size)
+                graph.addEdge(topic.id, graphData.topics[index + 1].id)
         }
         for (maps in graphData.topicsMap) {
             graph[maps.id]?.graphLessons?.addAll(maps.graphLessons)
@@ -37,10 +37,10 @@ constructor(
     }
 
     fun hasNextTopic(topicId: String) : Boolean =
-            graph[topicId]?.parent?.isEmpty() == false
+            graph[topicId]?.children?.isEmpty() == false
 
     fun hasPreviousTopic(topicId: String) : Boolean =
-            graph[topicId]?.children?.isEmpty() == false
+            graph[topicId]?.parent?.isEmpty() == false
 
     fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.last()?.id == lessonId
@@ -49,8 +49,8 @@ constructor(
             graph[topicId]?.graphLessons?.first()?.id == lessonId
 
     fun getNextTopic(topicId: String) : String =
-            graph[topicId]?.parent?.first()?.id ?: ""
+            graph[topicId]?.children?.first()?.id ?: ""
 
     fun getPreviousTopic(topicId: String) :String =
-            graph[topicId]?.children?.first()?.id ?: ""
+            graph[topicId]?.parent?.first()?.id ?: ""
 }
