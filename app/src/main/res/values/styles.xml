@@ -96,4 +96,8 @@
     <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
+
+    <style name="AppTheme.NoActionBar.EmptyAuth" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg_empty_auth</item>
+    </style>
 </resources>
