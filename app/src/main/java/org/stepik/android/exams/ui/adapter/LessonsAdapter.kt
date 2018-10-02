@@ -2,26 +2,21 @@ package org.stepik.android.exams.ui.adapter
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.training_item_lesson.view.*
+import kotlinx.android.synthetic.main.item_lesson.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.ui.util.TopicColorResolver
 import kotlin.properties.Delegates
 
-class TrainingAdapter(
+class LessonsAdapter(
         private val activity: Activity,
         private val screenManager: ScreenManager
-) : RecyclerView.Adapter<TrainingAdapter.LessonViewHolder>() {
-    companion object {
-        const val ITEM_PADDING = 60
-    }
-
+) : RecyclerView.Adapter<LessonsAdapter.LessonViewHolder>() {
     var lessons: List<LessonType> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
     }
@@ -29,20 +24,12 @@ class TrainingAdapter(
     private val inflater = LayoutInflater.from(activity)
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): LessonViewHolder =
-            LessonViewHolder(inflater.inflate(R.layout.training_item_lesson, parent, false))
-
-
-    private fun setItemWidth(recyclerWidth : Int): Int =
-         (recyclerWidth - ITEM_PADDING) / activity.resources.getInteger(R.integer.items)
+            LessonViewHolder(inflater.inflate(R.layout.item_lesson, parent, false))
 
     override fun getItemCount() = lessons.size
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         holder.bind(lessons[position])
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        holder.itemView.layoutParams.width = setItemWidth(displayMetrics.widthPixels)
-        holder.itemView.requestLayout()
     }
 
     inner class LessonViewHolder(root: View) : RecyclerView.ViewHolder(root) {

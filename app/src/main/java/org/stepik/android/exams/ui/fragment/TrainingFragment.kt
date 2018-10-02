@@ -2,6 +2,7 @@ package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TrainingPresenter
 import org.stepik.android.exams.core.presenter.contracts.TrainingView
 import org.stepik.android.exams.graph.model.GraphLesson
-import org.stepik.android.exams.ui.adapter.TrainingAdapter
+import org.stepik.android.exams.ui.adapter.LessonsAdapter
 import org.stepik.android.exams.ui.custom.CoursesSnapHelper
 import org.stepik.android.exams.ui.custom.WrappingLinearLayoutManager
 import org.stepik.android.exams.util.changeVisibillity
@@ -27,36 +28,43 @@ import javax.inject.Provider
 
 
 class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(), TrainingView {
-
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
+        const val TYPE_THEORY = "theory"
+        const val TYPE_PRACTICE = "practice"
     }
 
     override fun injectComponent() {
         App.component().inject(this)
     }
+
     @Inject
     lateinit var trainingPresenterProvider: Provider<TrainingPresenter>
+
     @Inject
     lateinit var screenManager: ScreenManager
-    private lateinit var trainingTheoryAdapter: TrainingAdapter
-    private lateinit var trainingPracticeAdapter: TrainingAdapter
+
+    private lateinit var theoryLessonsAdapter: LessonsAdapter
+    private lateinit var practiceLessonsAdapter: LessonsAdapter
 
     override fun getPresenterProvider(): Provider<TrainingPresenter> = trainingPresenterProvider
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater?.inflate(R.layout.fragment_training, container, false)
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val theoryHelper = CoursesSnapHelper(1)
-        val practiceHelper = CoursesSnapHelper(1)
-        trainingTheoryAdapter = TrainingAdapter(activity, screenManager)
-        trainingPracticeAdapter = TrainingAdapter(activity, screenManager)
-        theoryLessonRecycler.adapter = trainingTheoryAdapter
-        theoryLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        practiceLessonRecycler.adapter = trainingPracticeAdapter
-        practiceLessonRecycler.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        theoryHelper.attachToRecyclerView(theoryLessonRecycler)
-        practiceHelper.attachToRecyclerView(practiceLessonRecycler)
+
+        theoryLessonsAdapter = LessonsAdapter(activity, screenManager)
+        practiceLessonsAdapter = LessonsAdapter(activity, screenManager)
+
+        initAdapter(theoryLessonRecycler, theoryLessonsAdapter)
+        initAdapter(practiceLessonRecycler, practiceLessonsAdapter)
+
+        initSnapHelper(theoryLessonRecycler)
+        initSnapHelper(practiceLessonRecycler)
+
         initCenteredToolbar(R.string.training)
         swipeRefresh.setOnRefreshListener {
             presenter?.loadTopics()
@@ -73,6 +81,16 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
         buttonSeeAllPractice.setOnClickListener {
             screenManager.showLessonsList(context, GraphLesson.Type.PRACTICE)
         }
+    }
+
+    private fun initAdapter(recyclerView: RecyclerView, adapter: LessonsAdapter) {
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = WrappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false, context.resources.getInteger(R.integer.training_columns))
+    }
+
+    private fun initSnapHelper(recyclerView : RecyclerView){
+        val snapHelper = CoursesSnapHelper(1)
+        snapHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onStart() {
@@ -103,20 +121,16 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = false
-            trainingPracticeAdapter.lessons = state.practice
-            trainingTheoryAdapter.lessons = state.theory
+            practiceLessonsAdapter.lessons = state.practice
+            theoryLessonsAdapter.lessons = state.theory
         }
 
         is TrainingView.State.Refreshing -> {
             content.hideAllChildren()
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = true
-            trainingPracticeAdapter.lessons = state.practice
-            trainingTheoryAdapter.lessons = state.theory
+            practiceLessonsAdapter.lessons = state.practice
+            theoryLessonsAdapter.lessons = state.theory
         }
     }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            LayoutInflater.from(context).inflate(R.layout.fragment_training, container, false)
-
 }

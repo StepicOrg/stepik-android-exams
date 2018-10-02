@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- popup windows -->
-<integer name="items">3</integer>
+    <integer name="training_columns">3</integer>
 </resources>

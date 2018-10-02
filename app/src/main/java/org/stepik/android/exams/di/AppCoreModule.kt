@@ -10,6 +10,8 @@ import dagger.Provides
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.stepik.android.exams.analytic.Analytic
+import org.stepik.android.exams.analytic.AnalyticImpl
 import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.configuration.ConfigImpl
 import org.stepik.android.exams.core.ScreenManager
@@ -43,6 +45,10 @@ abstract class AppCoreModule {
     @Binds
     @AppSingleton
     internal abstract fun provideTextResolver(textResolver: TextResolverImpl): TextResolver
+
+    @Binds
+    @AppSingleton
+    internal abstract fun provideAnalytic(analytic: AnalyticImpl): Analytic
 
     @Module
     companion object {

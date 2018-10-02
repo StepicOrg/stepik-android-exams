@@ -17,7 +17,7 @@ class Graph<T> {
 
     operator fun get(vert: T) = vertices[vert]
 
-    fun getAllTopics() = vertices.map { it.key }
+    fun getAllKeys() : List<T> = vertices.map { it.key }
 
     fun bfs(vertex: T): List<T> {
         val visited = mutableSetOf<T>()

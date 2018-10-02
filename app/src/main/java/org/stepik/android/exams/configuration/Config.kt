@@ -11,4 +11,5 @@ interface Config {
     val refreshGrantType: String
     val codeQueryParameter: String
     val appPublicLicenseKey: String
+    val amplitudeApiKey : String
 }

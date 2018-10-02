@@ -69,7 +69,7 @@ constructor(
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
                         .subscribe({ data ->
-                            viewState = TopicsListView.State.Success(data)
+                            viewState = TopicsListView.State.Success(data.topics)
                         }, {
                             viewState = TopicsListView.State.NetworkError
                         }))
