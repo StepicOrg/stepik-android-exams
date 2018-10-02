@@ -161,7 +161,7 @@ class AttemptFragment : StepFragment(), AttemptView {
         blockUIBeforeSubmit(false)
         val attemptId = attempt?.id ?: 0
         val reply = (stepDelegate as AttemptDelegate).createReply()
-        presenter?.createSubmission(attemptId, reply)
+        presenter?.createSubmission(step, attemptId, reply)
     }
 
 

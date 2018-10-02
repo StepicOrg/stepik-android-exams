@@ -7,12 +7,15 @@ import org.stepik.android.exams.adaptive.core.contracts.CardView
 import org.stepik.android.exams.adaptive.listeners.AdaptiveReactionListener
 import org.stepik.android.exams.adaptive.listeners.AnswerListener
 import org.stepik.android.exams.adaptive.model.Card
+import org.stepik.android.exams.analytic.AmplitudeAnalytic
+import org.stepik.android.exams.analytic.Analytic
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.presenter.PresenterBase
 import org.stepik.android.exams.data.model.SubmissionRequest
 import org.stepik.android.exams.data.model.SubmissionResponse
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.util.getStepType
 import org.stepik.android.model.Submission
 import org.stepik.android.model.adaptive.Reaction
 import retrofit2.HttpException
@@ -34,6 +37,9 @@ class CardPresenter(
     @Inject
     @field:BackgroundScheduler
     lateinit var backgroundScheduler: Scheduler
+
+    @Inject
+    lateinit var analytic: Analytic
 
     private var submission: Submission? = null
     private var error: Throwable? = null
@@ -119,7 +125,10 @@ class CardPresenter(
                 if (it.status == Submission.Status.WRONG) {
                     answerListener?.onWrongAnswer(it.id)
                 }
-
+                analytic.reportAmplitudeEvent(AmplitudeAnalytic.Steps.SUBMISSION_MADE, mapOf(
+                        AmplitudeAnalytic.Steps.Params.TYPE to card.step.getStepType(),
+                        AmplitudeAnalytic.Steps.Params.STEP to (card.step?.id?.toString() ?: "0")
+                ))
                 view?.setSubmission(it, true)
             }
         }

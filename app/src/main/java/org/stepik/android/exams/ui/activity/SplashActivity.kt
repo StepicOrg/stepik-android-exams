@@ -2,11 +2,10 @@ package org.stepik.android.exams.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.Observables.zip
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
@@ -37,14 +36,16 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         App.component().inject(this)
         setContentView(R.layout.activity_splash)
+
         val onboardingObservable = Observable.fromCallable(sharedPreferenceHelper::isNotFirstTime)
         val authObservable = Observable.fromCallable(sharedPreferenceHelper::authResponseDeadline)
-        disposable = Completable.complete().andThen(io.reactivex.Observable.zip<kotlin.Long, kotlin.Boolean, kotlin.Pair<kotlin.Long, kotlin.Boolean>>(authObservable, onboardingObservable, BiFunction { t1, t2 -> Pair(t1, t2) }))
+
+        disposable = zip(authObservable, onboardingObservable)
                 .delay(1L, java.util.concurrent.TimeUnit.SECONDS)
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe {
-                    if (it.first != 0L && it.second) {
+                .subscribe { (authResponseDeadline, isNotFirstTime) ->
+                    if (authResponseDeadline != 0L && isNotFirstTime) {
                         screenManager.showMainMenu()
                     } else {
                         screenManager.showOnboardingScreen()

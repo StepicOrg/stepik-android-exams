@@ -18,7 +18,8 @@ class ConfigImpl private constructor(
         override val redirectUri: String,
         override val refreshGrantType: String,
         override val codeQueryParameter: String,
-        override val appPublicLicenseKey: String
+        override val appPublicLicenseKey: String,
+        override val amplitudeApiKey: String
 ) : Config {
     @AppSingleton
     class ConfigFactory

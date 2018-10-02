@@ -12,6 +12,8 @@ import org.stepik.android.exams.adaptive.listeners.AdaptiveReactionListener
 import org.stepik.android.exams.adaptive.listeners.AnswerListener
 import org.stepik.android.exams.adaptive.model.Card
 import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
+import org.stepik.android.exams.analytic.AmplitudeAnalytic
+import org.stepik.android.exams.analytic.Analytic
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.PresenterBase
@@ -22,6 +24,8 @@ import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.model.adaptive.Reaction
 import org.stepik.android.model.adaptive.RecommendationReaction
 import retrofit2.HttpException
@@ -38,7 +42,8 @@ constructor(
         private val mainScheduler: Scheduler,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
         private val screenManager: ScreenManager,
-        private val topicDao: TopicDao
+        private val topicDao: TopicDao,
+        private val analytic: Analytic
 ) : PresenterBase<RecommendationsView>(), AdaptiveReactionListener, AnswerListener {
 
     companion object {
@@ -66,6 +71,12 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribeBy(onSuccess = {
                     course = it
+                    analytic.reportAmplitudeEvent(AmplitudeAnalytic.Lesson.LESSON_OPENED,
+                            mapOf(
+                                    AmplitudeAnalytic.Lesson.Params.ID to 0,
+                                    AmplitudeAnalytic.Lesson.Params.TYPE to GraphLesson.Type.PRACTICE,
+                                    AmplitudeAnalytic.Lesson.Params.COURSE to course,
+                                    AmplitudeAnalytic.Lesson.Params.TOPIC to topicId))
                     createReaction(0, Reaction.INTERESTING)
                 }, onComplete = {
                     view?.onCourseNotSupported()

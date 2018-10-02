@@ -62,7 +62,5 @@ dependencies {
     annotationProcessor libraries.roomCompiler
     implementation libraries.roomRx
     kapt libraries.roomCompiler
-    api libraries.lifecycleExtensions
-    kapt libraries.lifecycleCompiler
-    testImplementation libraries.coreTesting
+    implementation libraries.amplitude
 }

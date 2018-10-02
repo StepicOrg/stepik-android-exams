@@ -19,6 +19,9 @@ interface TopicDao {
     @Query("SELECT lesson FROM TopicInfo WHERE topicId = :topicId AND type = :type")
     fun getTopicInfoByType(topicId: String, type: GraphLesson.Type): Maybe<List<Long>>
 
+    @Query("SELECT course FROM TopicInfo WHERE lesson = :lesson")
+    fun getCourseInfoByLessonId(lesson: Long): Maybe<Long>
+
     // TODO fix constant
     @Query("SELECT course FROM TopicInfo WHERE topicId = :topicId AND type = 'PRACTICE'")
     fun getAdaptiveCourseId(topicId: String): Maybe<Long>
