@@ -25,8 +25,9 @@ constructor(
                     }
 
     private fun addDataToGraph(graphData: GraphData) {
-        for (topic in graphData.topics) {
+        for (topic in graphData.topics)
             graph.createVertex(topic.id, topic.title)
+        for (topic in graphData.topics) {
             if (topic.requiredFor != null)
                 graph.addEdge(topic.id, topic.requiredFor)
         }
