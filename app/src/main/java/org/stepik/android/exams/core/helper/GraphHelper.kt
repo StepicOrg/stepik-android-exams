@@ -5,6 +5,7 @@ import org.stepik.android.exams.api.graph.GraphService
 import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.graph.model.GraphLesson
 import javax.inject.Inject
 
 @AppSingleton
@@ -45,7 +46,7 @@ constructor(
             graph[topicId]?.parent?.isEmpty() == false
 
     fun isLastLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
-            graph[topicId]?.graphLessons?.last()?.id == lessonId
+            graph[topicId]?.graphLessons?.last { it.type == GraphLesson.Type.THEORY }?.id == lessonId
 
     fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.first()?.id == lessonId
