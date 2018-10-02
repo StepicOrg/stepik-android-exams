@@ -13,7 +13,6 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
-import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren

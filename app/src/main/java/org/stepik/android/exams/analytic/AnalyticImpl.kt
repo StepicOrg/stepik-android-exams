@@ -26,6 +26,7 @@ class AnalyticImpl
                 .set(AmplitudeAnalytic.Properties.APPLICATION_ID, context.packageName)
                 .set(AmplitudeAnalytic.Properties.PUSH_PERMISSION, if (NotificationManagerCompat.from(context).areNotificationsEnabled()) "granted" else "not_granted")
         )
+        onSessionStart()
     }
 
     override fun reportAmplitudeEvent(eventName: String) = reportAmplitudeEvent(eventName, null)
@@ -47,4 +48,8 @@ class AnalyticImpl
 
     override fun setScreenOrientation(orientation: Int) =
             amplitude.identify(Identify().set(AmplitudeAnalytic.Properties.SCREEN_ORIENTATION, if (orientation == Configuration.ORIENTATION_PORTRAIT) "portrait" else "landscape"))
+
+    private fun onSessionStart() {
+        reportAmplitudeEvent(AmplitudeAnalytic.Launch.SESSION_START)
+    }
 }
