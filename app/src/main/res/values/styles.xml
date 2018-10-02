@@ -93,4 +93,7 @@
         <item name="android:fontFamily" tools:targetApi="jelly_bean">Roboto-Regular.ttf</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+    </style>
 </resources>

@@ -17,7 +17,7 @@
                   android:name=".ui.activity.EmptyAuthActivity" />
         <activity android:theme="@style/AppTheme.NoActionBar"
                   android:name=".ui.activity.RegisterActivity" />
-        <activity android:theme="@style/AppTheme.NoActionBar"
+        <activity android:theme="@style/AppTheme.NoActionBar.Splash"
                   android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
