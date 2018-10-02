@@ -33,9 +33,9 @@ class MainMenuActivity : AppCompatActivity() {
             R.id.training -> {
                 getNextFragmentOrNull(currentFragmentTag, TrainingFragment::class.java.simpleName, TrainingFragment.Companion::newInstance)
             }
-            R.id.testing -> {
-                getNextFragmentOrNull(currentFragmentTag, TestingFragment::class.java.simpleName, TestingFragment.Companion::newInstance)
-            }
+//            R.id.testing -> {
+//                getNextFragmentOrNull(currentFragmentTag, TestingFragment::class.java.simpleName, TestingFragment.Companion::newInstance)
+//            }
             else -> {
                 null
             }
