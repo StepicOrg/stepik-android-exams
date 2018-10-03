@@ -3,7 +3,9 @@ package org.stepik.android.exams.di
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.webkit.CookieManager
+import android.webkit.CookieSyncManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -86,7 +88,13 @@ abstract class AppCoreModule {
         @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
+        internal fun provideCookieManager(context: Context): CookieManager {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                @Suppress("DEPRECATION")
+                CookieSyncManager.createInstance(context)
+            }
+            return CookieManager.getInstance()
+        }
 
     }
 }
