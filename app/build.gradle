@@ -5,17 +5,6 @@ apply plugin: 'kotlin-kapt'
 
 def globalConf = rootProject.ext
 android {
-    compileSdkVersion versions.compileSdk
-    defaultConfig {
-        applicationId "org.stepik.android.exams"
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-        versionCode versions.code
-        versionName versions.name
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
-    }
-
     signingConfigs {
         release {
             storeFile file(globalConf.keystore)
@@ -31,6 +20,19 @@ android {
         }
     }
 
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        applicationId "org.stepik.android.exams"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName versions.name
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        signingConfig signingConfigs.release
+    }
+
     android {
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,6 +43,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
         }
     }
 
