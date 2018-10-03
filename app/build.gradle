@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def globalConf = rootProject.ext
 android {
     compileSdkVersion versions.compileSdk
     defaultConfig {
@@ -14,6 +15,22 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        release {
+            storeFile file(globalConf.keystore)
+            storePassword globalConf.keystorePass
+            keyAlias globalConf.oldAlias
+            keyPassword globalConf.oldAliasPass
+        }
+        debug {
+            storeFile file(globalConf.debugKeystore)
+            storePassword globalConf.debugKeystorePass
+            keyAlias globalConf.debugAlias
+            keyPassword globalConf.debugAliasPass
+        }
+    }
+
     android {
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
