@@ -30,8 +30,7 @@
                 android:id="@+id/recyclerLesson"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:padding="8dp" />
+                android:clipToPadding="false" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </FrameLayout>
 </LinearLayout>

@@ -12,4 +12,10 @@
         <item quantity="many">%d страниц</item>
         <item quantity="other">%d страниц</item>
     </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
+    </plurals>
 </resources>

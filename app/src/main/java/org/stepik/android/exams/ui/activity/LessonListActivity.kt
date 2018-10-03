@@ -54,7 +54,6 @@ class LessonListActivity : BasePresenterActivity<LessonsListPresenter, LessonsVi
         }
         content.hideAllChildren()
         initPlaceholders()
-        loadingPlaceholder.changeVisibillity(true)
     }
 
     private fun loadAllLessonsByType() {
@@ -65,6 +64,9 @@ class LessonListActivity : BasePresenterActivity<LessonsListPresenter, LessonsVi
         lessonsAdapter = LessonsAdapter(this, screenManager)
         recyclerLesson.adapter = lessonsAdapter
         recyclerLesson.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        val lessonsListPadding = resources.getDimension(R.dimen.lessons_list_padding).toInt()
+        recyclerLesson.setPadding(lessonsListPadding, lessonsListPadding, lessonsListPadding, lessonsListPadding)
     }
 
     private fun initPlaceholders() {

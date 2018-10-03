@@ -1,4 +1,4 @@
-package org.stepik.android.exams.di.network
+package org.stepik.android.exams.di.modules
 
 
 import dagger.Binds

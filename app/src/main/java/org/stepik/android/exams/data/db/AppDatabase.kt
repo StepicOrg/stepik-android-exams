@@ -6,30 +6,29 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import org.stepik.android.exams.data.db.converters.GsonConverter
-import org.stepik.android.exams.data.db.dao.LessonDao
-import org.stepik.android.exams.data.db.dao.StepDao
-import org.stepik.android.exams.data.db.dao.SubmissionEntityDao
-import org.stepik.android.exams.data.db.dao.TopicDao
-import org.stepik.android.exams.data.db.data.LessonInfo
-import org.stepik.android.exams.data.db.data.StepInfo
-import org.stepik.android.exams.data.db.data.TopicInfo
-import org.stepik.android.exams.data.db.entity.SubmissionEntity
+import org.stepik.android.exams.data.db.dao.*
+import org.stepik.android.exams.data.db.entity.*
 
 @Database(
         entities = [
-            StepInfo::class,
-            LessonInfo::class,
-            TopicInfo::class,
-            SubmissionEntity::class
+            AssignmentEntity::class,
+            VideoEntity::class,
+            TopicEntity::class,
+            SubmissionEntity::class,
+            ProgressEntity::class,
+            LessonEntity::class,
+            StepEntity::class
         ],
         version = 1,
         exportSchema = false
 )
 @TypeConverters(GsonConverter::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun stepDao(): StepDao
-    abstract fun navigationDao(): LessonDao
+    abstract fun progressDao(): ProgressDao
+    abstract fun lessonDao(): LessonDao
+    abstract fun assignmentDao(): AssignmentDao
     abstract fun topicDao(): TopicDao
+    abstract fun stepDao() : StepDao
     abstract fun submissionEntityDao(): SubmissionEntityDao
 
     companion object {

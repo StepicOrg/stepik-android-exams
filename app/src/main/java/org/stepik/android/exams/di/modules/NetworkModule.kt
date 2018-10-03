@@ -1,4 +1,4 @@
-package org.stepik.android.exams.di.network
+package org.stepik.android.exams.di.modules
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

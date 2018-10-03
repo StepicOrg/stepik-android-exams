@@ -74,9 +74,14 @@ interface StepicRestService {
             @Query("lesson") lessonId: Long
     ): Single<UnitMetaResponse>
 
-    @Headers("Content-LessonType:application/json")
+    @Headers("Content-LessonType: application/json")
     @POST("api/views")
     fun postViewed(
             @Body stepAssignment: ViewAssignmentWrapper
     ): Completable
+
+    @GET("api/assignments")
+    fun getAssignments(
+            @Query("ids[]")assignmentsIds: LongArray
+    ): Single<AssignmentResponse>
 }

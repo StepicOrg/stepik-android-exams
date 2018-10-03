@@ -1,4 +1,4 @@
-package org.stepik.android.exams.di.network
+package org.stepik.android.exams.di.modules
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -48,8 +48,8 @@ object NetworkHelper {
             createServiceWithAuth(authInterceptor: AuthInterceptor, host: String, gson: Gson = Gson()): T {
         val okHttpBuilder = OkHttpClient.Builder()
         okHttpBuilder.addInterceptor(authInterceptor)
-        okHttpBuilder.setTimeoutsInSeconds(NetworkHelper.TIMEOUT_IN_SECONDS)
-        val retrofit = NetworkHelper.createRetrofit(okHttpBuilder.build(), host, gson)
+        okHttpBuilder.setTimeoutsInSeconds(TIMEOUT_IN_SECONDS)
+        val retrofit = createRetrofit(okHttpBuilder.build(), host, gson)
 
         return retrofit.create(T::class.java)
     }

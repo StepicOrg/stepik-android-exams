@@ -30,7 +30,7 @@ constructor(
     }
 
     private fun getLessonId(topicId: String) =
-            topicDao.getTopicInfoByType(topicId, GraphLesson.Type.THEORY)
+            topicDao.getTopicByType(topicId, GraphLesson.Type.THEORY)
 
     private fun navigateToPrev(topicId: String, lessonId: Long, move: Boolean) {
         disposable.add(getLessonId(topicId)

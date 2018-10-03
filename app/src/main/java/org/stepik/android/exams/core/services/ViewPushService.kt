@@ -1,6 +1,7 @@
 package org.stepik.android.exams.core.services
 
 import android.app.IntentService
+import android.app.Service
 import android.content.Intent
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -29,22 +30,18 @@ class ViewPushService : IntentService("view_state_pusher") {
     }
 
     override fun onHandleIntent(p0: Intent) {
-        sendViewAssigment(p0.getParcelableExtra(AppConstants.viewPush))
+        sendViewAssignment(p0.getParcelableExtra(AppConstants.viewPush))
     }
 
-    private fun sendViewAssigment(viewAssignment: ViewAssignment) {
-        compositeDisposable.add(stepicRestService.postViewed(ViewAssignmentWrapper(viewAssignment.assignment, viewAssignment.step))
+    private fun sendViewAssignment(viewAssignment: ViewAssignment) {
+        stepicRestService.postViewed(ViewAssignmentWrapper(viewAssignment.assignment, viewAssignment.step))
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({}, { onError(it) }))
+                .subscribe({}, {
+                    onError(it) })
     }
 
     private fun onError(it: Throwable) {
         it.printStackTrace()
-    }
-
-    override fun onDestroy() {
-        compositeDisposable.clear()
-        super.onDestroy()
     }
 }

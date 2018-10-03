@@ -67,6 +67,7 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         }
 
     var isNotFirstTime: Boolean by preference(NOT_FIRST_TIME)
+    var firstLoading: Boolean by preference(FIRST_LOADING)
 
     fun removeProfile() {
         remove(PROFILE)
@@ -122,6 +123,7 @@ constructor(context: Context) : SharedPreferenceProvider, AuthPreferences, Profi
         private const val PROFILE = "profile"
         private const val PROFILE_ID = "profile_id"
         private const val NOT_FIRST_TIME = "not_first_time"
+        private const val FIRST_LOADING = "first_loading"
         private const val FIRST_TIME_ADAPTIVE = "first_time_adaptive"
         private const val FAKE_USER = "fake_user"
     }

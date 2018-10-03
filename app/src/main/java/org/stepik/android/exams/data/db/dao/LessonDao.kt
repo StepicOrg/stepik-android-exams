@@ -1,22 +1,24 @@
 package org.stepik.android.exams.data.db.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import io.reactivex.Maybe
-import org.stepik.android.exams.data.db.data.LessonInfo
-import org.stepik.android.exams.data.model.LessonTheoryWrapper
+import io.reactivex.Single
+import org.stepik.android.exams.data.db.pojo.LessonTheoryWrapperPojo
+import org.stepik.android.exams.data.db.entity.LessonEntity
 
 @Dao
 interface LessonDao {
+    @Transaction
+    @Query("SELECT * FROM TopicEntity JOIN LessonEntity ON TopicEntity.lesson = LessonEntity.lessonId WHERE topicId = :topicId")
+    fun findAllLessonsByTopicId(topicId: String): Maybe<List<LessonTheoryWrapperPojo>>
 
-    @Query("SELECT lesson FROM LessonInfo WHERE topicId = :id")
-    fun findAllLessonsByTopicId(id: String): Maybe<List<LessonTheoryWrapper>>
+    @Transaction
+    @Query("SELECT * FROM TopicEntity JOIN LessonEntity ON TopicEntity.lesson = LessonEntity.lessonId WHERE LessonEntity.lessonId = :lessonId")
+    fun findLessonById(lessonId: Long): Maybe<LessonTheoryWrapperPojo>
 
-    @Query("SELECT lesson FROM LessonInfo WHERE lessonId = :id")
-    fun findLessonById(id: Long): Maybe<LessonTheoryWrapper>
+    @Query("SELECT TopicId FROM TopicEntity WHERE lesson =:lessonId")
+    fun findLessonByTopicId(lessonId: Long) : Single<String>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLessons(lessonInfos: List<LessonInfo>)
+    fun insertLessons(lessons: List<LessonEntity>)
 }

@@ -2,6 +2,7 @@ package org.stepik.android.exams
 
 import android.app.Application
 import android.content.Context
+import com.facebook.stetho.Stetho
 import org.stepik.android.exams.di.AppCoreComponent
 import org.stepik.android.exams.di.ComponentManager
 import org.stepik.android.exams.di.DaggerAppCoreComponent
@@ -17,6 +18,7 @@ open class App : Application() {
 
     private lateinit var component: AppCoreComponent
     private lateinit var componentManager: ComponentManager
+
     override fun onCreate() {
         super.onCreate()
         app = this
@@ -26,7 +28,10 @@ open class App : Application() {
                 .build()
         component.inject(this)
         componentManager = ComponentManager(component)
-        component.inject(this)
+
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+        }
     }
 
 }

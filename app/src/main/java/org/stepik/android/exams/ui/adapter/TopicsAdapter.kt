@@ -10,15 +10,16 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.item_topic.view.*
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
-import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.data.model.TopicAdapterItem
 import org.stepik.android.exams.ui.util.TopicColorResolver
+import org.stepik.android.exams.util.TimeUtil
 import kotlin.properties.Delegates
 
 class TopicsAdapter(
         private val context: Activity,
         private val screenManager: ScreenManager
 ) : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
-    var topics: List<Topic> by Delegates.observable(emptyList()) { _, _, _ ->
+    var topics: List<TopicAdapterItem> by Delegates.observable(emptyList()) { _, _, _ ->
         notifyDataSetChanged()
     }
 
@@ -31,11 +32,15 @@ class TopicsAdapter(
         holder?.bind(topics[position])
     }
 
+    private fun printPercent(percent : Int) =
+            percent.toString() + "%"
+
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         private val topicTitle: TextView = root.topicTitle
         private val topicContainer: View = root.topicContainer
         private val topicTimeToComplete: TextView = root.topicTimeToComplete
         private val topicCompletionRate: TextView = root.topicCompletionRate
+        private val topicDescription: TextView = root.topicDescription
 
         private val topicLockedOverlay: View = root.topicLockedOverlay
         private val topicLockedDescription: TextView = root.topicLockedDescription
@@ -43,7 +48,7 @@ class TopicsAdapter(
         init {
             topicContainer.setOnClickListener {
                 if (adapterPosition !in topics.indices) return@setOnClickListener
-                screenManager.showLessons(context, topics[adapterPosition])
+                screenManager.showLessons(context, topics[adapterPosition].topic)
             }
 
             val timeIcon = AppCompatResources.getDrawable(root.context, R.drawable.ic_time)
@@ -53,9 +58,12 @@ class TopicsAdapter(
             topicCompletionRate.setCompoundDrawablesWithIntrinsicBounds(completionIcon, null, null, null)
         }
 
-        fun bind(topic: Topic) {
-            topicTitle.text = topic.title
-            topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
+        fun bind(item: TopicAdapterItem) {
+            topicTitle.text = item.topic.title
+            topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
+            topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
+            topicDescription.text = item.topic.description
+            topicCompletionRate.text = printPercent(item.progress)
         }
     }
 }

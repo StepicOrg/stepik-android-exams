@@ -5,9 +5,7 @@ import android.os.Parcelable
 import org.stepik.android.model.Lesson
 import org.stepik.android.model.Step
 
-class LessonTheoryWrapper
-@JvmOverloads
-constructor(val lesson: Lesson = Lesson(), var stepsList: List<Step> = listOf(), val topicId: String = "", val courseId : Long = 0) : Parcelable {
+class LessonTheoryWrapper(val lesson: Lesson = Lesson(), var stepsList: List<Step> = listOf(), val topicId: String = "", val courseId : Long = 0) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Lesson::class.java.classLoader),
             parcel.createTypedArrayList(Step),

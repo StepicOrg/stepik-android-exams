@@ -3,7 +3,9 @@ package org.stepik.android.exams.di
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.webkit.CookieManager
+import android.webkit.CookieSyncManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -16,6 +18,8 @@ import org.stepik.android.exams.configuration.Config
 import org.stepik.android.exams.configuration.ConfigImpl
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.ScreenManagerImpl
+import org.stepik.android.exams.core.interactor.ProgressInteractorImpl
+import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.preference.ProfilePreferences
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -27,6 +31,11 @@ import javax.inject.Named
 
 @Module
 abstract class AppCoreModule {
+
+    @AppSingleton
+    @Binds
+    abstract fun provideProgressInteractor(progressInteractor: ProgressInteractorImpl): ProgressInteractor
+
     @Binds
     @AppSingleton
     abstract fun provideAuthRepository(sharedPreferenceHelper: SharedPreferenceHelper): ProfilePreferences
@@ -79,7 +88,13 @@ abstract class AppCoreModule {
         @JvmStatic
         @Provides
         @AppSingleton
-        internal fun provideCookieManager(): CookieManager = CookieManager.getInstance()
+        internal fun provideCookieManager(context: Context): CookieManager {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                @Suppress("DEPRECATION")
+                CookieSyncManager.createInstance(context)
+            }
+            return CookieManager.getInstance()
+        }
 
     }
 }

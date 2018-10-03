@@ -1,8 +1,7 @@
 package org.stepik.android.exams.graph
 
-import java.util.*
-
 class Graph<T> {
+    enum class Direction { UP, DOWN }
     private val vertices = mutableMapOf<T, Vertex<T>>()
     fun createVertex(id: T, title: String) {
         vertices[id] = Vertex(id, title)
@@ -19,20 +18,41 @@ class Graph<T> {
 
     fun getAllKeys() : List<T> = vertices.map { it.key }
 
-    fun bfs(vertex: T): List<T> {
-        val visited = mutableSetOf<T>()
-        val queue: Queue<T> = ArrayDeque()
+    private fun dfsSort(vertex: T, visited: MutableSet<T>, stack: MutableList<T>, direction: Direction) {
         visited.add(vertex)
-        queue.add(vertex)
-        while (queue.isNotEmpty()) {
-            vertices[queue.poll()]?.parent?.forEach {
-                val vertNext: T = it.id
-                if (!visited.contains(vertNext)) {
-                    visited.add(vertNext)
-                    queue.add(vertNext)
+        when (direction) {
+            Direction.UP -> {
+                vertices[vertex]?.parent?.forEach {
+                    val vertNext: T = it.id
+                    if (!visited.contains(vertNext)) {
+                        dfsSort(vertNext, visited, stack, direction)
+                    }
+                }
+            }
+            Direction.DOWN -> {
+                vertices[vertex]?.children?.forEach {
+                    val vertNext: T = it.id
+                    if (!visited.contains(vertNext)) {
+                        dfsSort(vertNext, visited, stack, direction)
+                    }
                 }
             }
         }
-        return visited.toList()
+        stack.add(vertex)
+    }
+
+    fun dfs(vertex: T): List<T> {
+        val stack = mutableListOf<T>()
+        dfsSort(vertex, mutableSetOf(), stack, direction = Direction.UP)
+        return stack.reversed()
+    }
+
+    fun topologicalSort(): List<T> {
+        val stack = mutableListOf<T>()
+        val visited = mutableSetOf<T>()
+        for (v in vertices)
+            if (!visited.contains(v.key))
+                dfsSort(v.key, visited, stack, direction = Direction.DOWN)
+        return stack.reversed()
     }
 }
