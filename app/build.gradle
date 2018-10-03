@@ -66,4 +66,5 @@ dependencies {
     implementation libraries.roomRx
     kapt libraries.roomCompiler
     implementation libraries.amplitude
+    implementation libraries.stetho
 }
