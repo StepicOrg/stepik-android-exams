@@ -18,4 +18,6 @@
     <dimen name="text_size_placeholders">16sp</dimen>
     <dimen name="padding_placeholders">16dp</dimen>
     <dimen name="guideline_standard_padding">16dp</dimen>
+
+    <dimen name="lessons_list_padding">8dp</dimen>
 </resources>
