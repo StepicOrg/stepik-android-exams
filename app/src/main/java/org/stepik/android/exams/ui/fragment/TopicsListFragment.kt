@@ -100,5 +100,12 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
             swipeRefresh.isRefreshing = true
             topicsAdapter.topics = state.topics
         }
+
+        is TopicsListView.State.ProgressUpdate -> {
+            content.hideAllChildren()
+            swipeRefresh.changeVisibillity(true)
+            swipeRefresh.isRefreshing = false
+            //topicsAdapter.progress = state.progress
+        }
     }
 }

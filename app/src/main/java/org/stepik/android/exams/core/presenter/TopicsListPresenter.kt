@@ -32,7 +32,7 @@ constructor(
         private val graphHelper: GraphHelper,
         private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
-        private val subject: BehaviorSubject<Boolean>,
+        private val progressNotifySubject: BehaviorSubject<Long>,
         private val sharedPreferenceHelper: SharedPreferenceHelper
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
@@ -42,10 +42,8 @@ constructor(
     }
 
     init {
-        compositeDisposable.add(subject.subscribe { isPassed ->
-            if (isPassed) {
-                getGraphData()
-            }
+        compositeDisposable.add(progressNotifySubject.subscribe { lessonId ->
+            updateProgressFromBus(lessonId)
         })
         getGraphData()
     }
@@ -80,13 +78,26 @@ constructor(
                 if (sharedPreferenceHelper.firstLoading) {
                     progressInteractor.loadStepProgressFromApi(topic.id)
                 } else {
-                    progressInteractor.loadStepProgressFromDb(topic.id)
+                    loadProgressLocal(topic.id)
                 }
         return zip(
                 lessonsRepository.resolveTimeToComplete(topic.id).toObservable(),
                 observableProgress.toObservable()
         ) { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) }
     }
+
+    private fun updateProgressFromBus(lessonId: Long) {
+        lessonsRepository.findTopicByLessonId(lessonId)
+                .flatMap { loadProgressLocal(it) }
+                .subscribeOn(backgroundScheduler)
+                .observeOn(mainScheduler)
+                .subscribe({
+                    viewState = TopicsListView.State.ProgressUpdate(it)
+                }, {})
+    }
+
+    private fun loadProgressLocal(topicId : String) : Single<Int> =
+            progressInteractor.loadStepProgressFromDb(topicId)
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)

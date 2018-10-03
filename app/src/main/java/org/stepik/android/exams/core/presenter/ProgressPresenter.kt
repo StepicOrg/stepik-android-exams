@@ -36,11 +36,10 @@ constructor(
         private val progressRepository: ProgressRepository,
         private val screenManager: ScreenManager,
         private val assignmentRepository: AssignmentRepository,
-        private val subject : BehaviorSubject<Boolean>
+        private val progressObservableSubject : BehaviorSubject<Long>
 ) : PresenterBase<ProgressView>() {
 
     private val disposable = CompositeDisposable()
-    private var stepIsPassed = false
 
     fun isStepPassed(step: Step) {
         val progress = step.progress ?: ""
@@ -54,7 +53,9 @@ constructor(
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribeBy({}) { isPassed ->
-                    if (isPassed) stepIsPassed = true
+                    if (isPassed) {
+                        progressObservableSubject.onNext(step.lesson)
+                    }
                     view?.markedAsView(step.copy(isCustomPassed = isPassed))
                 })
     }
@@ -120,7 +121,7 @@ constructor(
                         }
                     }.flatMapCompletable { assignment ->
                         val stepId = step.id
-                        stepIsPassed = true
+                        progressObservableSubject.onNext(step.lesson)
                         screenManager.pushToViewedQueue((ViewAssignment(assignment, stepId)))
                         updateProgress(step, true)
                     }

@@ -97,4 +97,7 @@ constructor(
                     .ofType(LessonType.Theory::class.java)
                     .map { it.lessonTheoryWrapper.lesson.timeToComplete }
                     .reduce(0L, Long::plus)
+
+    fun findTopicByLessonId(lessonId : Long) : Single<String> =
+            lessonDao.findLessonByTopicId(lessonId)
 }

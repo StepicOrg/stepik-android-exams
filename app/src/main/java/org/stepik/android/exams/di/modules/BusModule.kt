@@ -10,7 +10,7 @@ import org.stepik.android.exams.di.AppSingleton
 class BusModule {
     @Provides
     @AppSingleton
-    internal fun provideSubject(): BehaviorSubject<Boolean> {
+    internal fun provideSubject(): BehaviorSubject<Long> {
         return BehaviorSubject.create()
     }
 }
