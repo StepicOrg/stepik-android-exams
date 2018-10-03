@@ -121,9 +121,10 @@ constructor(
                         }
                     }.flatMapCompletable { assignment ->
                         val stepId = step.id
-                        progressObservableSubject.onNext(step.lesson)
                         screenManager.pushToViewedQueue((ViewAssignment(assignment, stepId)))
                         updateProgress(step, true)
+                    }.doOnComplete {
+                        progressObservableSubject.onNext(step.lesson)
                     }
 
     private fun loadAssignmentsFromApi(unit: Unit, step: Step): Single<Long> =
