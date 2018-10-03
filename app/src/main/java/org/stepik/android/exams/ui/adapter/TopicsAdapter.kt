@@ -12,7 +12,6 @@ import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.data.model.TopicAdapterItem
 import org.stepik.android.exams.ui.util.TopicColorResolver
-import org.stepik.android.exams.util.PercentUtil
 import org.stepik.android.exams.util.TimeUtil
 import kotlin.properties.Delegates
 
@@ -32,6 +31,9 @@ class TopicsAdapter(
     override fun onBindViewHolder(holder: TopicsViewHolder?, position: Int) {
         holder?.bind(topics[position])
     }
+
+    private fun printPercent(percent : Int) =
+            percent.toString() + "%"
 
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         private val topicTitle: TextView = root.topicTitle
@@ -61,7 +63,7 @@ class TopicsAdapter(
             topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
             topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
             topicDescription.text = item.topic.description
-            topicCompletionRate.text = PercentUtil.printPercent(item.progress)
+            topicCompletionRate.text = printPercent(item.progress)
         }
     }
 }

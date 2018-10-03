@@ -6,11 +6,9 @@ import io.reactivex.rxkotlin.zipWith
 import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.data.db.dao.StepDao
 import org.stepik.android.exams.data.db.entity.ProgressEntity
-import org.stepik.android.exams.data.db.mapping.toObject
+import org.stepik.android.exams.data.db.entity.StepEntity
 import org.stepik.android.exams.data.repository.ProgressRepository
-import org.stepik.android.exams.util.PercentUtil
 import org.stepik.android.model.Progress
-import org.stepik.android.model.Step
 import javax.inject.Inject
 
 class ProgressInteractorImpl
@@ -19,12 +17,9 @@ constructor(
         private val progressRepository: ProgressRepository,
         private val stepDao: StepDao
 ) : ProgressInteractor{
-    data class ProgressData(val ids: List<Long>, val lessonsList: List<Long>, val passedList: List<Boolean>, val progressList: List<String>)
-
     override fun loadStepProgressFromDb(topicId: String): Single<Int> =
-            stepDao.loadStepsByTopicId(topicId)
-                    .flatMap { progressRepository.getStepsProgressLocalByTopic(topicId) }
-                    .map { progressList -> PercentUtil.formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
+            progressRepository.getStepsProgressLocalByTopic(topicId)
+                    .map { progressList -> formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 
     override fun loadStepProgressFromApi(topicId: String) : Single<Int> =
             saveProgressToDb(topicId).andThen(countProgress(topicId))
@@ -36,27 +31,21 @@ constructor(
     private fun saveProgressToDb(topicId: String) : Completable =
         loadStepsProgresses(topicId)
                 .flatMapCompletable { (progress, steps) ->
-                    saveProgressToDb(parseProgressData(progress.progresses, steps.map { it.toObject() }))
+                    saveProgressToDb(progress.progresses, steps)
                 }
 
     private fun countProgress(topicId: String): Single<Int> =
             loadStepsProgresses(topicId)
                     .map { (progress, _) -> progress.progresses.map { it.nStepsPassed.toFloat() / it.nSteps } }
-                    .map { PercentUtil.formatPercent(it.sum(), it.size.toFloat()) }
+                    .map { formatPercent(it.sum(), it.size.toFloat()) }
 
-    private fun parseProgressData(progresses: List<Progress>, steps: List<Step>): ProgressData {
-        val ids = steps.map { it.id }
-        val lessons = steps.map { it.lesson }
-        val passed = progresses.map { it.isPassed }
-        val progress = steps.map { it.progress!! }
-        return ProgressData(ids, lessons, passed, progress)
-    }
-
-    private fun saveProgressToDb(progressData: ProgressData): Completable {
+    private fun saveProgressToDb(progress : List<Progress>, steps : List<StepEntity>): Completable {
         val list = mutableListOf<ProgressEntity>()
-        val (ids, lessons, passed, progress) = progressData
-        for (m in 0 until ids.size)
-            list.add(ProgressEntity(ids[m], lessons[m], passed[m], progress[m]))
+        for (m in 0 until steps.size)
+            list.add(ProgressEntity(steps[m].id, steps[m].lesson, progress[m].isPassed, steps[m].progress!!))
         return Completable.fromCallable { progressRepository.insertProgresses(list) }
     }
+
+    private fun formatPercent(first : Float, second : Float) =
+            ((first / second) * 100).toInt()
 }

@@ -2,6 +2,7 @@ package org.stepik.android.exams.data.repository
 
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.rxkotlin.zipWith
@@ -91,12 +92,9 @@ constructor(
     private fun getTheoryCourseIdByLessonIdFromDb(lessonId: Long): Maybe<Long> =
             topicsDao.getCourseInfoByLessonId(lessonId)
 
-    fun resolveTimeToComplete(topicId: String) : Observable<Long> =
+    fun resolveTimeToComplete(topicId: String) : Single<Long> =
             loadTheoryLessonByTopicId(topicId)
                     .ofType(LessonType.Theory::class.java)
                     .map { it.lessonTheoryWrapper.lesson.timeToComplete }
-                    .reduce(0L){
-                        t1, t2 -> t1 + t2
-                    }
-                    .toObservable()
+                    .reduce(0L, Long::plus)
 }

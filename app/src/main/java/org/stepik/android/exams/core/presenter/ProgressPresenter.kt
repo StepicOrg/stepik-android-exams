@@ -18,6 +18,7 @@ import org.stepik.android.exams.data.repository.AssignmentRepository
 import org.stepik.android.exams.data.repository.ProgressRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.util.addDisposable
 import org.stepik.android.model.Progress
 import org.stepik.android.model.Step
 import org.stepik.android.model.Unit
@@ -43,7 +44,7 @@ constructor(
 
     fun isStepPassed(step: Step) {
         val progress = step.progress ?: ""
-        service.getProgresses(arrayOf(progress))
+        disposable.addDisposable(service.getProgresses(arrayOf(progress))
                 .delay(400, TimeUnit.MILLISECONDS)
                 .map { it.progresses.first().isPassed }
                 .flatMap { isPassed ->
@@ -55,12 +56,12 @@ constructor(
                 .subscribeBy({}) { isPassed ->
                     if (isPassed) stepIsPassed = true
                     view?.markedAsView(step.copy(isCustomPassed = isPassed))
-                }
+                })
     }
 
     fun isAllStepsPassed(steps: List<Step>) {
         val progresses = steps.mapNotNull(Step::progress).toTypedArray()
-        service.getProgresses(progresses)
+        disposable.addDisposable(service.getProgresses(progresses)
                 .flatMapObservable { it.progresses.toObservable() }
                 .flatMap { progress ->
                     val step = steps.find { it.progress == progress.id }
@@ -74,7 +75,7 @@ constructor(
                 }) {
                     it.sortBy { step -> step.position }
                     view?.markedAsView(it)
-                }
+                })
     }
 
     private fun resolveStepProgress(step: Step, progress: Progress): Observable<Step> =
@@ -89,8 +90,8 @@ constructor(
 
     fun stepPassedLocal(step: Step?, course: Long) {
         if (step?.block?.name == "text") {
-            getStepProgress(step.id)
-                    .onErrorResumeNext { Single.just(false) }
+            disposable.addDisposable(getStepProgress(step.id)
+                    .onErrorReturnItem (false)
                     .flatMapCompletable { isPassed ->
                         if (isPassed) {
                             Completable.complete()
@@ -103,7 +104,7 @@ constructor(
                     .subscribe({
                         step.isCustomPassed = true
                         view?.markedAsView(step)
-                    }, {})
+                    }, {}))
         }
     }
 
@@ -137,7 +138,6 @@ constructor(
             progressRepository.getStepProgressLocal(stepId)
 
     override fun destroy() {
-        subject.onNext(stepIsPassed)
         disposable.clear()
     }
 }

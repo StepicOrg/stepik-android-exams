@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
+import io.reactivex.rxkotlin.Observables.zip
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.core.helper.GraphHelper
@@ -42,11 +42,11 @@ constructor(
     }
 
     init {
-        subject.subscribe { isPassed ->
+        compositeDisposable.add(subject.subscribe { isPassed ->
             if (isPassed) {
                 getGraphData()
             }
-        }
+        })
         getGraphData()
     }
 
@@ -76,23 +76,17 @@ constructor(
     }
 
     private fun loadTopicsAdapterInfo(topic: Topic): Observable<TopicAdapterItem> {
-        val observableProgress =
-                if (sharedPreferenceHelper.firstLoading)
-                    loadProgressFromApi(topic)
-                else loadProgressFromDb(topic)
-        return Observable.zip(
-                lessonsRepository.resolveTimeToComplete(topic.id),
-                observableProgress,
-                BiFunction { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) })
+        val observableProgress: Single<Int> =
+                if (sharedPreferenceHelper.firstLoading) {
+                    progressInteractor.loadStepProgressFromApi(topic.id)
+                } else {
+                    progressInteractor.loadStepProgressFromDb(topic.id)
+                }
+        return zip(
+                lessonsRepository.resolveTimeToComplete(topic.id).toObservable(),
+                observableProgress.toObservable()
+        ) { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) }
     }
-
-    private fun loadProgressFromApi(topic: Topic): Observable<Int> =
-            progressInteractor.loadStepProgressFromApi(topic.id)
-                    .toObservable()
-
-    private fun loadProgressFromDb(topic: Topic): Observable<Int> =
-            progressInteractor.loadStepProgressFromDb(topic.id)
-                    .toObservable()
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)
