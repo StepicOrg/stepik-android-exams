@@ -17,6 +17,7 @@ import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.model.Topic
+import org.stepik.android.exams.util.addDisposable
 import org.stepik.android.exams.util.then
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -28,12 +29,14 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
+
         private val topicsRepository: TopicsRepository,
         private val graphHelper: GraphHelper,
         private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
-        private val progressNotifySubject: BehaviorSubject<Long>,
-        private val sharedPreferenceHelper: SharedPreferenceHelper
+        private val sharedPreferenceHelper: SharedPreferenceHelper,
+
+        progressNotifySubject: BehaviorSubject<Long>
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -76,9 +79,9 @@ constructor(
     private fun loadTopicsAdapterInfo(topic: Topic): Observable<TopicAdapterItem> {
         val observableProgress: Single<Int> =
                 if (sharedPreferenceHelper.firstLoading) {
-                    progressInteractor.loadStepProgressFromApi(topic.id)
+                    progressInteractor.loadTopicProgressFromApi(topic.id)
                 } else {
-                    loadProgressLocal(topic.id)
+                    progressInteractor.loadTopicProgressFromDb(topic.id)
                 }
         return zip(
                 lessonsRepository.resolveTimeToComplete(topic.id).toObservable(),
@@ -87,17 +90,26 @@ constructor(
     }
 
     private fun updateProgressFromBus(lessonId: Long) {
-        lessonsRepository.findTopicByLessonId(lessonId)
-                .flatMap { loadProgressLocal(it) }
+        compositeDisposable addDisposable lessonsRepository.findTopicByLessonId(lessonId)
+                .flatMap { topicId ->
+                    progressInteractor.loadTopicProgressFromDb(topicId).map { topicId to it }
+                }
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
-                .subscribe({
-                    viewState = TopicsListView.State.ProgressUpdate(it)
+                .subscribe({ (topicId, progress) ->
+                    val state = viewState
+                    if (state is TopicsListView.State.Success) {
+                        val topics = state.topics.map { item ->
+                            if (item.topic.id == topicId) {
+                                item.copy(progress = progress)
+                            } else {
+                                item
+                            }
+                        }
+                        viewState = TopicsListView.State.Success(topics)
+                    }
                 }, {})
     }
-
-    private fun loadProgressLocal(topicId : String) : Single<Int> =
-            progressInteractor.loadStepProgressFromDb(topicId)
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)

@@ -9,7 +9,6 @@ interface TopicsListView {
         object Loading : State()
         class Success(val topics: List<TopicAdapterItem>) : State()
         class Refreshing(val topics: List<TopicAdapterItem>) : State()
-        class ProgressUpdate(val progress: Int) : State()
         object NetworkError : State()
     }
 }

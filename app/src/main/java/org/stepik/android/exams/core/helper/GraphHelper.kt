@@ -26,12 +26,13 @@ constructor(
                     }
 
     private fun addDataToGraph(graphData: GraphData) {
-
-        for (topic in graphData.topics)
+        for (topic in graphData.topics) {
             graph.createVertex(topic.id, topic.title)
+        }
         graphData.topics.forEachIndexed { index, topic ->
-            if (index + 1 < graphData.topics.size)
+            if (index + 1 < graphData.topics.size) {
                 graph.addEdge(topic.id, graphData.topics[index + 1].id)
+            }
         }
         graph.topologicalSort()
         for (maps in graphData.topicsMap) {

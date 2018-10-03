@@ -10,8 +10,8 @@ import org.stepik.android.exams.data.db.entity.AssignmentEntity
 @Dao
 interface AssignmentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAssignments(list : List<AssignmentEntity>)
+    fun insertAssignments(assignments: List<AssignmentEntity>)
 
     @Query("SELECT id FROM AssignmentEntity WHERE step =:step AND unit =:unit")
-    fun getAssignmentByStepAndUnitIds(step : Long, unit : Long) : Single<Long>
+    fun getAssignmentByStepAndUnitIds(step: Long, unit: Long): Single<Long>
 }

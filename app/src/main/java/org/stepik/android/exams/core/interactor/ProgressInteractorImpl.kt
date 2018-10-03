@@ -17,11 +17,11 @@ constructor(
         private val progressRepository: ProgressRepository,
         private val stepDao: StepDao
 ) : ProgressInteractor{
-    override fun loadStepProgressFromDb(topicId: String): Single<Int> =
+    override fun loadTopicProgressFromDb(topicId: String): Single<Int> =
             progressRepository.getStepsProgressLocalByTopic(topicId)
                     .map { progressList -> formatPercent(progressList.count { it }.toFloat(), progressList.size.toFloat()) }
 
-    override fun loadStepProgressFromApi(topicId: String) : Single<Int> =
+    override fun loadTopicProgressFromApi(topicId: String) : Single<Int> =
             saveProgressToDb(topicId).andThen(countProgress(topicId))
 
     private fun loadStepsProgresses(topicId: String) =
@@ -41,8 +41,9 @@ constructor(
 
     private fun saveProgressToDb(progress : List<Progress>, steps : List<StepEntity>): Completable {
         val list = mutableListOf<ProgressEntity>()
-        for (m in 0 until steps.size)
+        for (m in 0 until steps.size) {
             list.add(ProgressEntity(steps[m].id, steps[m].lesson, progress[m].isPassed, steps[m].progress!!))
+        }
         return Completable.fromCallable { progressRepository.insertProgresses(list) }
     }
 

@@ -13,18 +13,18 @@ constructor(
         private val stepicRestService: StepicRestService,
         private val progressDao: ProgressDao
 ) {
-    fun getProgressApi(progress : Array<String>) : Single<ProgressesResponse> =
+    fun getProgressApi(progress: Array<String>): Single<ProgressesResponse> =
             stepicRestService.getProgresses(progress)
 
-    fun insertProgresses(progressEntity : List<ProgressEntity>)  =
+    fun insertProgresses(progressEntity: List<ProgressEntity>) =
            progressDao.insertStepProgress(progressEntity)
 
-    fun getStepsProgressByTopic(topicId : String) : Single<List<String>> =
+    fun getStepsProgressByTopic(topicId: String): Single<List<String>> =
             progressDao.getAllStepsProgressDataByTopicId(topicId)
 
-    fun getStepsProgressLocalByTopic(topicId : String) : Single<List<Boolean>> =
+    fun getStepsProgressLocalByTopic(topicId: String): Single<List<Boolean>> =
             progressDao.getStepsLocalProgressByTopicId(topicId)
 
-    fun getStepProgressLocal(stepId : Long) : Single<Boolean> =
+    fun getStepProgressLocal(stepId: Long): Single<Boolean> =
             progressDao.getStepProgress(stepId)
 }
