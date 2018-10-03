@@ -17,6 +17,7 @@ import org.stepik.android.exams.data.model.ViewAssignment
 import org.stepik.android.exams.data.repository.AssignmentRepository
 import org.stepik.android.exams.data.repository.ProgressRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
+import org.stepik.android.exams.di.qualifiers.LessonProgressUpdatesBus
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.util.addDisposable
 import org.stepik.android.model.Progress
@@ -36,7 +37,9 @@ constructor(
         private val progressRepository: ProgressRepository,
         private val screenManager: ScreenManager,
         private val assignmentRepository: AssignmentRepository,
-        private val progressObservableSubject : BehaviorSubject<Long>
+
+        @LessonProgressUpdatesBus
+        private val lessonProgressUpdatesBus : BehaviorSubject<Long>
 ) : PresenterBase<ProgressView>() {
 
     private val disposable = CompositeDisposable()
@@ -54,7 +57,7 @@ constructor(
                 .observeOn(mainScheduler)
                 .subscribeBy({}) { isPassed ->
                     if (isPassed) {
-                        progressObservableSubject.onNext(step.lesson)
+                        lessonProgressUpdatesBus.onNext(step.lesson)
                     }
                     view?.markedAsView(step.copy(isCustomPassed = isPassed))
                 })
@@ -124,7 +127,7 @@ constructor(
                         screenManager.pushToViewedQueue((ViewAssignment(assignment, stepId)))
                         updateProgress(step, true)
                     }.doOnComplete {
-                        progressObservableSubject.onNext(step.lesson)
+                        lessonProgressUpdatesBus.onNext(step.lesson)
                     }
 
     private fun loadAssignmentsFromApi(unit: Unit, step: Step): Single<Long> =

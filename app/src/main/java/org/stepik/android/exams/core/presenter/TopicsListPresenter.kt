@@ -15,6 +15,7 @@ import org.stepik.android.exams.data.preference.SharedPreferenceHelper
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
+import org.stepik.android.exams.di.qualifiers.LessonProgressUpdatesBus
 import org.stepik.android.exams.di.qualifiers.MainScheduler
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.util.addDisposable
@@ -36,7 +37,8 @@ constructor(
         private val lessonsRepository: LessonsRepository,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
 
-        progressNotifySubject: BehaviorSubject<Long>
+        @LessonProgressUpdatesBus
+        lessonProgressUpdatesBus: BehaviorSubject<Long>
 ) : PresenterBase<TopicsListView>() {
     private val compositeDisposable = CompositeDisposable()
 
@@ -45,7 +47,7 @@ constructor(
     }
 
     init {
-        compositeDisposable.add(progressNotifySubject.subscribe { lessonId ->
+        compositeDisposable.add(lessonProgressUpdatesBus.subscribe { lessonId ->
             updateProgressFromBus(lessonId)
         })
         getGraphData()

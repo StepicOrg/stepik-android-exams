@@ -4,13 +4,13 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.di.AppSingleton
-
+import org.stepik.android.exams.di.qualifiers.LessonProgressUpdatesBus
 
 @Module
 class BusModule {
     @Provides
     @AppSingleton
-    internal fun provideSubject(): BehaviorSubject<Long> {
-        return BehaviorSubject.create()
-    }
+    @LessonProgressUpdatesBus
+    internal fun provideLessonProgressUpdatesBus(): BehaviorSubject<Long> =
+            BehaviorSubject.create()
 }
