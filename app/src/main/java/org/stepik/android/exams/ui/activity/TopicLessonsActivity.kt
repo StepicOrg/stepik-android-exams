@@ -70,7 +70,7 @@ class TopicLessonsActivity : BasePresenterActivity<TopicLessonsPresenter, Lesson
     }
 
     private fun loadTopicLessons() {
-        presenter?.loadTopicsLessons(topic.id)
+        presenter?.loadTopicsLessons(topic)
     }
 
     private fun initPlaceholders() {

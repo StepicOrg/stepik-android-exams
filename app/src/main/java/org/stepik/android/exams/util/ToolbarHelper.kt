@@ -44,6 +44,13 @@ fun AppCompatActivity.initCenteredToolbar(@StringRes titleRes: Int,
     centeredToolbarTitle.setText(titleRes)
 }
 
+fun AppCompatActivity.initCenteredToolbar(titleRes: String,
+                                          showHomeButton: Boolean = false,
+                                          @DrawableRes homeIndicator: Int = -1) {
+    initCenteredToolbarBase(showHomeButton, homeIndicator)
+    centeredToolbarTitle.text = titleRes
+}
+
 private fun AppCompatActivity.initCenteredToolbarBase(showHomeButton: Boolean,
                                                       @DrawableRes homeIndicatorRes: Int = -1) {
     this.setSupportActionBar(centeredToolbar)

@@ -45,7 +45,7 @@ class LessonsAdapter(
                         screenManager.showStepsList(lessonType.lessonTheoryWrapper.topicId, lessonType.lessonTheoryWrapper, activity)
 
                     is LessonType.Practice ->
-                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topicId, activity)
+                        screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topic, activity)
                 }
             }
         }
@@ -63,7 +63,7 @@ class LessonsAdapter(
                 is LessonType.Practice -> {
                     title.text = context.getString(R.string.lesson_item_practice_title)
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topicId))
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topic.id))
                 }
             }
         }

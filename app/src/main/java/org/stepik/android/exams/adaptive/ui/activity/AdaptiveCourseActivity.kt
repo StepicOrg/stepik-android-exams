@@ -12,6 +12,7 @@ import org.stepik.android.exams.adaptive.core.contracts.RecommendationsView
 import org.stepik.android.exams.adaptive.core.presenter.RecommendationsPresenter
 import org.stepik.android.exams.adaptive.ui.adapter.QuizCardsAdapter
 import org.stepik.android.exams.core.presenter.BasePresenterActivity
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.util.AppConstants
 import org.stepik.android.exams.util.MathUtli
 import org.stepik.android.exams.util.initCenteredToolbar
@@ -24,14 +25,14 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
 
     override fun getPresenterProvider() = recommendationsPresenterProvider
 
-    private lateinit var topicId: String
+    private lateinit var topic: Topic
     private val loadingPlaceholders by lazy { resources.getStringArray(R.array.recommendation_loading_placeholders) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        topicId = intent.getStringExtra(AppConstants.topicId)
+        topic = intent.getParcelableExtra(AppConstants.topic) as Topic
         setContentView(R.layout.fragment_recommendations)
 
-        initCenteredToolbar(R.string.practice, showHomeButton = true)
+        initCenteredToolbar(topic.title, showHomeButton = true)
 
         error.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
@@ -50,7 +51,7 @@ class AdaptiveCourseActivity : BasePresenterActivity<RecommendationsPresenter, R
     override fun setState(state: RecommendationsView.State) {
         when (state) {
             RecommendationsView.State.InitPresenter ->
-                presenter?.initPresenter(topicId)
+                presenter?.initPresenter(topic.id)
             RecommendationsView.State.Loading ->
                 onLoading()
             RecommendationsView.State.RequestError ->

@@ -31,8 +31,6 @@ class TrainingFragment : BasePresenterFragment<TrainingPresenter, TrainingView>(
     companion object {
         fun newInstance(): TrainingFragment =
                 TrainingFragment()
-        const val TYPE_THEORY = "theory"
-        const val TYPE_PRACTICE = "practice"
     }
 
     override fun injectComponent() {

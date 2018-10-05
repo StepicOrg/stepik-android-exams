@@ -51,9 +51,9 @@ constructor(
         context.startActivity(intent)
     }
 
-    override fun continueAdaptiveCourse(topicId: String, activity: Activity) {
+    override fun continueAdaptiveCourse(topic: Topic, activity: Activity) {
         val adaptiveCourseIntent = Intent(activity, AdaptiveCourseActivity::class.java)
-        adaptiveCourseIntent.putExtra(AppConstants.topicId, topicId)
+        adaptiveCourseIntent.putExtra(AppConstants.topic, topic)
         activity.startActivity(adaptiveCourseIntent)
     }
 

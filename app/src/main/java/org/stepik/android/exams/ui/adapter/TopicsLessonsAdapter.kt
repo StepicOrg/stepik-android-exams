@@ -86,7 +86,7 @@ class TopicsLessonsAdapter(
                         screenManager.showStepsList(topic.id, lessonType.lessonTheoryWrapper, context)
 
                     is LessonType.Practice ->
-                        screenManager.continueAdaptiveCourse(topic.id, context as Activity)
+                        screenManager.continueAdaptiveCourse(topic, context as Activity)
                 }
             }
         }

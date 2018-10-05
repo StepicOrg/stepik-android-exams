@@ -4,15 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-data class Topic(
+data class Topic
+@JvmOverloads
+constructor(
         @SerializedName("id")
-        val id: String,
+        val id: String = "",
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @SerializedName("required-for")
-        val requiredFor: String?,
+        val requiredFor: String? = null,
         @SerializedName("description")
-        val description : String?
+        val description: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

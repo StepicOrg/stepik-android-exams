@@ -15,7 +15,7 @@ interface ScreenManager {
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)
     fun showLessons(context: Context, topic: Topic)
-    fun continueAdaptiveCourse(topicId: String, activity: Activity)
+    fun continueAdaptiveCourse(topic: Topic, activity: Activity)
     fun openImage(context: Context, path: String)
     fun pushToViewedQueue(viewAssignment: ViewAssignment)
     fun showLessonsList(context: Context, type: GraphLesson.Type)

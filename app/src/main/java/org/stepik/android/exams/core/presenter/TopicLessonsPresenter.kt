@@ -6,6 +6,7 @@ import org.stepik.android.exams.core.presenter.contracts.LessonsView
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -24,14 +25,14 @@ constructor(
 
     private val disposable = CompositeDisposable()
 
-    fun loadTopicsLessons(topicId: String) {
+    fun loadTopicsLessons(topic: Topic) {
         val oldViewState = viewState
         viewState = if (oldViewState is LessonsView.State.Success) {
             LessonsView.State.Refreshing(oldViewState.lessons)
         } else {
             LessonsView.State.Loading
         }
-        disposable.add(lessonsRepository.loadLessonsByTopicId(topicId)
+        disposable.add(lessonsRepository.loadLessonsByTopicId(topic)
                 .toList()
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)

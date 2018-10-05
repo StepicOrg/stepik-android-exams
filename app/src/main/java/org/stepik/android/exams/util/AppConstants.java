@@ -34,7 +34,7 @@ public final class AppConstants {
     public static final String TYPE_LESSONS_LIST = "type";
     public static final String lesson = "lesson";
     public static final String lessonId = "lessonId";
-    public static final String topicId = "topicId";
+    public static final String topic = "topic";
     public static final String step = "step";
     public static final String viewPush = "view_push";
 }
