@@ -12,21 +12,21 @@ constructor(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("required-for")
-        val requiredFor: String? = null,
+        val requiredFor: List<String>? = null,
         @SerializedName("description")
         val description: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readString(),
+            parcel.createStringArrayList(),
             parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(title)
-        parcel.writeString(requiredFor)
+        parcel.writeStringList(requiredFor)
         parcel.writeString(description)
     }
 

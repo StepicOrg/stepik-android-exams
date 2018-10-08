@@ -61,7 +61,7 @@ class LessonsAdapter(
                     lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topicId))
                 }
                 is LessonType.Practice -> {
-                    title.text = context.getString(R.string.lesson_item_practice_title)
+                    title.text = type.lessonPracticeWrapper.topic.title
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
                     lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topic.id))
                 }
