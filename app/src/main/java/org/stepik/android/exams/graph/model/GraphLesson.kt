@@ -7,6 +7,8 @@ class GraphLesson(
         val id: Long,
         @SerializedName("type")
         val type: Type,
+        @SerializedName("description")
+        val description : String,
         @SerializedName("course")
         val course: Long
 ) {
