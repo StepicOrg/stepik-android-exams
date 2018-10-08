@@ -9,10 +9,10 @@ import org.stepik.android.exams.data.db.entity.ProgressEntity
 
 @Dao
 interface ProgressDao {
-    @Query("SELECT progress FROM ProgressEntity JOIN TopicEntity ON ProgressEntity.lessonId = TopicEntity.lesson WHERE TopicEntity.topicId = :topicId")
+    @Query("SELECT progress FROM ProgressEntity JOIN TopicInfoEntity ON lessonId = TopicInfoEntity.type WHERE TopicInfoEntity.topicId = :topicId")
     fun getAllStepsProgressDataByTopicId(topicId: String) : Single<List<String>>
 
-    @Query("SELECT isPassed FROM ProgressEntity JOIN TopicEntity ON ProgressEntity.lessonId = TopicEntity.lesson WHERE TopicEntity.topicId = :topicId")
+    @Query("SELECT isPassed FROM ProgressEntity JOIN TopicInfoEntity ON lessonId = TopicInfoEntity.type WHERE TopicInfoEntity.topicId = :topicId")
     fun getStepsLocalProgressByTopicId(topicId: String) : Single<List<Boolean>>
 
     @Query("SELECT isPassed FROM ProgressEntity WHERE stepId = :stepId")

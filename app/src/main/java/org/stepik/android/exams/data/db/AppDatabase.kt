@@ -13,11 +13,13 @@ import org.stepik.android.exams.data.db.entity.*
         entities = [
             AssignmentEntity::class,
             VideoEntity::class,
-            TopicEntity::class,
+            TopicInfoEntity::class,
             SubmissionEntity::class,
             ProgressEntity::class,
             LessonEntity::class,
-            StepEntity::class
+            StepEntity::class,
+            GraphLessonEntity::class,
+            TopicEntity::class
         ],
         version = 1,
         exportSchema = false
@@ -28,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lessonDao(): LessonDao
     abstract fun assignmentDao(): AssignmentDao
     abstract fun topicDao(): TopicDao
-    abstract fun stepDao() : StepDao
+    abstract fun stepDao(): StepDao
     abstract fun submissionEntityDao(): SubmissionEntityDao
 
     companion object {

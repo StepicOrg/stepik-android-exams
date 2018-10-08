@@ -9,15 +9,15 @@ import org.stepik.android.exams.data.db.entity.LessonEntity
 @Dao
 interface LessonDao {
     @Transaction
-    @Query("SELECT * FROM TopicEntity JOIN LessonEntity ON TopicEntity.lesson = LessonEntity.lessonId WHERE topicId = :topicId")
+    @Query("SELECT * FROM TopicInfoEntity JOIN LessonEntity ON TopicInfoEntity.lesson = lessonId WHERE TopicInfoEntity.topicId = :topicId")
     fun findAllLessonsByTopicId(topicId: String): Maybe<List<LessonTheoryWrapperPojo>>
 
     @Transaction
-    @Query("SELECT * FROM TopicEntity JOIN LessonEntity ON TopicEntity.lesson = LessonEntity.lessonId WHERE LessonEntity.lessonId = :lessonId")
+    @Query("SELECT * FROM TopicInfoEntity JOIN LessonEntity ON TopicInfoEntity.lesson = lessonId WHERE lessonId = :lessonId")
     fun findLessonById(lessonId: Long): Maybe<LessonTheoryWrapperPojo>
 
-    @Query("SELECT TopicId FROM TopicEntity WHERE lesson =:lessonId")
-    fun findLessonByTopicId(lessonId: Long) : Single<String>
+    @Query("SELECT topicId FROM TopicInfoEntity WHERE TopicInfoEntity.lesson =:lessonId")
+    fun findTopicByLessonId(lessonId: Long) : Single<String>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLessons(lessons: List<LessonEntity>)
