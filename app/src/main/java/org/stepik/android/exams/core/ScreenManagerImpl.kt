@@ -31,13 +31,13 @@ constructor(
                 mapOf(
                         AmplitudeAnalytic.Lesson.Params.ID to lessonTheory.lesson.id,
                         AmplitudeAnalytic.Lesson.Params.TYPE to GraphLesson.Type.THEORY,
-                        AmplitudeAnalytic.Lesson.Params.COURSE to lessonTheory.courseId,
+                        AmplitudeAnalytic.Lesson.Params.COURSE to lessonTheory.graphLesson.course,
                         AmplitudeAnalytic.Lesson.Params.TOPIC to topicId))
         val intent = Intent(context, StepsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(StepsListActivity.EXTRA_LESSON, lessonTheory)
         intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
-        intent.putExtra(StepsListActivity.EXTRA_COURSE, lessonTheory.courseId)
+        intent.putExtra(StepsListActivity.EXTRA_COURSE, lessonTheory.graphLesson.course)
         context.startActivity(intent)
     }
 

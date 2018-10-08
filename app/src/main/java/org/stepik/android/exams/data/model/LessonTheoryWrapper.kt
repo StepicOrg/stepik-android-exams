@@ -2,22 +2,29 @@ package org.stepik.android.exams.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.model.Lesson
 import org.stepik.android.model.Step
 
-class LessonTheoryWrapper(val lesson: Lesson = Lesson(), var stepsList: List<Step> = listOf(), val topicId: String = "", val courseId : Long = 0) : Parcelable {
+class LessonTheoryWrapper(
+        val lesson: Lesson = Lesson(),
+        var stepsList: List<Step> = listOf(),
+        val topic: Topic = Topic(),
+        val graphLesson: GraphLesson = GraphLesson()
+) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Lesson::class.java.classLoader),
             parcel.createTypedArrayList(Step),
-            parcel.readString(),
-            parcel.readLong()) {
+            parcel.readParcelable(Topic::class.java.classLoader),
+            parcel.readParcelable(GraphLesson::class.java.classLoader)) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(lesson, flags)
         parcel.writeTypedList(stepsList)
-        parcel.writeString(topicId)
-        parcel.writeLong(courseId)
+        parcel.writeParcelable(topic, flags)
+        parcel.writeParcelable(graphLesson, flags)
     }
 
     override fun describeContents(): Int {

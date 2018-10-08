@@ -86,7 +86,7 @@ constructor(
                     progressInteractor.loadTopicProgressFromDb(topic.id)
                 }
         return zip(
-                lessonsRepository.resolveTimeToComplete(topic.id).toObservable(),
+                lessonsRepository.resolveTimeToComplete(topic).toObservable(),
                 observableProgress.toObservable()
         ) { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) }
     }

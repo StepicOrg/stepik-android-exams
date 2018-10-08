@@ -1,8 +1,10 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -46,10 +48,10 @@ constructor(
                 }))
     }
 
-    private fun loadTheoryLessons() =
+    private fun loadTheoryLessons(): Observable<List<LessonType.Theory>> =
             lessonsRepository.loadAllTheoryLessons()
 
-    private fun loadPracticeLessons() =
+    private fun loadPracticeLessons() : Observable<List<LessonType.Practice>> =
             lessonsRepository.loadAllPracticeLessons()
 
     override fun attachView(view: LessonsView) {

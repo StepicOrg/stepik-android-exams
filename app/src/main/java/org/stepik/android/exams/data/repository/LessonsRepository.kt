@@ -31,17 +31,17 @@ constructor(
 ) {
     private val topicsList = graphHelper.getTopicsList()
 
-    private fun loadTheoryLessonByTopicId(topicId: String): Observable<LessonType.Theory> =
-            loadTheoryLessonsFromDb(topicId)
-                    .switchIfEmpty(getAllTheoryCoursesIdFromDb(topicId)
-                            .flatMapObservable { loadTheoryLessonsApi(topicId, it.toLongArray()) })
+    private fun loadTheoryLessonByTopicId(topic: Topic): Observable<LessonType.Theory> =
+            loadTheoryLessonsFromDb(topic.id)
+                    .switchIfEmpty(getAllTheoryCoursesIdFromDb(topic.id)
+                            .flatMapObservable { loadTheoryLessonsApi(topic, it.toLongArray()) })
 
     fun loadLessonsByTopicId(topic: Topic): Observable<LessonType> =
-            Observable.merge(loadTheoryLessonByTopicId(topic.id),
+            Observable.merge(loadTheoryLessonByTopicId(topic),
                     getPracticeCoursesIdFromDb(topic).toObservable())
 
     fun loadAllTheoryLessons(): Observable<List<LessonType.Theory>> =
-            Observable.merge(topicsList.map { loadTheoryLessonByTopicId(it.id) }).toList().toObservable()
+            Observable.merge(topicsList.map { loadTheoryLessonByTopicId(it) }).toList().toObservable()
 
     fun loadAllPracticeLessons(): Observable<List<LessonType.Practice>> =
             Observable.merge(topicsList.map { getPracticeCoursesIdFromDb(it).toObservable() }).toList().toObservable()
@@ -49,7 +49,7 @@ constructor(
     fun loadAllLessons(): Observable<Pair<List<LessonType.Theory>, List<LessonType.Practice>>> =
             Observables.zip(loadAllTheoryLessons(), loadAllPracticeLessons())
 
-    private fun loadTheoryLessonsApi(topicId: String, lessonIds: LongArray): Observable<LessonType.Theory> {
+    private fun loadTheoryLessonsApi(topic: Topic, lessonIds: LongArray): Observable<LessonType.Theory> {
         return api.getLessons(lessonIds)
                 .flatMapObservable {
                     it.lessons!!.toObservable()
@@ -57,10 +57,10 @@ constructor(
                 .flatMap({ lesson ->
                     api.getSteps(*lesson.steps).doOnSuccess { response ->
                         stepsDao.insertSteps(response.steps!!.map { it.toEntity() })
-                    }.toObservable().zipWith(getTheoryCourseIdByLessonIdFromDb(lesson.id).toObservable())
+                    }.toObservable().zipWith(getGraphLessonInfoByLessonIdFromDb(lesson.id).toObservable())
                 }, { a, b -> a to b })
                 .map { (lesson, response) ->
-                    LessonTheoryWrapper(lesson, response.first.steps!!, topicId, response.second)
+                    LessonTheoryWrapper(lesson, response.first.steps!!, topic, response.second)
                 }
                 .toList()
                 .flatMapObservable { lessonWrappers ->
@@ -78,27 +78,27 @@ constructor(
                     .toObservable()
 
     private fun getAllTheoryCoursesIdFromDb(topicId: String): Maybe<List<Long>> =
-            topicsDao.getTopicByType(topicId, GraphLesson.Type.THEORY)
+            topicsDao.getLessonIdByTopic(topicId, GraphLesson.Type.THEORY)
 
     private fun getPracticeCoursesIdFromDb(topic: Topic): Maybe<LessonType.Practice> =
-            topicsDao.getTopicByType(topic.id, GraphLesson.Type.PRACTICE)
-                    .filter { it.isNotEmpty() }
-                    .map { topics -> LessonType.Practice(LessonPracticeWrapper(topic, topics.first())) }
+            topicsDao.getGraphLessonInfoByTopic(topic.id, GraphLesson.Type.PRACTICE)
+                    .map { graphLessonInfo -> LessonType.Practice(LessonPracticeWrapper(topic, graphLessonInfo.toObject())) }
 
     private fun loadTheoryLessonsFromDb(topicId: String): Observable<LessonType.Theory> =
             lessonDao.findAllLessonsByTopicId(topicId)
                     .filter { lessonList ->  lessonList.isNotEmpty() }
                     .flattenAsObservable { lessonList -> lessonList.map { LessonType.Theory(it.toObject()) } }
 
-    private fun getTheoryCourseIdByLessonIdFromDb(lessonId: Long): Maybe<Long> =
-            topicsDao.getCourseInfoByLessonId(lessonId)
+    private fun getGraphLessonInfoByLessonIdFromDb(lessonId: Long): Maybe<GraphLesson> =
+            topicsDao.getGraphLessonInfoByLessonId(lessonId)
+                    .map { it.toObject() }
 
-    fun resolveTimeToComplete(topicId: String) : Single<Long> =
-            loadTheoryLessonByTopicId(topicId)
+    fun resolveTimeToComplete(topic: Topic) : Single<Long> =
+            loadTheoryLessonByTopicId(topic)
                     .ofType(LessonType.Theory::class.java)
                     .map { it.lessonTheoryWrapper.lesson.timeToComplete }
                     .reduce(0L, Long::plus)
 
     fun findTopicByLessonId(lessonId : Long) : Single<String> =
-            lessonDao.findLessonByTopicId(lessonId)
+            lessonDao.findTopicByLessonId(lessonId)
 }
