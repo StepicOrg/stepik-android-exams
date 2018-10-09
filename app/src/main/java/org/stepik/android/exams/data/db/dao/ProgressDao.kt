@@ -9,14 +9,14 @@ import org.stepik.android.exams.data.db.entity.ProgressEntity
 
 @Dao
 interface ProgressDao {
-    @Query("SELECT progress FROM ProgressEntity JOIN TopicInfoEntity ON lessonId = TopicInfoEntity.type WHERE TopicInfoEntity.topicId = :topicId")
-    fun getAllStepsProgressDataByTopicId(topicId: String) : Single<List<String>>
+    @Query("SELECT progress FROM ProgressEntity JOIN TopicInfoEntity ON ProgressEntity.lessonId = TopicInfoEntity.lesson WHERE TopicInfoEntity.topicId = :topicId")
+    fun getAllStepsProgressByTopicId(topicId: String) : Single<List<String>>
 
-    @Query("SELECT isPassed FROM ProgressEntity JOIN TopicInfoEntity ON lessonId = TopicInfoEntity.type WHERE TopicInfoEntity.topicId = :topicId")
-    fun getStepsLocalProgressByTopicId(topicId: String) : Single<List<Boolean>>
+    @Query("SELECT isPassed FROM ProgressEntity JOIN TopicInfoEntity ON ProgressEntity.lessonId = TopicInfoEntity.lesson WHERE TopicInfoEntity.topicId = :topicId")
+    fun getPassedStepsByTopicId(topicId: String) : Single<List<Boolean>>
 
     @Query("SELECT isPassed FROM ProgressEntity WHERE stepId = :stepId")
-    fun getStepProgress(stepId : Long) : Single<Boolean>
+    fun getPassedStep(stepId : Long) : Single<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStepProgress(progressEntity: ProgressEntity)

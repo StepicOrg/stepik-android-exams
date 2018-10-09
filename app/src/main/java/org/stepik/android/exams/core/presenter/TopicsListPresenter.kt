@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Observables.zip
+import io.reactivex.rxkotlin.Singles.zip
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.core.helper.GraphHelper
@@ -79,16 +79,16 @@ constructor(
     }
 
     private fun loadTopicsAdapterInfo(topic: Topic): Observable<TopicAdapterItem> {
-        val observableProgress: Single<Int> =
+        val singleProgress: Single<Int> =
                 if (sharedPreferenceHelper.firstLoading) {
                     progressInteractor.loadTopicProgressFromApi(topic.id)
                 } else {
                     progressInteractor.loadTopicProgressFromDb(topic.id)
                 }
         return zip(
-                lessonsRepository.resolveTimeToComplete(topic).toObservable(),
-                observableProgress.toObservable()
-        ) { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) }
+                lessonsRepository.resolveTimeToComplete(topic),
+                singleProgress
+        ) { time: Long, progress: Int -> TopicAdapterItem(topic, time, progress) }.toObservable()
     }
 
     private fun updateProgressFromBus(lessonId: Long) {

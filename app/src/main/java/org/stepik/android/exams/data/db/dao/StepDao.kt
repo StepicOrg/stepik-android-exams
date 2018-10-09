@@ -14,5 +14,5 @@ interface StepDao {
     fun insertSteps(steps: List<StepEntity>)
 
     @Query("SELECT * FROM StepEntity LEFT JOIN TopicInfoEntity WHERE StepEntity.lesson = TopicInfoEntity.lesson AND topicId = :topicId")
-    fun loadStepsByTopicId(topicId : String) : Single<List<StepEntity>>
+    fun getStepsByTopicId(topicId : String) : Single<List<StepEntity>>
 }

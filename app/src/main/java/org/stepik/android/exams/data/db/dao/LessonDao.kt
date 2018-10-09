@@ -10,11 +10,11 @@ import org.stepik.android.exams.data.db.entity.LessonEntity
 interface LessonDao {
     @Transaction
     @Query("SELECT * FROM TopicInfoEntity JOIN LessonEntity ON TopicInfoEntity.lesson = lessonId WHERE TopicInfoEntity.topicId = :topicId")
-    fun findAllLessonsByTopicId(topicId: String): Maybe<List<LessonTheoryWrapperPojo>>
+    fun findAllLessonsInfoByTopicId(topicId: String): Maybe<List<LessonTheoryWrapperPojo>>
 
     @Transaction
     @Query("SELECT * FROM TopicInfoEntity JOIN LessonEntity ON TopicInfoEntity.lesson = lessonId WHERE lessonId = :lessonId")
-    fun findLessonById(lessonId: Long): Maybe<LessonTheoryWrapperPojo>
+    fun findLessonInfoById(lessonId: Long): Maybe<LessonTheoryWrapperPojo>
 
     @Query("SELECT topicId FROM TopicInfoEntity WHERE TopicInfoEntity.lesson =:lessonId")
     fun findTopicByLessonId(lessonId: Long) : Single<String>
