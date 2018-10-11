@@ -6,6 +6,7 @@ import org.stepik.android.exams.core.interactor.contacts.NavigationInteractor
 import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.LessonsRepository
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 
 class NavigationInteractorImpl
@@ -41,9 +42,9 @@ constructor(
                 getLessonInCurrentTopic(previousLesson, move)
             }
 
-    private fun getTopic(topicId: String, move: Boolean): Observable<List<LessonTheoryWrapper>> =
-            if (topicId.isNotEmpty() && move) {
-                lessonsRepository.loadLessonsByTopicId(topicId)
+    private fun getTopic(topic : Topic, move: Boolean): Observable<List<LessonTheoryWrapper>> =
+            if (topic.id.isNotEmpty() && move) {
+                lessonsRepository.loadLessonsByTopicId(topic)
                         .ofType(LessonType.Theory::class.java)
                         .map { t: LessonType.Theory -> t.lessonTheoryWrapper }
                         .toList()

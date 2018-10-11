@@ -32,9 +32,6 @@ class TopicsAdapter(
         holder?.bind(topics[position])
     }
 
-    private fun printPercent(percent : Int) =
-            percent.toString() + "%"
-
     inner class TopicsViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         private val topicTitle: TextView = root.topicTitle
         private val topicContainer: View = root.topicContainer
@@ -63,7 +60,7 @@ class TopicsAdapter(
             topicContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(item.topic.id))
             topicTimeToComplete.text = TimeUtil.getTimeToCompleteFormatted(item.timeToComplete)
             topicDescription.text = item.topic.description
-            topicCompletionRate.text = printPercent(item.progress)
+            topicCompletionRate.text = context.getString(R.string.percent, item.progress)
         }
     }
 }

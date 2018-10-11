@@ -48,11 +48,13 @@ class StepsListActivity : BasePresenterActivity<ProgressPresenter, ProgressView>
         super.onCreate(savedInstanceState)
         setContentView(R.layout.steps_activity)
 
-        initCenteredToolbar(R.string.theory, showHomeButton = true)
-
         val lessonTheory: LessonTheoryWrapper = intent.getParcelableExtra(EXTRA_LESSON)
         val topicId: String = intent.getStringExtra(EXTRA_TOPIC_ID)
         val course = intent.getLongExtra(EXTRA_COURSE, 0L)
+
+        val lessonName = lessonTheory.lesson.title
+        initCenteredToolbar(lessonName ?: getString(R.string.theory), showHomeButton = true)
+
         steps = lessonTheory.stepsList
 
         adapter = StepPagerAdapter(supportFragmentManager, topicId, steps, stepTypeResolver)

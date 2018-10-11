@@ -3,7 +3,23 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def globalConf = rootProject.ext
 android {
+    signingConfigs {
+        release {
+            storeFile file(globalConf.keystore)
+            storePassword globalConf.keystorePass
+            keyAlias globalConf.oldAlias
+            keyPassword globalConf.oldAliasPass
+        }
+        debug {
+            storeFile file(globalConf.debugKeystore)
+            storePassword globalConf.debugKeystorePass
+            keyAlias globalConf.debugAlias
+            keyPassword globalConf.debugAliasPass
+        }
+    }
+
     compileSdkVersion versions.compileSdk
     defaultConfig {
         applicationId "org.stepik.android.exams"
@@ -11,9 +27,12 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode versions.code
         versionName versions.name
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        signingConfig signingConfigs.release
     }
+
     android {
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -25,12 +44,16 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
+        }
     }
 
     flavorDimensions "course"
     productFlavors {
         ege_cs {
-            applicationIdSuffix  '.ege_cs'
+            applicationId 'org.stepik.android.adaptive.ege8290'
             dimension "course"
         }
     }

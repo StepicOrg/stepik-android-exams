@@ -25,7 +25,7 @@ constructor(
             saveProgressToDb(topicId).andThen(countProgress(topicId))
 
     private fun loadStepsProgresses(topicId: String) =
-            stepDao.loadStepsByTopicId(topicId)
+            stepDao.getStepsByTopicId(topicId)
                     .flatMap { steps -> progressRepository.getProgressApi(steps.map { it.progress!! }.toTypedArray()).zipWith(Single.just(steps)) }
 
     private fun saveProgressToDb(topicId: String) : Completable =

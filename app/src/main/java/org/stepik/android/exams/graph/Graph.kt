@@ -1,10 +1,12 @@
 package org.stepik.android.exams.graph
 
+import org.stepik.android.exams.graph.model.Topic
+
 class Graph<T> {
     enum class Direction { UP, DOWN }
     private val vertices = mutableMapOf<T, Vertex<T>>()
-    fun createVertex(id: T, title: String) {
-        vertices[id] = Vertex(id, title)
+    fun createVertex(id: T, topic: Topic) {
+        vertices[id] = Vertex(id, topic)
     }
 
     fun addEdge(src: T, dest: T) {
@@ -16,7 +18,7 @@ class Graph<T> {
 
     operator fun get(vert: T) = vertices[vert]
 
-    fun getAllKeys() : List<T> = vertices.map { it.key }
+    fun getAllTopics() : List<Topic> = vertices.map { it.value.topic }
 
     private fun dfsSort(vertex: T, visited: MutableSet<T>, stack: MutableList<T>, direction: Direction) {
         visited.add(vertex)

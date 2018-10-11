@@ -19,12 +19,9 @@ constructor(
     fun insertProgresses(progressEntity: List<ProgressEntity>) =
            progressDao.insertStepProgress(progressEntity)
 
-    fun getStepsProgressByTopic(topicId: String): Single<List<String>> =
-            progressDao.getAllStepsProgressDataByTopicId(topicId)
-
     fun getStepsProgressLocalByTopic(topicId: String): Single<List<Boolean>> =
-            progressDao.getStepsLocalProgressByTopicId(topicId)
+            progressDao.getPassedStepsByTopicId(topicId)
 
     fun getStepProgressLocal(stepId: Long): Single<Boolean> =
-            progressDao.getStepProgress(stepId)
+            progressDao.getPassedStep(stepId)
 }

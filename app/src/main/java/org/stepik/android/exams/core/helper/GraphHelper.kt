@@ -6,6 +6,7 @@ import org.stepik.android.exams.di.AppSingleton
 import org.stepik.android.exams.graph.Graph
 import org.stepik.android.exams.graph.model.GraphData
 import org.stepik.android.exams.graph.model.GraphLesson
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 
 @AppSingleton
@@ -17,7 +18,7 @@ constructor(
     private var graph: Graph<String> = Graph()
 
     fun getTopicsList() =
-            graph.getAllKeys()
+            graph.getAllTopics()
 
     fun getGraphData(): Single<GraphData> =
             graphService.getPosts()
@@ -27,7 +28,7 @@ constructor(
 
     private fun addDataToGraph(graphData: GraphData) {
         for (topic in graphData.topics) {
-            graph.createVertex(topic.id, topic.title)
+            graph.createVertex(topic.id, topic)
         }
         graphData.topics.forEachIndexed { index, topic ->
             if (index + 1 < graphData.topics.size) {
@@ -52,9 +53,9 @@ constructor(
     fun isFirstLessonInCurrentTopic(topicId: String, lessonId: Long) : Boolean =
             graph[topicId]?.graphLessons?.first()?.id == lessonId
 
-    fun getNextTopic(topicId: String) : String =
-            graph[topicId]?.children?.first()?.id ?: ""
+    fun getNextTopic(topicId: String) : Topic =
+            graph[topicId]?.children?.first()?.topic ?: Topic()
 
-    fun getPreviousTopic(topicId: String) :String =
-            graph[topicId]?.parent?.first()?.id ?: ""
+    fun getPreviousTopic(topicId: String) :Topic =
+            graph[topicId]?.parent?.first()?.topic ?: Topic()
 }

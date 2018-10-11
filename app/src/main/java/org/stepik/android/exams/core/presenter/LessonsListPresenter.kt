@@ -1,8 +1,10 @@
 package org.stepik.android.exams.core.presenter
 
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import org.stepik.android.exams.core.presenter.contracts.LessonsView
+import org.stepik.android.exams.data.model.LessonType
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
 import org.stepik.android.exams.di.qualifiers.MainScheduler
@@ -32,11 +34,11 @@ constructor(
         } else {
             LessonsView.State.Loading
         }
-        val lessonObservable = when (type) {
+        val lessonSingle : Single<out List<LessonType>> = when (type) {
             GraphLesson.Type.THEORY -> loadTheoryLessons()
             GraphLesson.Type.PRACTICE -> loadPracticeLessons()
         }
-        disposable.add(lessonObservable
+        disposable.add(lessonSingle
                 .subscribeOn(backgroundScheduler)
                 .observeOn(mainScheduler)
                 .subscribe({ lessons ->
@@ -46,10 +48,10 @@ constructor(
                 }))
     }
 
-    private fun loadTheoryLessons() =
+    private fun loadTheoryLessons(): Single<List<LessonType.Theory>> =
             lessonsRepository.loadAllTheoryLessons()
 
-    private fun loadPracticeLessons() =
+    private fun loadPracticeLessons() : Single<List<LessonType.Practice>> =
             lessonsRepository.loadAllPracticeLessons()
 
     override fun attachView(view: LessonsView) {
