@@ -42,7 +42,7 @@ class LessonsAdapter(
                 val lessonType = lessons[adapterPosition]
                 when (lessonType) {
                     is LessonType.Theory ->
-                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.topicId, lessonType.lessonTheoryWrapper, activity)
+                        screenManager.showStepsList(lessonType.lessonTheoryWrapper.topic.id, lessonType.lessonTheoryWrapper, activity)
 
                     is LessonType.Practice ->
                         screenManager.continueAdaptiveCourse(lessonType.lessonPracticeWrapper.topic, activity)
@@ -52,17 +52,18 @@ class LessonsAdapter(
 
         fun bind(type: LessonType) {
             val context = itemView.context
-            lessonDescription.text = context.resources.getString(R.string.lesson_description)
             when (type) {
                 is LessonType.Theory -> {
                     val lesson = type.lessonTheoryWrapper.lesson
                     title.text = lesson.title
                     subtitle.text = context.resources.getQuantityString(R.plurals.page, lesson.steps.size, lesson.steps.size)
-                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topicId))
+                    lessonDescription.text = type.lessonTheoryWrapper.graphLesson.description
+                    lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonTheoryWrapper.topic.id))
                 }
                 is LessonType.Practice -> {
                     title.text = type.lessonPracticeWrapper.topic.title
                     subtitle.text = context.resources.getString(R.string.lesson_item_practice_subtitle)
+                    lessonDescription.text = type.lessonPracticeWrapper.graphLesson.description
                     lessonContainer.setBackgroundResource(TopicColorResolver.resolveTopicBackground(type.lessonPracticeWrapper.topic.id))
                 }
             }

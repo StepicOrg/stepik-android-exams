@@ -30,7 +30,7 @@ constructor(
     }
 
     private fun getLessonId(topicId: String) =
-            topicDao.getTopicByType(topicId, GraphLesson.Type.THEORY)
+            topicDao.getLessonIdByTopic(topicId, GraphLesson.Type.THEORY)
 
     private fun navigateToPrev(topicId: String, lessonId: Long, move: Boolean) {
         disposable.add(getLessonId(topicId)
@@ -40,7 +40,7 @@ constructor(
                 .subscribe({ wrappers ->
                     val lessonWrapper = wrappers.last()
                     view?.showNextButton()
-                    if (move) view?.moveToLesson(lessonWrapper.topicId, lessonWrapper)
+                    if (move) view?.moveToLesson(lessonWrapper.topic.id, lessonWrapper)
                 }, {
                     view?.hideNextButton()
                 }))
@@ -54,7 +54,7 @@ constructor(
                 .subscribe({ wrappers ->
                     val lessonWrapper = wrappers.first()
                     view?.showPrevButton()
-                    if (move) view?.moveToLesson(lessonWrapper.topicId, lessonWrapper)
+                    if (move) view?.moveToLesson(lessonWrapper.topic.id, lessonWrapper)
                 }, {
                     view?.hidePrevButton()
                 }))

@@ -13,6 +13,6 @@ interface StepDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSteps(steps: List<StepEntity>)
 
-    @Query("SELECT * FROM StepEntity LEFT JOIN TopicEntity WHERE StepEntity.lesson = TopicEntity.lesson AND topicId = :topicId")
-    fun loadStepsByTopicId(topicId : String) : Single<List<StepEntity>>
+    @Query("SELECT * FROM StepEntity LEFT JOIN TopicInfoEntity WHERE StepEntity.lesson = TopicInfoEntity.lesson AND topicId = :topicId")
+    fun getStepsByTopicId(topicId : String) : Single<List<StepEntity>>
 }
