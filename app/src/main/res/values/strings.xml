@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">EGE russian language</string>
+    <string name="request_error">Something went wrong</string>
+    <string name="email" translatable="false">E-mail</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_title"><![CDATA[<b>Sign In</b> with e-mail]]></string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_up_title"><![CDATA[<b>Sign Up</b> with e-mail]]></string>
+    <string name="sign_later">Not now</string>
+    <string name="remind_password">Forgot password</string>
+
+    <string name="first_name">First name</string>
+    <string name="second_name">Second name</string>
+    <string name="auth_inline_message">To save your progress please sign in first</string>
+    <string name="go_to_the_next_lesson">Next lesson</string>
+    <string name="previous_lesson">Previous lesson</string>
+    <string name="processing_your_request">Processing your request</string>
+    <string name="remind_password_success">We sent you a letter</string>
+    <string name="required_field">Required field</string>
+    <string name="terms_message_register"><![CDATA[By signing up, you agree to our <a href="https://stepik.org/page/terms/?from_mobile_app=true">Terms</a> and <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Privacy Policy</a>]]></string>
+
+    <string name="connectivity_error">No connection</string>
+
+    <string name="auth_error_empty_email">Enter valid email address</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">Login/password was incorrect</string>
+    <string name="auth_error_too_many_attempts">Too many attempts. Please try later.</string>
+
+    <string name="empty_auth_title" translatable="false">It\'s You!</string>
+    <string name="empty_auth_subtitle">Complete auth to study with comfort</string>
+    <string name="empty_auth_description"><![CDATA[Authorized account allows you to <b>sync progress and purchases</b> between devices and display <b>your name in leaderboards</b>]]></string>
+
+    <string name="submit">Submit</string>
+    <string name="correct">Correct!</string>
+    <string name="wrong">Wrong. Please, try again.</string>
+    <string name="try_again">Try again</string>
+    <string name="hint_for_type_answer">Type your answer here…</string>
+    <string name="table_quiz_beta">Table problem β</string>
+    <string name="next">Next</string>
+    <string name="open_web_to_solve">Open the web version to solve</string>
+    <string name="theory">Theory</string>
+    <string name="practice">Practice</string>
+    <string name="adaptive">Adaptive</string>
+    <string name="adaptive_reaction_easy">EASY</string>
+    <string name="adaptive_reaction_hard">HARD</string>
+    <string name="adaptive_retry">Retry</string>
+    <string name="adaptive_correct">CORRECT</string>
+    <string name="adaptive_wrong">WRONG</string>
+    <string name="adaptive_attempt_button">Solve</string>
+    <string name="adaptive_course_completed">Congratulations!\n\nYou have successfully completed the course!</string>
+    <string name="adaptive_course_not_supported">This course is not supported in adaptive mode</string>
+    <string name="internet_problem">Sorry, the connection is not available. Try again later</string>
+    <string name="no_connection">No connection</string>
+    <string name="study">Study</string>
+    <string name="training">Training</string>
+    <string name="testing">Testing</string>
+    <string name="topic">Topic</string>
+    <string name="position_placeholder" translatable="false">%d.</string>
+    <string name="lesson_item_practice_title">Practice</string>
+    <string name="lesson_item_practice_subtitle">Reinforce the knowledge</string>
+    <string name="lesson_description">Description of that we will definitely learn in this topic</string>
+    <string name="see_all">See All</string>
+    <string name="percent" translatable="false">%d%%</string>
+</resources>

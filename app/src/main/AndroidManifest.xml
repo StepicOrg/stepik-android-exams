@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.stepik.android.exams">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <application
+        android:name=".App"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_circle"
+        android:supportsRtl="true"
+        android:allowBackup="false"
+        android:theme="@style/AppTheme">
+        <activity android:theme="@style/AppTheme.NoActionBar"
+                  android:name=".ui.activity.LoginActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar.EmptyAuth"
+                  android:name=".ui.activity.EmptyAuthActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+                  android:name=".ui.activity.RegisterActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar.Splash"
+                  android:name=".ui.activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+                  android:name=".ui.activity.IntroActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.TopicLessonsActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.StepsListActivity"/>
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".adaptive.ui.activity.AdaptiveCourseActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.MainMenuActivity" />
+
+        <activity android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.activity.LessonListActivity" />
+
+        <service android:name=".core.services.ViewPushService" />
+    </application>
+</manifest>

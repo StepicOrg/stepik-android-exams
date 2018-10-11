@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ЕГЭ по русскому языку</string>
+    <string name="request_error">Что-то пошло не так</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_in_title"><![CDATA[<b>Войти</b> с e-mail]]></string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_up_title"><![CDATA[<b>Регистрация</b> с e-mail]]></string>
+    <string name="sign_later">Не сейчас</string>
+    <string name="remind_password">Вспомнить пароль</string>
+
+    <string name="first_name">Имя</string>
+    <string name="second_name">Фамилия</string>
+    <string name="auth_inline_message">Войдите, чтобы мы запомнили Ваши успехи</string>
+    <string name="go_to_the_next_lesson">Следующий урок</string>
+    <string name="previous_lesson">Предыдущий урок</string>
+    <string name="processing_your_request">Обработка запроса</string>
+    <string name="remind_password_success">Мы отправили вам письмо</string>
+    <string name="required_field">Обязательное поле</string>
+    <string name="terms_message_register"><![CDATA[Регистрируясь, Вы соглашаетесь с <a href="https://stepik.org/page/terms/?from_mobile_app=true">Условиями использования</a> и <a href="https://stepik.org/page/privacy/?from_mobile_app=true">Политикой конфиденциальности</a>]]></string>
+
+    <string name="connectivity_error">Нет соединения</string>
+
+    <string name="auth_error_empty_email">Введите корректный E-mail</string>
+    <string name="auth_error_connectivity">@string/connectivity_error</string>
+    <string name="auth_error_email_password_invalid">E-mail адрес/пароль неверны</string>
+    <string name="auth_error_too_many_attempts">Слишком много неверных попыток. Попробуйте позже</string>
+
+    <string name="empty_auth_subtitle">Пройдите авторизацию для более удобного обучения</string>
+    <string name="empty_auth_description"><![CDATA[Авторизованный аккаунт позволит <b>синхронизировать прогресс и покупки</b> с другими устройствами, а также отображать <b>Ваше имя в таблице лидеров</b>]]></string>
+
+    <string name="submit">Отправить</string>
+    <string name="wrong">Неправильно. Пожалуйста, попробуйте еще раз.</string>
+    <string name="correct">Верно!</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="hint_for_type_answer">Введите ответ здесь…</string>
+    <string name="table_quiz_beta">Табличная задача β</string>
+    <string name="next">Дальше</string>
+    <string name="open_web_to_solve">пройти задание в web-версии</string>
+
+    <string name="theory">Теория</string>
+    <string name="practice">Практика</string>
+
+    <string name="adaptive">Адаптивный режим</string>
+    <string name="adaptive_reaction_easy">ПРОСТО</string>
+    <string name="adaptive_reaction_hard">СЛОЖНО</string>
+    <string name="adaptive_retry">Новая попытка</string>
+    <string name="adaptive_correct">ВЕРНО</string>
+    <string name="adaptive_wrong">НЕВЕРНО</string>
+    <string name="adaptive_attempt_button">Решить</string>
+    <string name="adaptive_course_completed">Поздравляем!\n\nВы успешно прошли курс!</string>
+    <string name="adaptive_course_not_supported">Этот курс недоступен в адаптивном режиме</string>
+    <string name="internet_problem">Интернет недоступен. Попробуйте позже</string>
+    <string name="no_connection">Нет подключения</string>
+    <string name="study">Учеба</string>
+    <string name="training">Тренировка</string>
+    <string name="testing">Тестирование</string>
+
+    <string name="topic">Тема</string>
+    <string name="lesson_item_practice_title">Практические задания</string>
+    <string name="lesson_item_practice_subtitle">Закрепите полученные знания</string>
+    <string name="lesson_description">Описание того, что мы можем изучить и обязательно изучим в этой теме</string>
+    <string name="see_all">Показать все</string>
+</resources>

@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def globalConf = rootProject.ext
+android {
+    signingConfigs {
+        release {
+            storeFile file(globalConf.keystore)
+            storePassword globalConf.keystorePass
+            keyAlias globalConf.oldAlias
+            keyPassword globalConf.oldAliasPass
+        }
+        debug {
+            storeFile file(globalConf.debugKeystore)
+            storePassword globalConf.debugKeystorePass
+            keyAlias globalConf.debugAlias
+            keyPassword globalConf.debugAliasPass
+        }
+    }
+
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        applicationId "org.stepik.android.exams"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName versions.name
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        signingConfig signingConfigs.release
+    }
+
+    android {
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
+        }
+    }
+
+    flavorDimensions "course"
+    productFlavors {
+        ege_cs {
+            applicationId 'org.stepik.android.adaptive.ege8290'
+            dimension "course"
+        }
+    }
+}
+
+dependencies {
+    implementation project(':model')
+    implementation libraries.rxAndroid
+    implementation libraries.rxJava2
+    implementation libraries.rxKotlin
+    implementation libraries.dagger
+    kapt libraries.daggerCompiler
+    implementation libraries.gson
+    kapt libraries.daggerCompiler
+    implementation libraries.retrofit
+    implementation libraries.retrofitGsonConverter
+    implementation libraries.retrofitRxJavaAdapter
+    implementation libraries.okhttp3
+    implementation libraries.loggingInterceptor
+    implementation libraries.jodaTime
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation libraries.supportAppCompat
+    implementation libraries.supportDesign
+    implementation libraries.supportCardView
+    implementation libraries.constraintLayout
+    implementation libraries.junit
+    implementation libraries.jsoup
+    implementation libraries.calligraphy
+    implementation libraries.butterKnife
+    kapt libraries.butterKnifeCompiler
+    implementation libraries.room
+    annotationProcessor libraries.roomCompiler
+    implementation libraries.roomRx
+    kapt libraries.roomCompiler
+    implementation libraries.amplitude
+    implementation libraries.stetho
+}
