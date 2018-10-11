@@ -53,7 +53,7 @@ android {
     flavorDimensions "course"
     productFlavors {
         ege_cs {
-            applicationIdSuffix  '.ege_cs'
+            applicationId 'org.stepik.android.adaptive.ege8290'
             dimension "course"
         }
     }
