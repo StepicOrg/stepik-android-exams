@@ -8,7 +8,7 @@ ext.versions = [
         androidGradlePlugin  : '3.1.4',
 
         kotlin               : '1.2.71',
-        googleServicesVersion: '3.1.0',
+        googleServicesVersion: '3.2.0',
         dagger               : '2.16',
         rxJava2              : '2.1.7',
         rxAndroid            : '2.0.1',
@@ -28,12 +28,17 @@ ext.versions = [
         butterKnife          : '8.8.1',
         room                 : '1.1.1',
         roomRx               : '1.1.1',
-        amplitude            : '2.14.1'
+        amplitude            : '2.14.1',
+        crashlytics          : '2.9.5@aar',
+        fabric               : '1.25.4',
+        firebase             : '16.0.4'
 ]
 
 ext.gradlePlugins = [
         kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         android       : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+        googleServices: "com.google.gms:google-services:$versions.googleServicesVersion",
+        fabric        : "io.fabric.tools:gradle:$versions.fabric"
 ]
 
 ext.libraries = [
@@ -66,5 +71,7 @@ ext.libraries = [
         room                 : "android.arch.persistence.room:runtime:$versions.room",
         roomCompiler         : "android.arch.persistence.room:compiler:$versions.room",
         roomRx               : "android.arch.persistence.room:rxjava2:$versions.roomRx",
-        amplitude            : "com.amplitude:android-sdk:$versions.amplitude"
+        amplitude            : "com.amplitude:android-sdk:$versions.amplitude",
+        crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
+        firebaseCore         : "com.google.firebase:firebase-core:$versions.firebase"
 ]
