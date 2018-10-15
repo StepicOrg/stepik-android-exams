@@ -9,7 +9,6 @@ import org.stepik.android.exams.di.AppSingleton
 import javax.inject.Inject
 import com.amplitude.api.Amplitude
 import com.amplitude.api.Identify
-import com.crashlytics.android.Crashlytics
 import org.json.JSONObject
 import org.stepik.android.exams.App
 
@@ -52,9 +51,5 @@ class AnalyticImpl
 
     private fun onSessionStart() {
         reportAmplitudeEvent(AmplitudeAnalytic.Launch.SESSION_START)
-    }
-
-    override fun reportError(message: String, throwable: Throwable) {
-        Crashlytics.logException(throwable)
     }
 }
