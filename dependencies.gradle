@@ -8,7 +8,7 @@ ext.versions = [
         androidGradlePlugin  : '3.1.4',
 
         kotlin               : '1.2.71',
-        googleServicesVersion: '3.2.0',
+        googleServicesVersion: '4.1.0',
         dagger               : '2.16',
         rxJava2              : '2.1.7',
         rxAndroid            : '2.0.1',
