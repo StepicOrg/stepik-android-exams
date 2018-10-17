@@ -97,10 +97,13 @@
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
+### Fabric
+# In order to provide the most meaningful crash reports
+-keepattributes SourceFile,LineNumberTable
+
 # Crashlytics
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
-
 # Keep POJO
 -keep class org.stepik.android.exams.data.model.** { *; }
 -keep interface org.stepik.android.exams.data.model.** { *; }
@@ -135,6 +138,33 @@
 -keep interface org.stepik.android.exams.configuration.** { *; }
 -dontwarn org.stepik.android.exams.configuration.**
 
-#kotlin
--dontwarn kotlin.**
+-keeppackagenames org.jsoup.nodes
+
+### Stetho, Stetho Realm plugin
+-keep class com.facebook.stetho.** {
+  *;
+}
+-dontwarn com.facebook.stetho.**
+
+### RxJava, RxAndroid (https://gist.github.com/kosiara/487868792fbd3214f9c9)
+-keep class rx.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class rx.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    long producerNode;
+    long consumerNode;
+}
 
