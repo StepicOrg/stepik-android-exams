@@ -4,7 +4,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import org.stepik.android.exams.api.StepicRestService
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
-import org.stepik.android.exams.web.AttemptRequest
+import org.stepik.android.exams.data.model.AttemptRequest
 import org.stepik.android.model.attempts.Attempt
 import javax.inject.Inject
 

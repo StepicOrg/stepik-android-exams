@@ -1,4 +1,4 @@
-package org.stepik.android.exams.web
+package org.stepik.android.exams.data.model
 
 import org.stepik.android.model.attempts.Attempt
 
