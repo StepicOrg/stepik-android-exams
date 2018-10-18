@@ -3,8 +3,8 @@ package org.stepik.android.exams.api
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.stepik.android.exams.data.model.*
-import org.stepik.android.exams.web.AttemptRequest
-import org.stepik.android.exams.web.AttemptResponse
+import org.stepik.android.exams.data.model.AttemptRequest
+import org.stepik.android.exams.data.model.AttemptResponse
 import org.stepik.android.model.EnrollmentWrapper
 import retrofit2.http.*
 

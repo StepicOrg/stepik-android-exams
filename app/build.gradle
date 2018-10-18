@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 def globalConf = rootProject.ext
 android {
@@ -41,11 +42,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
         }
     }
@@ -61,33 +63,46 @@ android {
 
 dependencies {
     implementation project(':model')
+    implementation libraries.kotlinStd
+
     implementation libraries.rxAndroid
     implementation libraries.rxJava2
     implementation libraries.rxKotlin
+
     implementation libraries.dagger
     kapt libraries.daggerCompiler
+
     implementation libraries.gson
-    kapt libraries.daggerCompiler
     implementation libraries.retrofit
     implementation libraries.retrofitGsonConverter
     implementation libraries.retrofitRxJavaAdapter
     implementation libraries.okhttp3
     implementation libraries.loggingInterceptor
+
     implementation libraries.jodaTime
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation libraries.supportAppCompat
     implementation libraries.supportDesign
     implementation libraries.supportCardView
     implementation libraries.constraintLayout
+
     implementation libraries.junit
     implementation libraries.jsoup
     implementation libraries.calligraphy
     implementation libraries.butterKnife
     kapt libraries.butterKnifeCompiler
+
     implementation libraries.room
-    annotationProcessor libraries.roomCompiler
     implementation libraries.roomRx
+    annotationProcessor libraries.roomCompiler
     kapt libraries.roomCompiler
+
     implementation libraries.amplitude
     implementation libraries.stetho
+    implementation libraries.firebaseCore
+    implementation(libraries.crashlytics) {
+        transitive = true
+    }
 }
+
+apply plugin: 'com.google.gms.google-services'

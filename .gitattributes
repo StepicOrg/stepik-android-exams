@@ -1,5 +1,6 @@
 app/src/main/assets/config.json filter=git-crypt diff=git-crypt
 config.json filter=git-crypt diff=git-crypt
+app/src/ege_cs/google-services.json filter=git-crypt diff=git-crypt
 buildsystem/cert/** filter=git-crypt diff=git-crypt
 buildsystem/secret.gradle filter=git-crypt diff=git-crypt
 .gitattributes !filter !diff
