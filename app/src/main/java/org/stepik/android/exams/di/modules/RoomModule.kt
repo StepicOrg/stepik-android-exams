@@ -47,4 +47,9 @@ class RoomModule {
     @AppSingleton
     fun provideStepDao(app: AppDatabase) : StepDao =
             app.stepDao()
+
+    @Provides
+    @AppSingleton
+    fun providesGraphLessonDao(app: AppDatabase): GraphLessonDao =
+            app.graphLessonDao()
 }
