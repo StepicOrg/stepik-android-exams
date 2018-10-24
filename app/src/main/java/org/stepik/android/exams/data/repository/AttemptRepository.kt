@@ -11,8 +11,8 @@ import javax.inject.Inject
 class AttemptRepository
 @Inject
 constructor(
-        private var stepicRestService: StepicRestService,
-        private var sharedPreferenceHelper: SharedPreferenceHelper
+        private val stepicRestService: StepicRestService,
+        private val sharedPreferenceHelper: SharedPreferenceHelper
 ) {
     fun createAttempt(stepId: Long): Single<Attempt> =
             stepicRestService
