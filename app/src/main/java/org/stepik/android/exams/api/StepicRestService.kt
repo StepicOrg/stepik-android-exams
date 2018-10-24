@@ -2,6 +2,7 @@ package org.stepik.android.exams.api
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.stepik.android.exams.data.model.UserCoursesResponse
 import org.stepik.android.exams.data.model.*
 import org.stepik.android.exams.data.model.AttemptRequest
 import org.stepik.android.exams.data.model.AttemptResponse
@@ -84,4 +85,20 @@ interface StepicRestService {
     fun getAssignments(
             @Query("ids[]")assignmentsIds: LongArray
     ): Single<AssignmentResponse>
+
+    @GET("api/user-courses")
+    fun getUserCourses(
+            @Query("page") page: Int
+    ): Single<UserCoursesResponse>
+
+    @GET("api/courses")
+    fun getCourses(
+            @Query("page") page: Int,
+            @Query("ids[]") courseIds: LongArray
+    ): Single<CoursesMetaResponse>
+
+    @GET("api/last-steps/{lastStepId}")
+    fun getLastStepResponse(
+            @Path("lastStepId") lastStepId: String
+    ): Single<LastStepResponse>
 }
