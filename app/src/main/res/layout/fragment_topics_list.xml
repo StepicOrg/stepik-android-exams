@@ -25,6 +25,8 @@
             <include layout="@layout/item_topic_placeholder" />
         </LinearLayout>
 
+        <include layout="@layout/continue_education_layout"/>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
