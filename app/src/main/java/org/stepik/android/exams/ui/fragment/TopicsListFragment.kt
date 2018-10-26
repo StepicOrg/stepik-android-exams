@@ -5,22 +5,30 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.continue_education_layout.*
 import kotlinx.android.synthetic.main.error_no_connection_with_button.*
 import kotlinx.android.synthetic.main.fragment_topics_list.*
 import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
+import org.stepik.android.exams.core.presenter.CoursePresenter
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
+import org.stepik.android.exams.core.presenter.contracts.CourseView
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
+import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
+import org.stepik.android.exams.ui.util.TopicColorResolver
 import org.stepik.android.exams.util.changeVisibillity
 import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
 
-class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsListView>(), TopicsListView {
+class TopicsListFragment :
+        BasePresenterFragment<TopicsListPresenter, TopicsListView>(),
+        TopicsListView,
+        CourseView {
     companion object {
         fun newInstance(): TopicsListFragment =
                 TopicsListFragment()
@@ -31,6 +39,9 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
 
     @Inject
     lateinit var screenManager: ScreenManager
+
+    @Inject
+    lateinit var coursePresenter: CoursePresenter
 
     private lateinit var topicsAdapter: TopicsAdapter
 
@@ -60,16 +71,25 @@ class TopicsListFragment : BasePresenterFragment<TopicsListPresenter, TopicsList
         }
     }
 
+    override fun initContinueEducation(topic : Topic) {
+        continueTextView.text = getString(R.string.continue_education)
+        continueEducation.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
+        topicTitle.text = topic.title
+    }
+
     override fun getPresenterProvider(): Provider<TopicsListPresenter> =
             topicsListPresenterProvider
 
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
+        coursePresenter.attachView(this)
+        coursePresenter.continueEducation()
     }
 
     override fun onStop() {
         presenter?.detachView(this)
+        coursePresenter.detachView(this)
         super.onStop()
     }
 
