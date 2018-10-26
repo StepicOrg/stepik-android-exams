@@ -1,11 +1,14 @@
 package org.stepik.android.exams.data.repository
 
 import io.reactivex.Completable
+import io.reactivex.Single
 import org.stepik.android.exams.api.Api
 import org.stepik.android.exams.data.db.dao.TopicDao
 import org.stepik.android.exams.data.db.entity.TopicInfoEntity
 import org.stepik.android.exams.data.db.mapping.toEntity
+import org.stepik.android.exams.data.db.mapping.toObject
 import org.stepik.android.exams.graph.model.GraphData
+import org.stepik.android.exams.graph.model.Topic
 import javax.inject.Inject
 
 class TopicsRepository
@@ -42,5 +45,8 @@ constructor(
                         true))
         return list
     }
+
+    fun getTopicByStep(stepId : Long) : Single<Topic> =
+            topicDao.getTopicByStepId(stepId).map { it.toObject() }
 
 }

@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query
 import io.reactivex.Maybe
 import io.reactivex.Single
 import org.stepik.android.exams.data.db.entity.GraphLessonEntity
+import org.stepik.android.exams.data.db.entity.TopicEntity
 import org.stepik.android.exams.data.db.entity.TopicInfoEntity
 import org.stepik.android.exams.graph.model.GraphLesson
 
@@ -30,4 +31,10 @@ interface TopicDao {
     // TODO fix constant
     @Query("SELECT TopicInfoEntity.course FROM TopicInfoEntity WHERE topicId = :topicId AND TopicInfoEntity.type = 'PRACTICE'")
     fun getAdaptiveCourseId(topicId: String): Maybe<Long>
+
+    @Query("SELECT * FROM TopicInfoEntity WHERE TopicInfoEntity.lesson = (SELECT lesson FROM StepEntity WHERE step =:stepId)")
+    fun getTopicByStepId(stepId : Long) : Single<TopicEntity>
+
+    @Query("SELECT distinct(course) FROM TopicInfoEntity")
+    fun getUniqueCourses() : Single<List<Long>>
 }

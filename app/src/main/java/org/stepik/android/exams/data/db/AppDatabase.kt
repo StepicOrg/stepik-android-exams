@@ -32,7 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun topicDao(): TopicDao
     abstract fun stepDao(): StepDao
     abstract fun submissionEntityDao(): SubmissionEntityDao
-    abstract fun graphLessonDao(): GraphLessonDao
 
     companion object {
         private const val DB_NAME = "app-db"

@@ -6,7 +6,6 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.reactivex.Single
 import org.stepik.android.exams.data.db.entity.StepEntity
-import org.stepik.android.model.Step
 
 @Dao
 interface StepDao {
