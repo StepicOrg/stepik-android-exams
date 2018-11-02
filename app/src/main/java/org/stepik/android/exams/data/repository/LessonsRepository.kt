@@ -101,4 +101,7 @@ constructor(
 
     fun findTopicByLessonId(lessonId : Long) : Single<String> =
             lessonDao.findTopicByLessonId(lessonId)
+
+    fun findLastStepInfo(stepId : Long): Maybe<LessonTheoryWrapper>  =
+            lessonDao.findLessonInfoByStepId(stepId).map { it.toObject() }
 }

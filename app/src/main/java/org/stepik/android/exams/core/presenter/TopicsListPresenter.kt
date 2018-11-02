@@ -1,5 +1,6 @@
 package org.stepik.android.exams.core.presenter
 
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -38,7 +39,6 @@ constructor(
         private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
         private val sharedPreferenceHelper: SharedPreferenceHelper,
-
         @LessonProgressUpdatesBus
         lessonProgressUpdatesBus: BehaviorSubject<Long>
 ) : PresenterBase<TopicsListView>() {
@@ -49,7 +49,7 @@ constructor(
     }
 
     init {
-        compositeDisposable.add(lessonProgressUpdatesBus.subscribe { lessonId ->
+        compositeDisposable addDisposable (lessonProgressUpdatesBus.subscribe { lessonId ->
             updateProgressFromBus(lessonId)
         })
         getGraphData()
@@ -62,7 +62,7 @@ constructor(
         } else {
             TopicsListView.State.Loading
         }
-        compositeDisposable.add(
+        compositeDisposable addDisposable
                 graphHelper.getGraphData()
                         .flatMap { data -> topicsRepository.joinCourse(data).then(Single.just(data)) }
                         .flatMapObservable { it.topics.toObservable() }
@@ -70,7 +70,7 @@ constructor(
                             loadTopicsAdapterInfo(topic)
                         }
                         .toList()
-                        .zipWith(continueEducation())
+                        .zipWith(loadLastTopic())
                         .doOnSuccess { sharedPreferenceHelper.firstLoading = false }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
@@ -78,7 +78,7 @@ constructor(
                             viewState = TopicsListView.State.Success(topicsList, lastTopic)
                         }, {
                             viewState = TopicsListView.State.NetworkError
-                        }))
+                        })
     }
 
     private fun loadTopicsAdapterInfo(topic: Topic): Observable<TopicAdapterItem> {
@@ -116,10 +116,42 @@ constructor(
                 }, {})
     }
 
-    fun continueEducation(): Single<Topic> =
+    fun loadLastLesson() {
+        compositeDisposable addDisposable
+                loadLastStep()
+                        .flatMapMaybe { stepId -> lessonsRepository.findLastStepInfo(stepId).zipWith(Maybe.just(stepId)) }
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe({ (theoryLessonWrapper, stepId) ->
+                            val position = theoryLessonWrapper.stepsList.first { it.id == stepId }.position
+                            view?.continueEducation(theoryLessonWrapper, position)
+                        }, {})
+    }
+
+    private fun updateContinueEducation(topic: Topic) {
+        val state = viewState
+        if (state is TopicsListView.State.Success) {
+            viewState = TopicsListView.State.Success(state.topics, topic)
+        }
+    }
+
+    private fun loadLastStep(): Single<Long> =
             coursesRepository.getLastStep()
                     .map { it.step }
+
+    private fun loadLastTopic(): Single<Topic> =
+            loadLastStep()
                     .flatMap { topicsRepository.getTopicByStep(it) }
+
+    fun continueEducation() {
+        compositeDisposable addDisposable
+                loadLastTopic()
+                        .subscribeOn(backgroundScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe({
+                            updateContinueEducation(it)
+                        }, {})
+    }
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)

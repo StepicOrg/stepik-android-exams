@@ -26,7 +26,7 @@ constructor(
         private val analytic: Analytic
 ) : ScreenManager {
 
-    override fun showStepsList(topicId: String, lessonTheory: LessonTheoryWrapper, context: Context) {
+    override fun showStepsList(topicId: String, lessonTheory: LessonTheoryWrapper, context: Context, stepPosition : Long) {
         analytic.reportAmplitudeEvent(AmplitudeAnalytic.Lesson.LESSON_OPENED,
                 mapOf(
                         AmplitudeAnalytic.Lesson.Params.ID to lessonTheory.lesson.id,
@@ -38,6 +38,7 @@ constructor(
         intent.putExtra(StepsListActivity.EXTRA_LESSON, lessonTheory)
         intent.putExtra(StepsListActivity.EXTRA_TOPIC_ID, topicId)
         intent.putExtra(StepsListActivity.EXTRA_COURSE, lessonTheory.graphLesson.course)
+        intent.putExtra(StepsListActivity.STEP_POSITION, stepPosition)
         context.startActivity(intent)
     }
 

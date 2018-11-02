@@ -10,7 +10,7 @@ import org.stepik.android.exams.graph.model.Topic
 interface ScreenManager {
     fun showOnboardingScreen()
     fun showMainMenu()
-    fun showStepsList(topicId: String, lessonTheory: LessonTheoryWrapper, context: Context)
+    fun showStepsList(topicId: String, lessonTheory: LessonTheoryWrapper, context: Context, stepPosition : Long = 0)
     fun showEmptyAuthScreen(context: Context)
     fun showLoginScreen(activity: Activity)
     fun showRegisterScreen(activity: Activity)

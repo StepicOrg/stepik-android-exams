@@ -16,6 +16,7 @@ import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
+import org.stepik.android.exams.data.model.LessonTheoryWrapper
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
 import org.stepik.android.exams.ui.util.TopicColorResolver
@@ -71,6 +72,9 @@ class TopicsListFragment :
         tryAgain.setOnClickListener {
             presenter?.getGraphData()
         }
+        continueEducation.setOnClickListener {
+            presenter?.loadLastLesson()
+        }
     }
 
     private fun setNestedScrollEnabled(recyclerView: RecyclerView, isNestedScrollEnabled: Boolean = false) {
@@ -87,6 +91,11 @@ class TopicsListFragment :
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.continueEducation()
     }
 
     override fun onStop() {
@@ -123,5 +132,9 @@ class TopicsListFragment :
             topicsAdapter.topics = state.topics
             topic = state.topic
         }
+    }
+
+    override fun continueEducation(lessonTheoryWrapper: LessonTheoryWrapper, position : Long) {
+        screenManager.showStepsList(lessonTheoryWrapper.topic.id, lessonTheoryWrapper, context, position)
     }
 }

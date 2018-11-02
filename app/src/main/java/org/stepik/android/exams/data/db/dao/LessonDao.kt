@@ -19,6 +19,10 @@ interface LessonDao {
     @Query("SELECT topicId FROM TopicInfoEntity WHERE TopicInfoEntity.lesson =:lessonId")
     fun findTopicByLessonId(lessonId: Long) : Single<String>
 
+    @Transaction
+    @Query("SELECT * FROM TopicInfoEntity JOIN LessonEntity ON TopicInfoEntity.lesson = lessonId WHERE lessonId = (SELECT lesson FROM StepEntity WHERE step =:stepId)")
+    fun findLessonInfoByStepId(stepId: Long): Maybe<LessonTheoryWrapperPojo>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLessons(lessons: List<LessonEntity>)
 }
