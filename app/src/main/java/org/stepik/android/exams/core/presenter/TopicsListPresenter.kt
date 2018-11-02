@@ -6,12 +6,14 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Singles.zip
 import io.reactivex.rxkotlin.toObservable
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import org.stepik.android.exams.core.helper.GraphHelper
 import org.stepik.android.exams.core.interactor.contacts.ProgressInteractor
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.data.model.TopicAdapterItem
 import org.stepik.android.exams.data.preference.SharedPreferenceHelper
+import org.stepik.android.exams.data.repository.CoursesRepository
 import org.stepik.android.exams.data.repository.LessonsRepository
 import org.stepik.android.exams.data.repository.TopicsRepository
 import org.stepik.android.exams.di.qualifiers.BackgroundScheduler
@@ -30,8 +32,8 @@ constructor(
         private val backgroundScheduler: Scheduler,
         @MainScheduler
         private val mainScheduler: Scheduler,
-
         private val topicsRepository: TopicsRepository,
+        private val coursesRepository: CoursesRepository,
         private val graphHelper: GraphHelper,
         private val progressInteractor: ProgressInteractor,
         private val lessonsRepository: LessonsRepository,
@@ -56,7 +58,7 @@ constructor(
     fun getGraphData() {
         val oldState = viewState
         viewState = if (oldState is TopicsListView.State.Success) {
-            TopicsListView.State.Refreshing(oldState.topics)
+            TopicsListView.State.Refreshing(oldState.topics, oldState.topic)
         } else {
             TopicsListView.State.Loading
         }
@@ -68,11 +70,12 @@ constructor(
                             loadTopicsAdapterInfo(topic)
                         }
                         .toList()
+                        .zipWith(continueEducation())
                         .doOnSuccess { sharedPreferenceHelper.firstLoading = false }
                         .subscribeOn(backgroundScheduler)
                         .observeOn(mainScheduler)
-                        .subscribe({ data ->
-                            viewState = TopicsListView.State.Success(data)
+                        .subscribe({ (topicsList, lastTopic) ->
+                            viewState = TopicsListView.State.Success(topicsList, lastTopic)
                         }, {
                             viewState = TopicsListView.State.NetworkError
                         }))
@@ -108,10 +111,15 @@ constructor(
                                 item
                             }
                         }
-                        viewState = TopicsListView.State.Success(topics)
+                        viewState = TopicsListView.State.Success(topics, state.topic)
                     }
                 }, {})
     }
+
+    fun continueEducation(): Single<Topic> =
+            coursesRepository.getLastStep()
+                    .map { it.step }
+                    .flatMap { topicsRepository.getTopicByStep(it) }
 
     override fun attachView(view: TopicsListView) {
         super.attachView(view)

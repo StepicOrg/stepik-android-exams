@@ -14,9 +14,7 @@ import org.stepik.android.exams.App
 import org.stepik.android.exams.R
 import org.stepik.android.exams.core.ScreenManager
 import org.stepik.android.exams.core.presenter.BasePresenterFragment
-import org.stepik.android.exams.core.presenter.CoursePresenter
 import org.stepik.android.exams.core.presenter.TopicsListPresenter
-import org.stepik.android.exams.core.presenter.contracts.CourseView
 import org.stepik.android.exams.core.presenter.contracts.TopicsListView
 import org.stepik.android.exams.graph.model.Topic
 import org.stepik.android.exams.ui.adapter.TopicsAdapter
@@ -26,11 +24,10 @@ import org.stepik.android.exams.util.hideAllChildren
 import org.stepik.android.exams.util.initCenteredToolbar
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.properties.Delegates
 
 class TopicsListFragment :
-        BasePresenterFragment<TopicsListPresenter, TopicsListView>(),
-        TopicsListView,
-        CourseView {
+        BasePresenterFragment<TopicsListPresenter, TopicsListView>(), TopicsListView {
     companion object {
         fun newInstance(): TopicsListFragment =
                 TopicsListFragment()
@@ -42,10 +39,12 @@ class TopicsListFragment :
     @Inject
     lateinit var screenManager: ScreenManager
 
-    @Inject
-    lateinit var coursePresenter: CoursePresenter
-
     private lateinit var topicsAdapter: TopicsAdapter
+
+    var topic: Topic by Delegates.observable(Topic()) { _, _, _ ->
+        continueEducation.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
+        topicTitle.text = topic.title
+    }
 
     override fun injectComponent() {
         App.component().inject(this)
@@ -82,28 +81,16 @@ class TopicsListFragment :
         }
     }
 
-    private fun scrollToTop() {
-        nestedScrollView.scrollTo(0, 0)
-    }
-
-    override fun initContinueEducation(topic: Topic) {
-        continueEducation.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
-        topicTitle.text = topic.title
-    }
-
     override fun getPresenterProvider(): Provider<TopicsListPresenter> =
             topicsListPresenterProvider
 
     override fun onStart() {
         super.onStart()
         presenter?.attachView(this)
-        coursePresenter.attachView(this)
-        coursePresenter.continueEducation()
     }
 
     override fun onStop() {
         presenter?.detachView(this)
-        coursePresenter.detachView(this)
         super.onStop()
     }
 
@@ -126,7 +113,7 @@ class TopicsListFragment :
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = false
             topicsAdapter.topics = state.topics
-            scrollToTop()
+            topic = state.topic
         }
 
         is TopicsListView.State.Refreshing -> {
@@ -134,7 +121,7 @@ class TopicsListFragment :
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = true
             topicsAdapter.topics = state.topics
-            scrollToTop()
+            topic = state.topic
         }
     }
 }
