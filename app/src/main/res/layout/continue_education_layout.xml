@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -12,16 +10,19 @@
         android:id="@+id/continueEducation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:foreground="?selectableItemBackground"
-        android:padding="24dp"/>
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
         <TextView
             android:id="@+id/continueTextView"
+            style="@android:style/TextAppearance.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            style="@android:style/TextAppearance.Medium" />
+            android:text="@string/continue_education"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/topicTitle"
@@ -31,6 +32,8 @@
             android:layout_marginBottom="12dp"
             android:textColor="@color/white" />
 
-        <include layout="@layout/view_divider_h" />
+    </LinearLayout>
+
+    <include layout="@layout/view_divider_h" />
 
 </android.support.v7.widget.CardView>

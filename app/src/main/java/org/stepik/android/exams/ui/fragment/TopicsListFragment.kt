@@ -1,7 +1,9 @@
 package org.stepik.android.exams.ui.fragment
 
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +63,7 @@ class TopicsListFragment :
 
         recycler.adapter = topicsAdapter
         recycler.layoutManager = LinearLayoutManager(activity)
+        setNestedScrollEnabled(recycler)
 
         swipeRefresh.setOnRefreshListener {
             presenter?.getGraphData()
@@ -71,8 +74,15 @@ class TopicsListFragment :
         }
     }
 
-    override fun initContinueEducation(topic : Topic) {
-        continueTextView.text = getString(R.string.continue_education)
+    private fun setNestedScrollEnabled(recyclerView: RecyclerView, isNestedScrollEnabled: Boolean = false) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setNestedScrollingEnabled(recyclerView, isNestedScrollEnabled)
+        } else {
+            recyclerView.isNestedScrollingEnabled = isNestedScrollEnabled
+        }
+    }
+
+    override fun initContinueEducation(topic: Topic) {
         continueEducation.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
         topicTitle.text = topic.title
     }
