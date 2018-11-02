@@ -82,6 +82,10 @@ class TopicsListFragment :
         }
     }
 
+    private fun scrollToTop() {
+        nestedScrollView.scrollTo(0, 0)
+    }
+
     override fun initContinueEducation(topic: Topic) {
         continueEducation.setBackgroundResource(TopicColorResolver.resolveTopicBackground(topic.id))
         topicTitle.text = topic.title
@@ -122,6 +126,7 @@ class TopicsListFragment :
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = false
             topicsAdapter.topics = state.topics
+            scrollToTop()
         }
 
         is TopicsListView.State.Refreshing -> {
@@ -129,6 +134,7 @@ class TopicsListFragment :
             swipeRefresh.changeVisibillity(true)
             swipeRefresh.isRefreshing = true
             topicsAdapter.topics = state.topics
+            scrollToTop()
         }
     }
 }
